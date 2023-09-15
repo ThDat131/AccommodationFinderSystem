@@ -5,10 +5,12 @@ const User = new Schema(
     email: {
       type: String,
       require: true,
+      unique: true,
     },
     password: {
       type: String,
       require: true,
+      unique: true,
     },
     avatar: {
       type: String,
@@ -27,6 +29,7 @@ const User = new Schema(
     phone: {
       type: String,
       require: true,
+      unique: true,
     },
     landlordId: {
       type: Schema.Types.ObjectId,
