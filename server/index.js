@@ -5,8 +5,6 @@ import cookieParser from 'cookie-parser';
 import UsersRoute from "./src/api/routes/UsersRoute.js";
 import methodOverride from 'method-override';
 
-
-
 const PORT = process.env.PORT || 8085;
 
 const app = express();

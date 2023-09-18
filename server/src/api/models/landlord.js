@@ -13,6 +13,9 @@ const Landlord = new Schema(
     active: {
       type: Boolean,
     },
+    images: {
+      type: [String]
+    }
   },
   {
     timestamps: true,
