@@ -6,37 +6,36 @@ import "./signup.css";
 import HouseImage from "../../assets/img/house-img.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import InputGroup from "react-bootstrap/InputGroup"
-import {userSignIn} from "../../services/Apis"
+import InputGroup from "react-bootstrap/InputGroup";
+import { userSignIn } from "../../services/Apis";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner"
+import Spinner from "react-bootstrap/Spinner";
 
 const Signup = () => {
-
-  const nav = useNavigate()
+  const nav = useNavigate();
 
   const [user, setUser] = useState({
-    "fullName": "",
-    "email": "",
-    "phone": "",
-    "password": "",
-    "rePassword": ""
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    rePassword: "",
   });
 
   const [errors, setErrors] = useState({
-    "fullName": "",
-    "email": "",
-    "phone": "",
-    "password": "",
-    "rePassword": "",
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    rePassword: "",
   });
 
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false);
 
   const handleChangeUser = (evt, field) => {
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [field]: "", 
+      [field]: "",
     }));
     setUser((current) => {
       return { ...current, [field]: evt.target.value };
@@ -44,38 +43,50 @@ const Signup = () => {
   };
 
   const handleSubmit = (evt) => {
-    evt.preventDefault()
-    setDisabled(true)
-    const msgError: any = {}
-    if (!user.email) {
-      msgError.email = "Email is required!"
+    evt.preventDefault();
+    setDisabled(true);
+    const msgError: any = {};
+    if (!user.email.trim()) {
+      msgError.email = "Email is required!";
     }
-    if (!user.fullName) {
-      msgError.fullName = "Full name is required!"
+    else if (!user.email.match( /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)) {
+      msgError.email = "Email is invalid!";
+
     }
-    if (!user.phone) {
+    if (!user.fullName.trim()) {
+      msgError.fullName = "Full name is required!";
+    }
+    if (!user.phone.trim()) {
       msgError.phone = "Phone is required!";
+    } else if (!user.phone.match(/^(0[0-9]{9}|[0-9]{10})$/)) {
+      msgError.phone = "Phone is invalid!";
     }
-    if (!user.password) {
-      msgError.password = "Password is required!"
+    
+    if (!user.password.trim()) {
+      msgError.password = "Password is required!";
+    } else if (!user.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+      msgError.password = "Please use at least 8 characters, including uppercase, lowercase, numbers, and special characters for increased security)"
     }
-    if (!user.rePassword) {
-      msgError.rePassword = "Confirm password is required!"
+    if (!user.rePassword.trim()) {
+      msgError.rePassword = "Confirm password is required!";
+    } else if (user.password !== user.rePassword) {
+      msgError.rePassword = "Password and confirm password is not match!";
     }
-    if (user.password !== user.rePassword) {
-      msgError.rePassword = "Password and confirm password is not match!"
-    }
+    
     if (Object.keys(msgError).length > 0) {
       setErrors(msgError);
-      setDisabled(false)
-      return
+      setDisabled(false);
+      return;
     }
-    delete user["rePassword"]
-    userSignIn(user)
-    .then(res => {
+    const formData = {}
+    for(const field in user) {
+      if (field !== "rePassword") {
+        formData[`${field}`] = user[field].trim()
+      }
+    }
+    userSignIn(formData).then((res) => {
       if (res.status === 201) {
-        console.log(res.data)
-        toast.success("Signup successfully!")
+        toast.success("Signup successfully!");
         setUser({
           fullName: "",
           email: "",
@@ -83,14 +94,18 @@ const Signup = () => {
           password: "",
           rePassword: "",
         });
-        nav("/signin")
+        nav("/signin");
+      } else if (res.status === 400) {
+        if (res.email) {
+          errors.email = res.email
+        }
+        if (res.phone) {
+          errors.phone = res.phone
+        }
       }
-      else {
-        toast.error("Something has wrong!");
-      }
-      setDisabled(false)
-    })
-  }
+      setDisabled(false);
+    });
+  };
 
   return (
     <>

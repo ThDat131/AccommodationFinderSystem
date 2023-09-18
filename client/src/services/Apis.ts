@@ -8,7 +8,7 @@ const userSignIn = async (data) => {
         return res
 
     } catch(err) {
-        return err
+        return err.response.data
     }
 }
 
