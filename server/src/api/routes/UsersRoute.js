@@ -4,11 +4,12 @@ import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = Router();
 
+router.post("/confirmCode", UsersController.confirmCode)
 router.post("/signup", UsersController.signup);
 router.post("/signin", UsersController.signin);
-router.get("/users/:id", UsersController.getUser);
 router.get("/getCurrentUser", UsersController.getCurrentUser);
-router.get("/users", UsersController.getAllUser);
+router.get("/users/", UsersController.getAllUser);
+router.get("/users/:id", UsersController.getUser);
 router.put("/users/:id/updateUser", UsersController.updateUser);
 
 export default router;
