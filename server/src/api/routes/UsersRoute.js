@@ -6,8 +6,9 @@ const router = Router();
 
 router.post("/signup", UsersController.signup);
 router.post("/signin", UsersController.signin);
-router.get("/users/:id", verifyToken, UsersController.getUser);
-router.get("/users", verifyToken, UsersController.getAllUser);
-router.put("/users/:id/updateUser", verifyToken, UsersController.updateUser);
+router.get("/users/:id", UsersController.getUser);
+router.get("/getCurrentUser", UsersController.getCurrentUser);
+router.get("/users", UsersController.getAllUser);
+router.put("/users/:id/updateUser", UsersController.updateUser);
 
 export default router;

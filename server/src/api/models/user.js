@@ -10,7 +10,6 @@ const User = new Schema(
     password: {
       type: String,
       require: true,
-      unique: true,
     },
     avatar: {
       type: String,

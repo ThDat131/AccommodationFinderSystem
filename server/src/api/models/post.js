@@ -14,6 +14,10 @@ const Post = new Schema(
       type: Number,
       require: true,
     },
+    images: {
+      type: [String],
+      require: true,
+    },
     acreage: {
       type: Number,
       require: true,
