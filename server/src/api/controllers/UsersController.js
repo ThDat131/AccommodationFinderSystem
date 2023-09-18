@@ -28,15 +28,13 @@ const UsersController = {
       // Kiểm tra email
       const existingUserWithEmail = await UserModel.findOne({ email });
       if (existingUserWithEmail) {
-        res
-          .status(400)
-          .json({ status: 400, email: "Email is already in use." });
+        res.status(400).json({status: 400, email:"Email is already in use."})
         return next(createError(400, "Email is already in use."));
       }
       // Kiểm tra số điện thoại
       const existingUserWithPhone = await UserModel.findOne({ phone });
       if (existingUserWithPhone) {
-        res.status(400).json({ phone: "Phone is already in use." });
+        res.status(400).json({status: 400, phone:"Phone is already in use."})
         return next(createError(400, "Phone number is already in use."));
       }
 
