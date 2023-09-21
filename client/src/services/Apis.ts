@@ -47,9 +47,23 @@ const getCurrentUser = async () => {
     }
 }
 
+const updateUser = async(userId, data) => {
+    try {
+        const res = await axios.put(`${BASE_URL}/api/users/${userId}/updateUser`, data, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
+        return res
+    } catch (err) {
+        return (err)
+    }
+}
+
 export {
     userSignUp, 
     sendConfirmCode, 
     userSignIn, 
-    getCurrentUser
+    getCurrentUser,
+    updateUser
 }

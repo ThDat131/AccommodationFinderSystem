@@ -2,50 +2,119 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Button, FloatingLabel, Modal, Tab, Tabs } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { MyUserContext } from "../../App";
-import Avatar from "react-avatar-edit"
+import Avatar from "react-avatar-edit";
+import { updateUser } from "../../services/Apis";
+import { toast } from "react-toastify";
+import cookie from "react-cookies";
+
+const urlToObject = async (image) => {
+  const response = await fetch(image);
+  const blob = await response.blob();
+  const file = new File([blob], "image.png", { type: blob.type });
+  return file
+};
 
 const Setting = () => {
-
-  // const avatar = useRef(null)
+  const avatarFile = useRef(null)
   const [key, setKey] = useState("profile");
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
-  const [user, _dispatch] = useContext(MyUserContext);
+  const [user, dispatch] = useContext(MyUserContext);
   const [updateInfoUser, setUpdateInfoUser] = useState(null);
   const [showModalAvatar, setShowModalAvatar] = useState(false);
-  const [avatar, setAvatar] = useState(null)
+  const [avatar, setAvatar] = useState(null);
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phone: "",
+  });
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleClose = () => setShowModalAvatar(false);
+  const handleClose = () => {
+    setShowModalAvatar(false);
+    setAvatar(user.avatar)
+  } 
   const handleShow = () => setShowModalAvatar(true);
   const handleSaveImage = () => {
-
-  }
+    setShowModalAvatar(false);
+  };
 
   useEffect(() => {
     setUpdateInfoUser(user);
-    // setAvatar(user.avatar)
   }, [user]);
 
+  const validation = (msgError: any) => {
+     if (!updateInfoUser.fullName.trim()) {
+       msgError.fullName = "Full name is required!";
+     }
+     if (!updateInfoUser.phone.trim()) {
+       msgError.phone = "Phone is required!";
+     } else if (!updateInfoUser.phone.match(/^(0[0-9]{9}|[0-9]{10})$/)) {
+       msgError.phone = "Phone is invalid!";
+     }
+  }
+
   const handleUpdateProfile = () => {
-    setIsUpdateProfile(true);
-    console.log(updateInfoUser);
+    const msgError: any = {};
+    if (isUpdateProfile === false) {
+      setIsUpdateProfile(true);
+      return;
+    }
+    setIsLoading(true);
+    validation(msgError);
+    if (Object.keys(msgError).length > 0) {
+      setErrors(msgError);
+      return;
+    }
+    const formData = new FormData();
+
+    formData.append("fullName", updateInfoUser.fullName);
+    if (avatarFile.current !== null) {
+      formData.append("avatar", avatarFile.current);
+    } 
+    else formData.append("avatar", user.avatar);
+    formData.append("phone", updateInfoUser.phone);
+
+    updateUser(user._id, formData).then((res) => {
+      if (res.status === 200) {
+        toast.success("Update info successfully.");
+        console.log(res.data)
+        cookie.save("user", res.data, {})
+        dispatch({
+          type: "update_user",
+          payload: res.data,
+        });
+        setIsUpdateProfile(false);
+        setIsLoading(false)
+      }
+    });
   };
 
   const handleChangeInfo = (evt, field) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: "",
+    }));
     setUpdateInfoUser((current) => {
       return { ...current, [field]: evt.target.value };
     });
   };
 
   const onBeforeFileLoad = (image) => {
-    if (image.target.files[0].size > 100000) {
-      alert("File is too big!");
-      image.target.value = "";
+    console.log(image.target.files[0].type);
+    if(!image && !image.target.files[0].type.startsWith('image/')){
+      toast.error("Please input image file!")
+      image.target.value = ""
+      return
     }
-  }
+    if (image.target.files[0].size > 10000000) {
+      toast.error("File is too big!")
+      image.target.value = ""
+    }
+  };
 
   const onCrop = (value) => {
+    urlToObject(value).then(res => avatarFile.current = res)
     setAvatar(value)
-  }
+  };
 
   if (updateInfoUser === null) {
     return;
@@ -132,7 +201,11 @@ const Setting = () => {
                     disabled={!isUpdateProfile}
                     value={updateInfoUser.fullName}
                     onChange={(evt) => handleChangeInfo(evt, "fullName")}
+                    isInvalid={!!errors.fullName}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.fullName}
+                  </Form.Control.Feedback>
                 </FloatingLabel>
               </div>
               <div className="d-flex align-items-center gap-3 mb-3">
@@ -148,7 +221,11 @@ const Setting = () => {
                     disabled={!isUpdateProfile}
                     value={updateInfoUser.phone}
                     onChange={(evt) => handleChangeInfo(evt, "phone")}
+                    isInvalid={!!errors.phone}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.phone}
+                  </Form.Control.Feedback>
                 </FloatingLabel>
               </div>
               <div className="d-flex align-items-center gap-3 mb-3">
@@ -156,6 +233,7 @@ const Setting = () => {
                   <button
                     className="btn btn-primary"
                     onClick={handleUpdateProfile}
+                    disabled={isLoading}
                   >
                     Update
                   </button>
@@ -164,6 +242,7 @@ const Setting = () => {
                     onClick={() => {
                       setIsUpdateProfile(false);
                       setUpdateInfoUser(user);
+                      setAvatar(user.avatar);
                     }}
                   >
                     Cancel

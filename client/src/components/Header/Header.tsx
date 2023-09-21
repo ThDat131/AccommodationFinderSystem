@@ -17,7 +17,6 @@ const Header = () => {
     nav("/signin");
     toast.success("Đã đăng xuất!");
   };
-  console.log(user);
 
   return (
     <>
