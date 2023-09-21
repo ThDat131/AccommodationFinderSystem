@@ -22,7 +22,7 @@ const UsersController = {
 
   signup: async (req, res, next) => {
     try {
-      const savedCode = cache.get("email");
+      const savedCode = cache.get(email);
       const { fullName, email, phone, password, confirmationCode } = req.body;
       
       // Kiểm tra email
@@ -38,8 +38,8 @@ const UsersController = {
         return next(createError(400, "Phone number is already in use."));
       }
 
-      if (savedCode && savedCode === confirmationCode) {
-        cache.del("email");
+      if (savedCode && savedCode.toString() === confirmationCode) {
+        cache.del(email);
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(password, salt);
   
@@ -58,7 +58,8 @@ const UsersController = {
         const { password: demo, ...data } = user._doc;
         return res.status(201).json(data);
       }
-      return res.status(400).json({message: "Mã xác nhận không đúng"})
+      cache.del(email);
+      return res.status(400).json({status: 400,confirmationCode: "Mã xác nhận không đúng", confirmationCode1: confirmationCode, saveCode: savedCode})
     } catch (error) {
       return next(error);
     }
