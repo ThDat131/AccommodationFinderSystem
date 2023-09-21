@@ -1,5 +1,6 @@
 import { createError } from "../../utils/error.js";
 import { transporter } from "../../utils/mail.js";
+import user from "../models/user.js";
 import UserModel from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -59,7 +60,7 @@ const UsersController = {
         return res.status(201).json(data);
       }
       cache.del(email);
-      return res.status(400).json({ message: "Mã xác nhận không đúng" });
+      return res.status(400).json({status: 400,confirmationCode: "Mã xác nhận không đúng", confirmationCode1: confirmationCode, saveCode: savedCode})
     } catch (error) {
       return next(error);
     }
@@ -157,15 +158,18 @@ const UsersController = {
       const path = file?.path;
       const { fullName, avatar, phone } = req.body;
 
-      await UserModel.updateOne(
+      const user = await UserModel.findOneAndUpdate(
         { _id: req.params.id },
         {
           fullName,
-          avatar: path || default_avatar,
+          avatar: path,
           phone,
-        }
+        },
+        {new: true}
       );
-      return res.status(200).json("User has update");
+      if (!user) 
+        return next(createError(404, "User not found"))
+      return res.status(200).json(user);
     } catch (error) {
       return next(error);
     }
