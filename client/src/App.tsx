@@ -10,6 +10,7 @@ import cookie from 'react-cookies'
 import MyUserReducer from './reducers/MyUserReducer';
 import Setting from './pages/Setting/Setting';
 import LayoutWithHeader from './pages/LayoutWithHeaders/LayoutWithHeader';
+import CreatePost from './pages/CreatePost/CreatePost';
 
 export const MyUserContext = createContext(null);
 
@@ -25,6 +26,7 @@ function App() {
             <Route element={<LayoutWithHeader />}>
               <Route path="/" element={<Main />}></Route>
               <Route path="/setting" element={<Setting />} />
+              <Route path="/create-post" element={<CreatePost />} />
             </Route>
             <Route path="/signin" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />

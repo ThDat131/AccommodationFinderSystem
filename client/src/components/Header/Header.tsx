@@ -22,27 +22,38 @@ const Header = () => {
     <>
       <Navbar expand="lg" data-bs-theme="dark" bg="primary">
         <Container>
-          <Navbar.Brand href="/">
-            <img
-              src={Logo}
-              alt=""
-              className="d-inline-block align-top"
-              width={60}
-              height={60}
-            />
-          </Navbar.Brand>
+          <Link to="/">
+            <Navbar.Brand href="/">
+              <img
+                src={Logo}
+                alt=""
+                className="d-inline-block align-top"
+                width={60}
+                height={60}
+              />
+            </Navbar.Brand>
+          </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link>Home</Nav.Link>
+              <Link to="/">
+                <Nav.Link href="/">Home</Nav.Link>
+              </Link>
               <Nav.Link>Rent a room</Nav.Link>
               <Nav.Link>Find a room</Nav.Link>
               <Nav.Link>Find a roommate</Nav.Link>
+              <Link to="/create-post">
+                <Nav.Link href="/create-post">Create Post</Nav.Link>
+              </Link>
             </Nav>
             {user === null ? (
               <Nav className="ms-auto">
-                <Nav.Link href="/signin">Sign In</Nav.Link>
-                <Nav.Link href="/signup">Sign Up</Nav.Link>
+                <Link to="/signin">
+                  <Nav.Link href="/signin">Sign In</Nav.Link>
+                </Link>
+                <Link to="signup">
+                  <Nav.Link href="/signup">Sign Up</Nav.Link>
+                </Link>
               </Nav>
             ) : (
               <Nav className="ms-auto">
