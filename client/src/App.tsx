@@ -1,21 +1,23 @@
-import './App.css'
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import Signin from './pages/Signin/signin';
-import Signup from './pages/Signup/signup';
-import { ToastContainer } from 'react-toastify';
+import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Signin from "./pages/Signin/signin";
+import Signup from "./pages/Signup/signup";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Main from './pages/Main/Main';
-import { createContext, useReducer } from 'react';
-import cookie from 'react-cookies'
-import MyUserReducer from './reducers/MyUserReducer';
-import Setting from './pages/Setting/Setting';
-import LayoutWithHeader from './pages/LayoutWithHeaders/LayoutWithHeader';
+import Main from "./pages/Main/Main";
+import { createContext, useReducer } from "react";
+import cookie from "react-cookies";
+import MyUserReducer from "./reducers/MyUserReducer";
+import Setting from "./pages/Setting/Setting";
+import LayoutWithHeader from "./pages/LayoutWithHeaders/LayoutWithHeader";
 
 export const MyUserContext = createContext(null);
 
 function App() {
-
-  const [user, dispatch] = useReducer(MyUserReducer, cookie.load("user") || null)
+  const [user, dispatch] = useReducer(
+    MyUserReducer,
+    cookie.load("user") || null
+  );
 
   return (
     <>
@@ -36,4 +38,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

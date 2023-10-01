@@ -3,6 +3,8 @@ import "./src/config/database/index.js";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
 import UsersRoute from "./src/api/routes/UsersRoute.js";
+import PostsRoute from "./src/api/routes/PostsRoute.js";
+import CategoriesRoute from "./src/api/routes/CategoriesRoute.js";
 import methodOverride from 'method-override';
 
 const PORT = process.env.PORT || 8085;
@@ -23,6 +25,8 @@ app.use((err, req, res, next) => {
   });
 
 app.use("/api", UsersRoute);
+app.use("/api", PostsRoute);
+app.use("/api", CategoriesRoute);
 
 app.listen(PORT, () => {
     console.log(`App is running at http://localhost:${PORT}`);

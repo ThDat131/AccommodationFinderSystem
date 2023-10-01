@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import mongooseDelete from "mongoose-delete";
 const Post = new Schema(
   {
     name: {
@@ -51,4 +51,6 @@ const Post = new Schema(
     timestamps: true,
   }
 );
+
+Post.plugin(mongooseDelete, { overrideMethods: 'all' });
 export default model("Post", Post);
