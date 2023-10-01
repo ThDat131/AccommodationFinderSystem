@@ -8,10 +8,7 @@ const userSignUp = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/signup`, data)
           console.log(res);
-
         return res
-        
-
     } catch(err) {
         return err.response.data
     }
@@ -20,9 +17,7 @@ const userSignUp = async (data) => {
 const sendConfirmCode = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/confirmCode`, data)
-        
         return res
-
     } catch (err) {
         return err
     }
@@ -91,6 +86,25 @@ const ForwardGeocoding = async(data: string) => {
     try {
         const res = await axios.get(`https://rsapi.goong.io/geocode?address=${data}&api_key=${API_GOONG_KEY}`)
         return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const getAllUser = async() => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/users`)
+        return res
+    } catch(err) {
+        return err
+    }
+}
+
+export const getUserById = async(id: string) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/users/${id}`)
+        return res
+
     } catch (err) {
         return err
     }

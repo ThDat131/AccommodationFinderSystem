@@ -77,13 +77,30 @@ const Header = () => {
                   }
                   style={{ top: "65px" }}
                 >
-                  <ListGroup.Item
-                    action
-                    variant="light"
-                    onClick={() => setOpenOption(!openOption)}
-                  >
-                    Personal Info
-                  </ListGroup.Item>
+                  <Link to={`personal/${user._id}`}>
+                    <ListGroup.Item
+                      action
+                      variant="light"
+                      onClick={() => setOpenOption(!openOption)}
+                    >
+                      Personal Info
+                    </ListGroup.Item>
+                  </Link>
+
+                  {user && user.role == "ROLE_ADMIN" ? (
+                    <Link to={"/admin"}>
+                      <ListGroup.Item
+                        action
+                        variant="light"
+                        onClick={() => setOpenOption(!openOption)}
+                      >
+                        Admin Page
+                      </ListGroup.Item>
+                    </Link>
+                  ) : (
+                    ""
+                  )}
+
                   <Link to="/setting">
                     <ListGroup.Item
                       action

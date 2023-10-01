@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 const Map = ({ viewportData }) => {
   const MapAPIKey = import.meta.env.VITE_GOONG_MAPTILES_KEY;
   const [viewport, setViewPort] = useState({
-    width: 400,
-    height: 400,
     latitude: 10,
     longitude: 106,
     zoom: 0,

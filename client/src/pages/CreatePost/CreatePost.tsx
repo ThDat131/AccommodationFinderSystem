@@ -18,7 +18,7 @@ const CreatePost = () => {
     height: 400,
     latitude: 10,
     longitude: 106,
-    zoom: 0
+    zoom: 0,
   });
   const filesRef = useRef(null);
   const [provinces, setProvinces] = useState([]);
@@ -42,7 +42,14 @@ const CreatePost = () => {
     ForwardGeocoding(address).then((res) => {
       setViewPortData({
         ...viewportData,
-        zoom: type === "province" ? 8 : (type === "district" ? 12 : (type=== "ward") ? 14 : 16),
+        zoom:
+          type === "province"
+            ? 8
+            : type === "district"
+            ? 12
+            : type === "ward"
+            ? 14
+            : 16,
         latitude: res.data.results[0].geometry.location.lat,
         longitude: res.data.results[0].geometry.location.lng,
       });
@@ -97,7 +104,10 @@ const CreatePost = () => {
     setSelectedWardName("");
     setStreet("");
     setExactAddress(event.target[index].text + ", " + selectedProvinceName);
-    handleMoveMap(event.target[index].text + ", " + selectedProvinceName,  "district");
+    handleMoveMap(
+      event.target[index].text + ", " + selectedProvinceName,
+      "district"
+    );
   };
 
   const handleChangeWard = (event: any) => {
@@ -117,8 +127,9 @@ const CreatePost = () => {
         ", " +
         selectedDistrictName +
         ", " +
-        selectedProvinceName
-    , "ward");
+        selectedProvinceName,
+      "ward"
+    );
   };
 
   useEffect(() => {
@@ -142,7 +153,12 @@ const CreatePost = () => {
       });
   }, [selectedDistrict]);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading)
+    return (
+      <div className="d-flex align-items-center justify-content-center vh-100">
+        <Spinner />
+      </div>
+    );
 
   return (
     <>
@@ -222,7 +238,7 @@ const CreatePost = () => {
                           selectedProvinceName
                       );
                     }}
-                    onBlur={e => {
+                    onBlur={(e) => {
                       handleMoveMap(
                         e.target.value +
                           ", " +
@@ -231,7 +247,7 @@ const CreatePost = () => {
                           selectedDistrictName +
                           ", " +
                           selectedProvinceName,
-                          "street"
+                        "street"
                       );
                     }}
                   />
