@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import mongooseDelete from "mongoose-delete";
 
 const Landlord = new Schema(
   {
@@ -8,18 +9,18 @@ const Landlord = new Schema(
     },
     address: {
       type: String,
-      require: true
+      require: true,
     },
     active: {
       type: Boolean,
     },
     images: {
-      type: [String]
-    }
+      type: [String],
+    },
   },
   {
     timestamps: true,
   }
 );
-
+Landlord.plugin(mongooseDelete, { overrideMethods: "all" });
 export default model("Landlord", Landlord);

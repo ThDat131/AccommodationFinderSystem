@@ -42,7 +42,7 @@ const PostsController = {
         userId,
       });
 
-      return res.status(200).json(post);
+      return res.status(201).json(post);
     } catch (error) {
       return next(error);
     }
@@ -52,7 +52,7 @@ const PostsController = {
   getAllPost: async (req, res, next) => {
     try {
       const query = {};
-      const { price, acreage, province, district, ward } = req.query;
+      const { price, acreage, categoryId, province, district, ward } = req.query;
 
       if (price) {
         query.price = { $lte: parseFloat(price) };
@@ -60,6 +60,10 @@ const PostsController = {
 
       if (acreage) {
         query.acreage = { $lte: parseFloat(acreage) };
+      }
+
+      if (categoryId) {
+        query.categoryId = {$eq: categoryId};
       }
 
       if (province) {
@@ -72,7 +76,7 @@ const PostsController = {
         }
       }
 
-      const posts = await PostModel.find(query);
+      const posts = await PostModel.find(query).populate('userId');
 
       if (!posts) {
         return res.status(404).send("Posts not found");
