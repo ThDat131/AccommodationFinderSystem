@@ -8,7 +8,7 @@ const CategoriesController = {
 
       const category = await CategoryModel.create({ name, active });
 
-      return res.status(200).json(category);
+      return res.status(201).json(category);
     } catch (error) {
       return next(error);
     }
