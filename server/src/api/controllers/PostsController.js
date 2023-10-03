@@ -36,7 +36,7 @@ const PostsController = {
         userId,
       });
 
-      return res.status(200).json(post);
+      return res.status(201).json(post);
     } catch (error) {
       return next(error);
     }

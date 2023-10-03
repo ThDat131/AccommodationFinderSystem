@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   ForwardGeocoding,
   getDistrictsByProvinceCode,
@@ -7,11 +7,17 @@ import {
 } from "../../services/Apis";
 import { Spinner } from "react-bootstrap";
 import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./CreatePost.scss";
 import ImagePreview from "../../components/ImagePreview/ImagePreview";
 import Map from "../../components/Map/Map";
 import { FlyToInterpolator } from "@goongmaps/goong-map-react";
+import { createPost, getCategories } from "../../services/AuthApis";
+import { Category } from "../../interface/Category";
+import { Post } from "../../interface/Post";
+import draftToHtml from "draftjs-to-html";
+import { MyUserContext } from "../../App";
 
 const CreatePost = () => {
   const [viewportData, setViewPortData] = useState({
@@ -31,15 +37,28 @@ const CreatePost = () => {
 
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [_selectedWard, setSelectedWard] = useState(null);
+  const [selectedWard, setSelectedWard] = useState(null);
 
   const [selectedProvinceName, setSelectedProvinceName] = useState<string>("");
   const [selectedDistrictName, setSelectedDistrictName] = useState<string>("");
   const [selectedWardName, setSelectedWardName] = useState<string>("");
   const [exactAddress, setExactAddress] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [content, setContent] = useState<any>(EditorState.createEmpty());
+  const [price, setPrice] = useState<number>(0);
+  const [acreage, setAcreage] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState(true);
   const [street, setStreet] = useState<string>("");
+  const [categories, setCategories] = useState<Array<Category>>([]);
+
+  const [location, setLocation] = useState<any>({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  const [currentUser] = useContext(MyUserContext);
 
   const handleMoveMap = (address: string, type: string) => {
     ForwardGeocoding(address).then((res) => {
@@ -53,6 +72,10 @@ const CreatePost = () => {
             : type === "ward"
             ? 14
             : 16,
+        latitude: res.data.results[0].geometry.location.lat,
+        longitude: res.data.results[0].geometry.location.lng,
+      });
+      setLocation({
         latitude: res.data.results[0].geometry.location.lat,
         longitude: res.data.results[0].geometry.location.lng,
       });
@@ -135,6 +158,39 @@ const CreatePost = () => {
     );
   };
 
+  const handleCreatePost = () => {
+    const data = {
+      name: name,
+      content: draftToHtml(convertToRaw(content.getCurrentContent())),
+      price: price,
+      acreage: acreage,
+      longitude: location.longitude,
+      latitude: location.latitude,
+      address: exactAddress,
+      provinceId: selectedProvince,
+      districtId: selectedDistrict,
+      wardId: selectedWard,
+      userId: currentUser._id,
+      categoryId: category,
+    };
+    const formData = new FormData();
+    for(const field in data) {
+      formData.append(field, data[field])
+    }
+    for (let i = 0; i < filesRef.current.length; i++) {
+      formData.append("images", filesRef.current[i]);
+    }
+    // for (const pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
+
+    createPost(formData).then(res => {
+      if (res.status === 201) {
+        console.log(res.data)
+      }
+    })
+  };
+
   useEffect(() => {
     getProvinces(1).then((res) => {
       setProvinces(res.data);
@@ -155,6 +211,15 @@ const CreatePost = () => {
         setWards(res.data.wards);
       });
   }, [selectedDistrict]);
+
+  useEffect(() => {
+    getCategories().then((res) => {
+      if (res.status === 200) {
+        setCategories(res.data);
+        setIsLoading(false);
+      }
+    });
+  }, []);
 
   if (isLoading)
     return (
@@ -270,19 +335,35 @@ const CreatePost = () => {
               <h3 className="text-primary">Description</h3>
               <div className="d-flex flex-column col-4">
                 <h4>Category</h4>
-                <select className="form-select">
-                  <option defaultValue="">1</option>
-                  <option defaultValue="">1</option>
-                  <option defaultValue="">1</option>
+                <select
+                  className="form-select"
+                  value={category}
+                  onChange={(evt: any) => setCategory(evt.target.value)}
+                >
+                  <option value={null}>Select one category</option>
+                  {categories.map((category: Category) => {
+                    return (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="d-flex flex-column col-4">
                 <h4>Name</h4>
-                <input type="text" className="form-control" />
+                <input
+                  type="text"
+                  className="form-control"
+                  value={name}
+                  onChange={(evt: any) => setName(evt.target.value)}
+                />
               </div>
               <div className="d-flex flex-column col-12">
                 <h4>Content</h4>
                 <Editor
+                  editorState={content}
+                  onEditorStateChange={(editorState) => setContent(editorState)}
                   editorStyle={{
                     height: "200px",
                     border: "0.2px solid #f3f3f3",
@@ -298,6 +379,8 @@ const CreatePost = () => {
                     className="form-control"
                     placeholder="Selected price"
                     aria-describedby="price"
+                    value={price}
+                    onChange={(evt: any) => setPrice(evt.target.value)}
                   />
                   <span className="input-group-text" id="price">
                     VND / Month
@@ -312,6 +395,8 @@ const CreatePost = () => {
                     className="form-control"
                     placeholder="Selected acreage"
                     aria-describedby="acreage"
+                    value={acreage}
+                    onChange={(evt: any) => setAcreage(evt.target.value)}
                   />
                   <span className="input-group-text" id="acreage">
                     m<sup>2</sup>
@@ -368,6 +453,9 @@ const CreatePost = () => {
             <Map viewportData={viewportData} />
           </div>
         </div>
+        <button className="btn-primary btn my-3" onClick={handleCreatePost}>
+          Create Post
+        </button>
       </div>
     </>
   );

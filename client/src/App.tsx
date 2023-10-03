@@ -19,6 +19,7 @@ import AdminUpdateUser from "./pages/AdminUpdateUser/AdminUpdateUser";
 import Personal from "./pages/Personal/Personal";
 import MessageApp from "./pages/MessageApp/MessageApp";
 import MyChatUserReducer from "./reducers/MyChatUserReducer";
+import AdminCategories from "./components/AdminCategories/AdminCategories";
 
 export const MyUserContext = createContext(null);
 
@@ -56,6 +57,7 @@ function App() {
               <Route element={<LayoutAdmin />}>
                 <Route path="/admin" element={<MainAdmin />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="admin/categories" element={<AdminCategories />} />
                 <Route
                   path="/admin/update-user/:id"
                   element={<AdminUpdateUser />}

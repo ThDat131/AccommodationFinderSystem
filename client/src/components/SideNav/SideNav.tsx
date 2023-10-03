@@ -36,6 +36,16 @@ const SideNav = () => {
               User Management
             </ListGroup.Item>
           </Link>
+          <Link to="/admin/categories">
+            <ListGroup.Item
+              action
+              as="li"
+              active={selectedNav === 2}
+              onClick={() => setSelectedNav(2)}
+            >
+              Categories Management
+            </ListGroup.Item>
+          </Link>
 
           <ListGroup.Item
             action

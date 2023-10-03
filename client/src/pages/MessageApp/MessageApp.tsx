@@ -78,9 +78,9 @@ const MessageApp = () => {
       if (!userChatsSnap.exists()) {
         await setDoc(doc(db, "userChats", currentUser._id), {
           [channelId + ".userInfo"]: {
-            id: currentUser._id,
-            fullName: currentUser.fullName,
-            avatar: currentUser.avatar,
+            id: user._id,
+            fullName: user.fullName,
+            avatar: user.avatar,
           },
           [channelId + ".date"]: serverTimestamp(),
         });

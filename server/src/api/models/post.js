@@ -22,7 +22,7 @@ const Post = new Schema(
       type: Number,
       require: true,
     },
-    longitute: {
+    longitude: {
       type: Number,
       require: true,
     },

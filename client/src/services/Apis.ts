@@ -7,9 +7,9 @@ const API_GOONG_KEY = import.meta.env.VITE_GOONG_API_KEY
 const userSignUp = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/signup`, data)
-          console.log(res);
+        console.log(res);
         return res
-    } catch(err) {
+    } catch (err) {
         return err.response.data
     }
 }
@@ -30,20 +30,22 @@ const userSignIn = async (data) => {
     } catch (err) {
         return err
     }
-}  
+}
 
 const getCurrentUser = async () => {
     try {
-        const res = await axios.get(`${BASE_URL}/api/getCurrentUser`, {headers: {
-            Authorization: cookie.load("token")
-        }})
+        const res = await axios.get(`${BASE_URL}/api/getCurrentUser`, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
         return res
     } catch (err) {
-        return(err)
+        return (err)
     }
 }
 
-const updateUser = async(userId, data) => {
+const updateUser = async (userId, data) => {
     try {
         const res = await axios.put(`${BASE_URL}/api/users/${userId}/updateUser`, data, {
             headers: {
@@ -60,7 +62,7 @@ const getProvinces = async (depth: number) => {
     try {
         const res = await axios.get(`https://provinces.open-api.vn/api/p/?depth=${depth}`)
         return res
-    } catch(err) {
+    } catch (err) {
         return err
     }
 }
@@ -82,7 +84,7 @@ const getWardsByDistrictCode = async (districtCode: string, depth: number) => {
     }
 }
 
-const ForwardGeocoding = async(data: string) => {
+const ForwardGeocoding = async (data: string) => {
     try {
         const res = await axios.get(`https://rsapi.goong.io/geocode?address=${data}&api_key=${API_GOONG_KEY}`)
         return res
@@ -91,7 +93,7 @@ const ForwardGeocoding = async(data: string) => {
     }
 }
 
-export const getAllUser = async(param?: string, value?:string) => {
+export const getAllUser = async (param?: string, value?: string) => {
     try {
         let res: any;
         if (param) {
@@ -101,12 +103,12 @@ export const getAllUser = async(param?: string, value?:string) => {
             res = await axios.get(`${BASE_URL}/api/users`)
         }
         return res
-    } catch(err) {
+    } catch (err) {
         return err
     }
 }
 
-export const getUserById = async(id: string) => {
+export const getUserById = async (id: string) => {
     try {
         const res = await axios.get(`${BASE_URL}/api/users/${id}`)
         return res
@@ -117,9 +119,9 @@ export const getUserById = async(id: string) => {
 }
 
 export {
-    userSignUp, 
-    sendConfirmCode, 
-    userSignIn, 
+    userSignUp,
+    sendConfirmCode,
+    userSignIn,
     getCurrentUser,
     updateUser,
     getProvinces,

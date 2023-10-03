@@ -1,4 +1,4 @@
-import ReactMapGL from "@goongmaps/goong-map-react";
+import ReactMapGL, { Marker } from "@goongmaps/goong-map-react";
 import "@goongmaps/goong-js/dist/goong-js.css";
 import { useEffect, useState } from "react";
 const Map = ({ viewportData }) => {
@@ -9,8 +9,8 @@ const Map = ({ viewportData }) => {
     zoom: 0,
   });
   useEffect(() => {
-    setViewPort(viewportData)
-  }, [viewportData])
+    setViewPort(viewportData);
+  }, [viewportData]);
   return (
     <ReactMapGL
       {...viewport}
@@ -19,6 +19,14 @@ const Map = ({ viewportData }) => {
       }}
       goongApiAccessToken={MapAPIKey}
     >
+      <Marker
+        latitude={viewportData.latitude}
+        longitude={viewportData.longitude}
+      >
+        <div>
+          <i className="fa-solid fa-location-dot" style={{ color: "#000" }}></i>
+        </div>
+      </Marker>
     </ReactMapGL>
   );
 };
