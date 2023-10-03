@@ -91,9 +91,15 @@ const ForwardGeocoding = async(data: string) => {
     }
 }
 
-export const getAllUser = async() => {
+export const getAllUser = async(param?: string, value?:string) => {
     try {
-        const res = await axios.get(`${BASE_URL}/api/users`)
+        let res: any;
+        if (param) {
+            res = await axios.get(`${BASE_URL}/api/users/?${param}=${value}`)
+        }
+        else {
+            res = await axios.get(`${BASE_URL}/api/users`)
+        }
         return res
     } catch(err) {
         return err

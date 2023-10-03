@@ -11,14 +11,17 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./CreatePost.scss";
 import ImagePreview from "../../components/ImagePreview/ImagePreview";
 import Map from "../../components/Map/Map";
+import { FlyToInterpolator } from "@goongmaps/goong-map-react";
 
 const CreatePost = () => {
   const [viewportData, setViewPortData] = useState({
     width: 400,
     height: 400,
-    latitude: 10,
-    longitude: 106,
-    zoom: 0,
+    latitude: 16.5552212,
+    longitude: 105.2351686,
+    zoom: 4,
+    transitionDuration: 1000,
+    transitionInterpolator: new FlyToInterpolator(),
   });
   const filesRef = useRef(null);
   const [provinces, setProvinces] = useState([]);

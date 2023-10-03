@@ -101,6 +101,16 @@ const Header = () => {
                     ""
                   )}
 
+                  <Link to={"/message-app"}>
+                    <ListGroup.Item
+                      action
+                      variant="light"
+                      onClick={() => setOpenOption(!openOption)}
+                    >
+                      Message
+                    </ListGroup.Item>
+                  </Link>
+
                   <Link to="/setting">
                     <ListGroup.Item
                       action

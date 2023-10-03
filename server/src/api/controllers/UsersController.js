@@ -28,13 +28,17 @@ const UsersController = {
       // Kiểm tra email
       const existingUserWithEmail = await UserModel.findOne({ email });
       if (existingUserWithEmail) {
-        res.status(400).json({status: 400, email:"Email is already in use."})
+        res
+          .status(400)
+          .json({ status: 400, email: "Email is already in use." });
         return next(createError(400, "Email is already in use."));
       }
       // Kiểm tra số điện thoại
       const existingUserWithPhone = await UserModel.findOne({ phone });
       if (existingUserWithPhone) {
-        res.status(400).json({status: 400, phone:"Phone is already in use."})
+        res
+          .status(400)
+          .json({ status: 400, phone: "Phone is already in use." });
         return next(createError(400, "Phone number is already in use."));
       }
 
@@ -60,7 +64,12 @@ const UsersController = {
         return res.status(201).json(data);
       }
       cache.del(email);
-      return res.status(400).json({status: 400,confirmationCode: "Mã xác nhận không đúng", confirmationCode1: confirmationCode, saveCode: savedCode})
+      return res.status(400).json({
+        status: 400,
+        confirmationCode: "Mã xác nhận không đúng",
+        confirmationCode1: confirmationCode,
+        saveCode: savedCode,
+      });
     } catch (error) {
       return next(error);
     }
@@ -140,7 +149,9 @@ const UsersController = {
 
   getAllUser: async (req, res, next) => {
     try {
-      const users = await UserModel.find();
+      const users = await UserModel.find({
+        phone: { $regex: req.query?.phone || "", $options: "i" },
+      });
       if (!users) {
         return next(createError(404, "Users not found!"));
       }
@@ -165,10 +176,9 @@ const UsersController = {
           avatar: path,
           phone,
         },
-        {new: true}
+        { new: true }
       );
-      if (!user) 
-        return next(createError(404, "User not found"))
+      if (!user) return next(createError(404, "User not found"));
       return res.status(200).json(user);
     } catch (error) {
       return next(error);
@@ -178,22 +188,22 @@ const UsersController = {
   // [DELETA] /users/:id
   deleteUser: async (req, res, next) => {
     try {
-      await UserModel.delete({ _id: req.params.id })
+      await UserModel.delete({ _id: req.params.id });
 
-      return res.status(200).send("User has delete")
+      return res.status(200).send("User has delete");
     } catch (error) {
       return next(error);
     }
   },
 
-  // [GET] users/trash/list 
+  // [GET] users/trash/list
   trashUsers: async (req, res, next) => {
     try {
       const users = await UserModel.findDeleted();
       if (!users) {
         return next(createError(404, "Users not found!"));
       }
-      return res.status(200).json(users)
+      return res.status(200).json(users);
     } catch (error) {
       return next(error);
     }
@@ -202,23 +212,22 @@ const UsersController = {
   // [PATCH] /users/:id/restore
   restoreUser: async (req, res, next) => {
     try {
-      await UserModel.restore({ _id: req.params.id })
+      await UserModel.restore({ _id: req.params.id });
 
-      return res.status(200).send("User has restore")
+      return res.status(200).send("User has restore");
     } catch (error) {
-      return next(error)
+      return next(error);
     }
   },
-
 
   // [DELETE] /users/:id/force
   destroyUser: async (req, res, next) => {
     try {
-      await UserModel.deleteOne({ _id: req.params.id })
+      await UserModel.deleteOne({ _id: req.params.id });
 
-      return res.status(204).send("User has delete")
+      return res.status(204).send("User has delete");
     } catch (error) {
-      return next(error)
+      return next(error);
     }
   },
 };
