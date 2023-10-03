@@ -22,12 +22,24 @@ const Post = new Schema(
       type: Number,
       require: true,
     },
-    longitute: {
+    longitude: {
       type: Number,
       require: true,
     },
     latitude: {
       type: Number,
+      require: true,
+    },
+    province: {
+      type: String,
+      require: true,
+    },
+    district: {
+      type: String,
+      require: true,
+    },
+    ward: {
+      type: String,
       require: true,
     },
     address: {
@@ -52,5 +64,5 @@ const Post = new Schema(
   }
 );
 
-Post.plugin(mongooseDelete, { overrideMethods: 'all' });
+Post.plugin(mongooseDelete, { overrideMethods: "all" });
 export default model("Post", Post);
