@@ -13,6 +13,10 @@ const Comment = new Schema(
     active: {
       type: Boolean,
     },
+    postId: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
