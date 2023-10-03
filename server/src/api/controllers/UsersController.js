@@ -22,7 +22,7 @@ const UsersController = {
 
   signup: async (req, res, next) => {
     try {
-      const { fullName, email, phone, password, confirmationCode } = req.body;
+      const { fullName, email, phone, password, role, confirmationCode } = req.body;
       const savedCode = cache.get(email);
 
       // Kiểm tra email
@@ -54,7 +54,7 @@ const UsersController = {
           email,
           phone,
           password: hash,
-          role: "ROLE_USER",
+          role: role || "ROLE_USER",
           active: 0,
           avatar: default_avatar,
           landlordId: null,
@@ -185,7 +185,7 @@ const UsersController = {
     }
   },
 
-  // [DELETA] /users/:id
+  // [DELETE] /users/:id
   deleteUser: async (req, res, next) => {
     try {
       await UserModel.delete({ _id: req.params.id });
