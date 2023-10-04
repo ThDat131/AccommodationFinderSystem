@@ -30,6 +30,18 @@ const Post = new Schema(
       type: Number,
       require: true,
     },
+    province: {
+      type: String,
+      require: true,
+    },
+    district: {
+      type: String,
+      require: true,
+    },
+    ward: {
+      type: String,
+      require: true,
+    },
     address: {
       type: String,
       require: true,
@@ -52,5 +64,5 @@ const Post = new Schema(
   }
 );
 
-Post.plugin(mongooseDelete, { overrideMethods: 'all' });
+Post.plugin(mongooseDelete, { overrideMethods: "all" });
 export default model("Post", Post);

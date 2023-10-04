@@ -118,6 +118,24 @@ export const getUserById = async (id: string) => {
     }
 }
 
+export const getCategoryById = async(id: string) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/categories/${id}`)
+        return res
+    } catch (err) {
+        return err
+    }
+} 
+
+export const getPosts = async(data: any) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/posts`, data)
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
 export {
     userSignUp,
     sendConfirmCode,

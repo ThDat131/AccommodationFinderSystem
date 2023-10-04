@@ -18,6 +18,9 @@ const PostsController = {
         acreage,
         longitude,
         latitude,
+        district,
+        province,
+        ward,
         address,
         userId,
         categoryId,
@@ -30,6 +33,9 @@ const PostsController = {
         acreage,
         longitude,
         latitude,
+        district,
+        province,
+        ward,
         address,
         categoryId,
         active: 0,
@@ -42,10 +48,35 @@ const PostsController = {
     }
   },
 
-  // [GET] /api/posts/
+  // [GET] /api/posts/ { price, acreage, latitude, longitude, categoryId}
   getAllPost: async (req, res, next) => {
     try {
-      const posts = await PostModel.find();
+      const query = {};
+      const {categoryId, price, acreage, province, district, ward } = req.query;
+
+      if (price) {
+        query.price = { $lte: parseFloat(price) };
+      }
+
+      if (acreage) {
+        query.acreage = { $lte: parseFloat(acreage) };
+      }
+
+      if (province) {
+        query.province = { $eq: province };
+        if (district) {
+          query.district = { $eq: district };
+          if (ward) {
+            query.ward = { $eq: ward };
+          }
+        }
+      }
+      if (categoryId) {
+        query.categoryId = {$eq: categoryId};
+      }
+
+      const posts = await PostModel.find(query);
+
       if (!posts) {
         return res.status(404).send("Posts not found");
       }
@@ -71,7 +102,10 @@ const PostsController = {
   // [GET] /api/posts/manage/:id
   getAllPostByUserId: async (req, res, next) => {
     try {
-      const posts = await PostModel.find({ userId: req.params.id, categoryId: req.query?.categoryId });
+      const posts = await PostModel.find({
+        userId: req.params.id,
+        categoryId: req.query?.categoryId,
+      });
       if (posts.length === 0) {
         return res.status(404).send("Posts not found");
       }
@@ -85,7 +119,7 @@ const PostsController = {
   delete: async (req, res, next) => {
     try {
       const post = await PostModel.delete({ _id: req.params.id });
-      
+
       if (post.modifiedCount === 0) {
         return res.status(400).send("Something wrong!!!");
       }
@@ -94,7 +128,7 @@ const PostsController = {
     } catch (error) {
       return next(error);
     }
-  }
+  },
 };
 
 export default PostsController;

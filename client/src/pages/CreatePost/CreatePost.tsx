@@ -15,7 +15,6 @@ import Map from "../../components/Map/Map";
 import { FlyToInterpolator } from "@goongmaps/goong-map-react";
 import { createPost, getCategories } from "../../services/AuthApis";
 import { Category } from "../../interface/Category";
-import { Post } from "../../interface/Post";
 import draftToHtml from "draftjs-to-html";
 import { MyUserContext } from "../../App";
 
@@ -167,9 +166,9 @@ const CreatePost = () => {
       longitude: location.longitude,
       latitude: location.latitude,
       address: exactAddress,
-      provinceId: selectedProvince,
-      districtId: selectedDistrict,
-      wardId: selectedWard,
+      province: selectedProvince,
+      district: selectedDistrict,
+      ward: selectedWard,
       userId: currentUser._id,
       categoryId: category,
     };

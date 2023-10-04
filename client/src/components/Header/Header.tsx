@@ -1,14 +1,17 @@
-import { Container, ListGroup, Nav, Navbar } from "react-bootstrap";
+import { Container, ListGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/img/D2 -logos_transparent.png";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyUserContext } from "../../App";
 import { toast } from "react-toastify";
+import { getCategories } from "../../services/AuthApis";
+import { Category } from "../../interface/Category";
 
 const Header = () => {
   const nav = useNavigate();
   const [openOption, setOpenOption] = useState(false);
   const [user, dispatch] = useContext(MyUserContext);
+  const [categories, setCategories] = useState<Array<Category>>([]);
 
   const logout = () => {
     dispatch({
@@ -17,6 +20,14 @@ const Header = () => {
     nav("/signin");
     toast.success("Đã đăng xuất!");
   };
+
+  useEffect(() => {
+    getCategories().then((res) => {
+      if (res.status === 200) {
+        setCategories(res.data);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -45,6 +56,16 @@ const Header = () => {
               <Link to="/create-post">
                 <Nav.Link href="/create-post">Create Post</Nav.Link>
               </Link>
+              <NavDropdown title="Danh mục" id="basic-nav-dropdown">
+                {categories.map((c) => {
+                  const h = `/category/${c._id}`;
+                  return (
+                    <Link to={h} className="dropdown-item" key={c._id}>
+                      <NavDropdown.Item href={h}>{c.name}</NavDropdown.Item>
+                    </Link>
+                  );
+                })}
+              </NavDropdown>
             </Nav>
             {user === null ? (
               <Nav className="ms-auto">

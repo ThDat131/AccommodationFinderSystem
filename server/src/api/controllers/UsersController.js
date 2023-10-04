@@ -22,7 +22,8 @@ const UsersController = {
 
   signup: async (req, res, next) => {
     try {
-      const { fullName, email, phone, password, role, confirmationCode } = req.body;
+      const { fullName, email, phone, password, role, confirmationCode } =
+        req.body;
       const savedCode = cache.get(email);
 
       // Kiểm tra email
@@ -64,12 +65,14 @@ const UsersController = {
         return res.status(201).json(data);
       }
       cache.del(email);
-      return res.status(400).json({
-        status: 400,
-        confirmationCode: "Mã xác nhận không đúng",
-        confirmationCode1: confirmationCode,
-        saveCode: savedCode,
-      });
+      return res
+        .status(400)
+        .json({
+          status: 400,
+          confirmationCode: "Mã xác nhận không đúng",
+          confirmationCode1: confirmationCode,
+          saveCode: savedCode,
+        });
     } catch (error) {
       return next(error);
     }
@@ -150,7 +153,7 @@ const UsersController = {
   getAllUser: async (req, res, next) => {
     try {
       const users = await UserModel.find({
-        phone: { $regex: req.query?.phone || "", $options: "i" },
+        phone: { $regex: req.query?.phone || '', $options: "i" },
       });
       if (!users) {
         return next(createError(404, "Users not found!"));
@@ -167,13 +170,14 @@ const UsersController = {
       const default_avatar = "https://phongtro123.com/images/default-user.png";
       const file = req.file;
       const path = file?.path;
-      const { fullName, avatar, phone } = req.body;
+      const { fullName, avatar, phone, role } = req.body;
 
       const user = await UserModel.findOneAndUpdate(
         { _id: req.params.id },
         {
           fullName,
           avatar: path,
+          role,
           phone,
         },
         { new: true }

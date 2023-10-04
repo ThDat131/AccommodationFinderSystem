@@ -26,6 +26,18 @@ const CategoriesController = {
       return next(error);
     }
   },
+  // [GET] /api/categories/:id
+  getCategoryById: async (req, res, next) => {
+    try {
+      const category = await CategoryModel.findById({ _id: req.params.id });
+      if (!category) {
+        return res.status(404).send("Category not found!!!");
+      }
+      return res.status(200).json(category);
+    } catch (error) {
+      return next(error);
+    }
+  },
 
   //[DELETE] /api/categories/:id
   delete: async (req, res, next) => {
