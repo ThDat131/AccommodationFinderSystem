@@ -9,7 +9,7 @@ router.post("/confirmCode", UsersController.confirmCode); // Xác nhận mã
 router.post("/signup", UsersController.signup); // Đăng ký
 router.post("/signin", UsersController.signin); // Đăng nhập
 router.get("/getCurrentUser", UsersController.getCurrentUser); // Lấy người dùng qua token
-router.get("/users/", verifyAdmin, UsersController.getAllUser); // Lấy tất cả người dùng
+router.get("/users/", UsersController.getAllUser); // Lấy tất cả người dùng
 router.get("/users/:id", UsersController.getUser); // Lấy thông tin chi tiết người dùng
 router.put(
   "/users/:id/updateUser",

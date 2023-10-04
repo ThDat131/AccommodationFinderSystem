@@ -48,7 +48,7 @@ const PostsController = {
     }
   },
 
-  // [GET] /api/posts/ { price, acreage, latitude, longitude }
+  // [GET] /api/posts/ { price, acreage, latitude, longitude, categoryId}
   getAllPost: async (req, res, next) => {
     try {
       const query = {};
@@ -75,6 +75,9 @@ const PostsController = {
           }
         }
       }
+      if (categoryId) {
+        query.categoryId = {$eq: categoryId};
+      }
 
       const posts = await PostModel.find(query).populate('userId');
 
@@ -90,7 +93,7 @@ const PostsController = {
   // [GET] /api/posts/:id
   getPost: async (req, res, next) => {
     try {
-      const post = await PostModel.findById({ _id: req.params.id });
+      const post = await PostModel.findById({ _id: req.params.id }).populate("userId");
       if (!post) {
         return res.status(404).send("Post not found!!!");
       }

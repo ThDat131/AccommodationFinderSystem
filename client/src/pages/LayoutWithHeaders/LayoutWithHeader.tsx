@@ -4,10 +4,8 @@ import Header from "../../components/Header/Header";
 const LayoutWithHeader = () => {
   return (
     <>
-      <div className="vh-100">
-        <Header />
-        <Outlet />
-      </div>
+      <Header />
+      <Outlet />
     </>
   );
 };

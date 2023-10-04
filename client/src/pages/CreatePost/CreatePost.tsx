@@ -15,9 +15,10 @@ import Map from "../../components/Map/Map";
 import { FlyToInterpolator } from "@goongmaps/goong-map-react";
 import { createPost, getCategories } from "../../services/AuthApis";
 import { Category } from "../../interface/Category";
-import { Post } from "../../interface/Post";
 import draftToHtml from "draftjs-to-html";
 import { MyUserContext } from "../../App";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const [viewportData, setViewPortData] = useState({
@@ -35,9 +36,9 @@ const CreatePost = () => {
   const [wards, setWards] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
 
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [selectedWard, setSelectedWard] = useState(null);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
 
   const [selectedProvinceName, setSelectedProvinceName] = useState<string>("");
   const [selectedDistrictName, setSelectedDistrictName] = useState<string>("");
@@ -48,15 +49,25 @@ const CreatePost = () => {
   const [content, setContent] = useState<any>(EditorState.createEmpty());
   const [price, setPrice] = useState<number>(0);
   const [acreage, setAcreage] = useState<number>(0);
-
   const [isLoading, setIsLoading] = useState(true);
   const [street, setStreet] = useState<string>("");
   const [categories, setCategories] = useState<Array<Category>>([]);
-
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [errors, setErrors] = useState({
+    province: "",
+    district: "",
+    ward: "",
+    street: "",
+    category: "",
+    name: "",
+    price: "",
+    acreage: ""
+  });
   const [location, setLocation] = useState<any>({
     latitude: 0,
     longitude: 0,
   });
+  const nav = useNavigate()
 
   const [currentUser] = useContext(MyUserContext);
 
@@ -108,7 +119,11 @@ const CreatePost = () => {
   };
 
   const handleChangeProvince = (event: any) => {
-    // console.log(event.target.value)
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      province: "",
+    }));
+    console.log(event.target.value)
     // console.log(event.target[index].text)
     setSelectedProvince(event.target.value);
     setDistricts([]);
@@ -123,6 +138,10 @@ const CreatePost = () => {
   };
 
   const handleChangeDistrict = (event: any) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      district: "",
+    }));
     setSelectedDistrict(event.target.value);
     setWards([]);
     const index = event.target.selectedIndex;
@@ -137,6 +156,10 @@ const CreatePost = () => {
   };
 
   const handleChangeWard = (event: any) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      ward: "",
+    }));
     setSelectedWard(event.target.value);
     const index = event.target.selectedIndex;
     setSelectedWardName(event.target[index].text);
@@ -158,7 +181,39 @@ const CreatePost = () => {
     );
   };
 
+  const validation = (msgError: any) => {
+    if (!selectedProvince) {
+      msgError.province = "Vui lòng chọn thành phố/tỉnh!";
+      if (!selectedDistrict) {
+        msgError.district = "Vui lòng chọn quận/huyện!";
+        if (!selectedWard) msgError.ward = "Vui lòng chọn phường/xã!";
+      }
+    }
+    if (!street.trim())
+      msgError.street = "Vui lòng nhập tên số nhà và tên đường!";
+    if (!category) msgError.category = "Vui lòng chọn danh mục!";
+    if (!name.trim()) msgError.name = "Vui lòng nhập tiêu đề!";
+    if (!price) {
+      msgError.price = "Vui lòng nhập giá cho thuê!";
+      if (price <= 10000)
+        msgError.price = "Vui lòng nhập giá cho thuê lớn hơn 10000";
+    }
+    if (!acreage) {
+      msgError.acreage = "Vui lòng nhập diện tích!";
+      if (acreage <= 0) msgError.acreage = "Vui lòng nhập diện tích lớn hơn 0";
+    }
+  };
+
   const handleCreatePost = () => {
+    setDisabled(true);
+    const msgError: any = {};
+    validation(msgError);
+    if (Object.keys(msgError).length > 0) {
+      setErrors(msgError);
+      setDisabled(false);
+      console.log(msgError);
+      return;
+    }
     const data = {
       name: name,
       content: draftToHtml(convertToRaw(content.getCurrentContent())),
@@ -167,28 +222,35 @@ const CreatePost = () => {
       longitude: location.longitude,
       latitude: location.latitude,
       address: exactAddress,
-      provinceId: selectedProvince,
-      districtId: selectedDistrict,
-      wardId: selectedWard,
+      province: selectedProvince,
+      district: selectedDistrict,
+      ward: selectedWard,
       userId: currentUser._id,
       categoryId: category,
     };
     const formData = new FormData();
-    for(const field in data) {
-      formData.append(field, data[field])
+    for (const field in data) {
+      formData.append(field, data[field]);
     }
-    for (let i = 0; i < filesRef.current.length; i++) {
-      formData.append("images", filesRef.current[i]);
+    if (filesRef.current && (filesRef.current.length >= 5 && filesRef.current.length <= 10)) 
+      for (let i = 0; i < filesRef.current.length; i++) 
+        formData.append("images", filesRef.current[i]);
+    else {
+      toast.error("Vui lòng thêm ít nhất 5 ảnh và tối đa 10 ảnh")
+      setDisabled(false)
+      return
     }
     // for (const pair of formData.entries()) {
     //   console.log(pair[0] + ", " + pair[1]);
     // }
 
-    createPost(formData).then(res => {
+    createPost(formData).then((res) => {
       if (res.status === 201) {
-        console.log(res.data)
+        toast.success("Thêm bài đăng thành công!")
+        setDisabled(false)
+        nav("/")
       }
-    })
+    });
   };
 
   useEffect(() => {
@@ -199,14 +261,14 @@ const CreatePost = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedProvince !== null)
+    if (selectedProvince !== "")
       getDistrictsByProvinceCode(selectedProvince, 2).then((res) => {
         setDistricts(res.data.districts);
       });
   }, [selectedProvince]);
 
   useEffect(() => {
-    if (selectedDistrict !== null)
+    if (selectedDistrict !== "")
       getWardsByDistrictCode(selectedDistrict, 2).then((res) => {
         setWards(res.data.wards);
       });
@@ -244,8 +306,10 @@ const CreatePost = () => {
                   <select
                     className="form-select"
                     onChange={handleChangeProvince}
+                    value={selectedProvince}
+                    required
                   >
-                    <option defaultValue={null}>Select Province</option>
+                    <option value={""}>Select Province</option>
                     {provinces.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -254,16 +318,16 @@ const CreatePost = () => {
                       );
                     })}
                   </select>
+                  <div className="text-danger">{errors.province}</div>
                 </div>
                 <div className="d-flex flex-column col-3">
                   <h4>District</h4>
                   <select
                     className="form-select"
                     onChange={handleChangeDistrict}
+                    value={selectedDistrict}
                   >
-                    <option selected defaultValue={null}>
-                      Select District
-                    </option>
+                    <option value={""}>Select District</option>
                     {districts.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -272,13 +336,16 @@ const CreatePost = () => {
                       );
                     })}
                   </select>
+                  <div className="text-danger">{errors.district}</div>
                 </div>
                 <div className="d-flex flex-column col-3">
                   <h4>Ward</h4>
-                  <select className="form-select" onChange={handleChangeWard}>
-                    <option selected defaultValue={null}>
-                      Select Ward
-                    </option>
+                  <select
+                    value={selectedWard}
+                    className="form-select"
+                    onChange={handleChangeWard}
+                  >
+                    <option value={""}>Select Ward</option>
                     {wards.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -287,6 +354,7 @@ const CreatePost = () => {
                       );
                     })}
                   </select>
+                  <div className="text-danger">{errors.ward}</div>
                 </div>
                 <div className="d-flex flex-column col-3">
                   <h4>Street And House Number</h4>
@@ -295,6 +363,10 @@ const CreatePost = () => {
                     type="text"
                     value={street}
                     onChange={(e) => {
+                      setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        street: "",
+                      }));
                       setStreet(e.target.value);
                       setExactAddress(
                         e.target.value +
@@ -319,6 +391,7 @@ const CreatePost = () => {
                       );
                     }}
                   />
+                  <div className="text-danger">{errors.street}</div>
                 </div>
                 <div className="d-flex flex-column col-12">
                   <h4>Exact Address</h4>
@@ -338,9 +411,15 @@ const CreatePost = () => {
                 <select
                   className="form-select"
                   value={category}
-                  onChange={(evt: any) => setCategory(evt.target.value)}
+                  onChange={(evt: any) => {
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      category: "",
+                    }));
+                    setCategory(evt.target.value);
+                  }}
                 >
-                  <option value={null}>Select one category</option>
+                  <option value={""}>Select one category</option>
                   {categories.map((category: Category) => {
                     return (
                       <option key={category._id} value={category._id}>
@@ -349,6 +428,7 @@ const CreatePost = () => {
                     );
                   })}
                 </select>
+                <div className="text-danger">{errors.category}</div>
               </div>
               <div className="d-flex flex-column col-4">
                 <h4>Name</h4>
@@ -356,8 +436,15 @@ const CreatePost = () => {
                   type="text"
                   className="form-control"
                   value={name}
-                  onChange={(evt: any) => setName(evt.target.value)}
+                  onChange={(evt: any) => {
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      name: "",
+                    }));
+                    setName(evt.target.value);
+                  }}
                 />
+                <div className="text-danger">{errors.name}</div>
               </div>
               <div className="d-flex flex-column col-12">
                 <h4>Content</h4>
@@ -380,12 +467,19 @@ const CreatePost = () => {
                     placeholder="Selected price"
                     aria-describedby="price"
                     value={price}
-                    onChange={(evt: any) => setPrice(evt.target.value)}
+                    onChange={(evt: any) => {
+                      setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        price: "",
+                      }));
+                      setPrice(evt.target.value);
+                    }}
                   />
                   <span className="input-group-text" id="price">
                     VND / Month
                   </span>
                 </div>
+                <div className="text-danger">{errors.price}</div>
               </div>
               <div className="d-flex flex-column col-4">
                 <h4>Acreage</h4>
@@ -396,12 +490,19 @@ const CreatePost = () => {
                     placeholder="Selected acreage"
                     aria-describedby="acreage"
                     value={acreage}
-                    onChange={(evt: any) => setAcreage(evt.target.value)}
+                    onChange={(evt: any) => {
+                      setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        acreage: "",
+                      }));
+                      setAcreage(evt.target.value);
+                    }}
                   />
                   <span className="input-group-text" id="acreage">
                     m<sup>2</sup>
                   </span>
                 </div>
+                <div className="text-danger">{errors.acreage}</div>
               </div>
             </div>
             <div className="section-post-info mb-3">
@@ -420,7 +521,7 @@ const CreatePost = () => {
                   <i className="fa-solid fa-upload"></i> &nbsp; Ảnh bài đăng
                 </label>
               </div>
-              <div className="images-preview d-flex align-items-center justify-content-center gap-2">
+              <div className="images-preview d-flex align-items-center justify-content-start gap-2 flex-wrap">
                 {imageUrls && imageUrls.length > 0
                   ? imageUrls.map((image, index) => {
                       return (
@@ -453,9 +554,9 @@ const CreatePost = () => {
             <Map viewportData={viewportData} />
           </div>
         </div>
-        <button className="btn-primary btn my-3" onClick={handleCreatePost}>
+        <button className="btn-primary btn my-3" onClick={handleCreatePost} disabled={disabled}>
           Create Post
-        </button>
+         </button>
       </div>
     </>
   );
