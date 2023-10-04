@@ -3,7 +3,7 @@ const ImagePreview = ({ sourceFile }) => {
     <>
       <div>
         <img
-          style={{ width: "280px", height: "200px", objectFit: "cover" }}
+          style={{ width: "200px", height: "100px", objectFit: "cover" }}
           src={sourceFile}
           alt=""
         />

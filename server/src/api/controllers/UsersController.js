@@ -153,7 +153,8 @@ const UsersController = {
   getAllUser: async (req, res, next) => {
     try {
       const users = await UserModel.find({
-        phone: { $regex: req.query?.phone || '', $options: "i" },
+
+        phone: { $regex: req.query?.phone || "", $options: "i" },
       });
       if (!users) {
         return next(createError(404, "Users not found!"));

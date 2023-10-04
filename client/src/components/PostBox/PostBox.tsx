@@ -1,8 +1,9 @@
-import { decodeHtmlEntities } from "../../utils/Utils";
+import { Link } from "react-router-dom";
+import { VNDCurrencyFormat, decodeHtmlEntities } from "../../utils/Utils";
 
 const PostBox = ({ data }) => {
   return (
-    <>
+    <Link to={`/post/${data._id}`}>
       <div
         className="d-flex border-bottom border-secondary overflow-hidden my-3"
         style={{
@@ -19,31 +20,43 @@ const PostBox = ({ data }) => {
             }}
           />
         </div>
-        <div className="col-8 p-3">
-          <h5 className="my-2">{data.name}</h5>
-          <div className="d-flex gap-2 my-2">
-            <p className="price text-success m-0">{data.price} triệu/tháng</p>
-            <p className="acreage m-0">
+        <div className="col-8 p-1">
+          <div className="my-2 overflow-hidden" style={{ height: "24px" }}>
+            <h5 className="text-dark">{data.name}</h5>
+          </div>
+          <div
+            className="d-flex gap-2 my-2 overflow-hidden"
+            style={{ height: "24px" }}
+          >
+            <p className="price text-success m-0">
+              {VNDCurrencyFormat.format(data.price)} triệu/tháng
+            </p>
+            <p className="acreage m-0 text-dark">
               {data.acreage} m<sup>2</sup>
             </p>
-            <p className="location m-0">Thành Phố Biên Hòa, Đồng Nai</p>
+            <p className="location m-0 text-dark">
+              {data.address.slice(data.address.indexOf("Quận"))}
+            </p>
           </div>
-          <div className="my-2">
-            <p>{decodeHtmlEntities(data.content)}</p>
+          <div
+            className="my-2 overflow-hidden"
+            style={{ height: "80px", lineHeight: "1.2" }}
+          >
+            <p className="text-dark">{decodeHtmlEntities(data.content)}</p>
           </div>
           <div className="d-flex gap-2 align-items-center my-2">
             <img
               className="rounded rounded-circle"
-              src="https://phongtro123.com/images/default-user.png"
+              src={data.userId.avatar}
               alt=""
               width={40}
               height={40}
             />
-            <p className="m-0 text-secondary">Thái ngọc thịnh</p>
+            <p className="m-0 text-secondary">{data.userId.fullName}</p>
           </div>
         </div>
       </div>
-    </>
+    </Link>
   );
 };
 

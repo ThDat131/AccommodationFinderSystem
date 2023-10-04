@@ -136,6 +136,15 @@ export const getPosts = async(data: any) => {
     }
 }
 
+export const getDetailPost = async(data: any) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/posts/${data}`)
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
 export {
     userSignUp,
     sendConfirmCode,

@@ -21,6 +21,7 @@ import MessageApp from "./pages/MessageApp/MessageApp";
 import MyChatUserReducer from "./reducers/MyChatUserReducer";
 import AdminCategories from "./components/AdminCategories/AdminCategories";
 import PostByCategory from "./pages/PostsByCategory/PostByCategory";
+import DetailPost from "./pages/DetailPost/DetailPost";
 
 export const MyUserContext = createContext(null);
 
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/personal/:id" element={<Personal />} />
                 <Route path="/message-app" element={<MessageApp />} />
                 <Route path="/category/:id" element={<PostByCategory />} />
+                <Route path="/post/:id" element={<DetailPost/>} />
               </Route>
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup" element={<Signup />} />
