@@ -26,6 +26,7 @@ const CategoriesController = {
       return next(error);
     }
   },
+  
   // [GET] /api/categories/:id
   getCategoryById: async (req, res, next) => {
     try {

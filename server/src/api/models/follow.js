@@ -5,14 +5,14 @@ const Follow = new Schema(
     active: {
       type: Boolean,
     },
-    userId: {
+    follower: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    landlordId: {
+    following: {
       type: Schema.Types.ObjectId,
-      ref: "Landlord",
-    },
+      ref: "User"
+    }
   },
   {
     timestamps: true,
