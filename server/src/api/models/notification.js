@@ -5,7 +5,6 @@ const Notification = new Schema(
     content: {
       type: String,
     },
-
     active: {
       type: Boolean,
     },
