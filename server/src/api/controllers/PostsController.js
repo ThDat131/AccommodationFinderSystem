@@ -48,14 +48,14 @@ const PostsController = {
     }
   },
 
-  // [GET] /api/posts/ { price, acreage, latitude, longitude, categoryId}
+  // [GET] /api/posts/ { price, acreage, categoryId, province, district, ward }
   getAllPost: async (req, res, next) => {
     try {
       const query = {};
       const { price, acreage, categoryId, province, district, ward } = req.query;
 
       if (price) {
-        query.price = { $lte: parseFloat(price) };
+        query.price = { $lte: parseFloat(price) }; 
       }
 
       if (acreage) {

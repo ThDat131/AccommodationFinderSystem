@@ -47,6 +47,26 @@ const LandlordsController = {
       return next(error);
     }
   },
+
+  getAll: async (req, res, next) => {
+    try {
+      const active = req.query.active;
+      const query = {};
+      if (active) {
+        query.active = { $eq: active };
+      }
+
+      const landlords = await LandlordModel.find(query);
+
+      if (!landlords) {
+        return res.status(404).json({ message: "Landlords not found" });
+      }
+
+      return res.status(200).json(landlords);
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
 export default LandlordsController;
