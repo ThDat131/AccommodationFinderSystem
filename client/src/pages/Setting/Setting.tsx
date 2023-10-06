@@ -7,6 +7,7 @@ import { updateUser } from "../../services/Apis";
 import { toast } from "react-toastify";
 import cookie from "react-cookies";
 import ImagePreview from "../../components/ImagePreview/ImagePreview";
+import { createLandlord } from "../../services/AuthApis";
 
 const urlToObject = async (image) => {
   const response = await fetch(image);
@@ -27,9 +28,13 @@ const Setting = () => {
   const [errors, setErrors] = useState({
     fullName: "",
     phone: "",
+    address: "",
+    personalId: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState<Array<string>>([]);
+  const [address, setAddress] = useState<string>("");
+  const [personalId, setPersonalId] = useState<string>("");
 
   const handleClose = () => {
     setShowModalAvatar(false);
@@ -138,12 +143,58 @@ const Setting = () => {
       console.log(filesRef);
     }
   };
+
+  console.log(user);
+
   const handleDeleteImage = (index: number) => {
     const updatedImageUrls = [...imageUrls];
     updatedImageUrls.splice(index, 1);
     setImageUrls(updatedImageUrls);
     filesRef.current = updatedImageUrls;
     console.log(filesRef);
+  };
+  const validationUpgradeLandlord = (msgError: any) => {
+    if (!address) 
+      msgError.address = "Vui lòng nhập địa chỉ"
+    if (!personalId) {
+      msgError.personalId = "Vui lòng nhập căn cước công dân"
+    }
+  };
+
+  const handleUpgradeLandLord = () => {
+    const msgError: any = {};
+    validationUpgradeLandlord(msgError);
+    if (Object.keys(msgError).length > 0) {
+      setErrors(msgError);
+      console.log(msgError);
+      return;
+    }
+
+    const formData = new FormData();
+    const data: any = {
+      personalId: personalId,
+      address: address,
+      userId: user._id
+    };
+
+    for (const field in data) {
+      formData.append(field, data[field]);
+    }
+    console.log(filesRef);
+    if (filesRef.current && filesRef.current.length >= 3)
+      for (let i = 0; i < filesRef.current.length; i++)
+        formData.append("images", filesRef.current[i]);
+    else {
+      toast.error("Vui lòng thêm ít nhất 3 ảnh");
+      return;
+    }
+    createLandlord(formData).then((res: any) => {
+      if (res.status === 201) {
+        toast.success(
+          "Yêu cầu thành công, vui lòng chờ quản trị viên xét duyệt"
+        );
+      }
+    });
   };
   return (
     <>
@@ -280,56 +331,109 @@ const Setting = () => {
             </div>
           </Tab>
           <Tab eventKey="post" title="Nâng cấp tài khoản chủ trọ">
-            <h2 className="text-primary mb-3">Nhập thông tin</h2>
-            <div className="col-8">
-              <FloatingLabel label="Địa chỉ" className="mb-3">
-                <Form.Control type="text" placeholder="Địa chỉ" />
-              </FloatingLabel>
-              <div className="section-post-info mb-3">
-                <h3 className="text-primary">Hình ảnh nhà trọ</h3>
-                <div className="input-section mb-3">
-                  <input
-                    type="file"
-                    name="files"
-                    className="form-control"
-                    id="post-images"
-                    multiple
-                    accept=".jpg, .jpeg, .png"
-                    onChange={handleChangeFiles}
-                  />
-                  <label htmlFor="post-images" className="form-label">
-                    <i className="fa-solid fa-upload"></i> &nbsp; Ảnh về nhà trọ
-                  </label>
+            {user.landlordId === null ? (
+              <>
+                <h2 className="text-primary mb-3">Nhập thông tin</h2>
+                <div className="col-8">
+                  <FloatingLabel label="Địa chỉ" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      placeholder="Địa chỉ"
+                      value={address}
+                      onChange={(evt: any) => {
+                        setAddress(evt.target.value);
+                        setErrors((prevValue: any) => {
+                          return {
+                            ...prevValue,
+                            address: "",
+                          };
+                        });
+                      }}
+                      isInvalid={!!errors.address}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.address}
+                    </Form.Control.Feedback>
+                  </FloatingLabel>
+                  <FloatingLabel label="Căn cước công dân" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      placeholder="Căn cước công dân"
+                      value={personalId}
+                      onChange={(evt: any) => {
+                        setPersonalId(evt.target.value);
+                        setErrors((prevValue: any) => {
+                          return {
+                            ...prevValue,
+                            personalId: "",
+                          };
+                        });
+                      }}
+                      isInvalid={!!errors.personalId}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.personalId}
+                    </Form.Control.Feedback>
+                  </FloatingLabel>
+                  <div className="section-post-info mb-3">
+                    <h3 className="text-primary">Hình ảnh nhà trọ</h3>
+                    <div className="input-section mb-3">
+                      <input
+                        type="file"
+                        name="files"
+                        className="form-control"
+                        id="post-images"
+                        multiple
+                        accept=".jpg, .jpeg, .png"
+                        onChange={handleChangeFiles}
+                      />
+                      <label htmlFor="post-images" className="form-label">
+                        <i className="fa-solid fa-upload"></i> &nbsp; Ảnh về nhà
+                        trọ
+                      </label>
+                    </div>
+                    <div className="images-preview d-flex align-items-center justify-content-start gap-2 flex-wrap">
+                      {imageUrls && imageUrls.length > 0
+                        ? imageUrls.map((image, index) => {
+                            return (
+                              <div
+                                className=""
+                                key={index}
+                                style={{ position: "relative" }}
+                              >
+                                <ImagePreview sourceFile={image} />
+                                <button
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                  }}
+                                  className="btn btn-danger rounded-circle"
+                                  onClick={() => handleDeleteImage(index)}
+                                >
+                                  <i className="fa-solid fa-xmark"></i>
+                                </button>
+                              </div>
+                            );
+                          })
+                        : ""}
+                    </div>
+                  </div>
                 </div>
-                <div className="images-preview d-flex align-items-center justify-content-start gap-2 flex-wrap">
-                  {imageUrls && imageUrls.length > 0
-                    ? imageUrls.map((image, index) => {
-                        return (
-                          <div
-                            className=""
-                            key={index}
-                            style={{ position: "relative" }}
-                          >
-                            <ImagePreview sourceFile={image} />
-                            <button
-                              style={{
-                                position: "absolute",
-                                top: "10px",
-                                right: "10px",
-                              }}
-                              className="btn btn-danger rounded-circle"
-                              onClick={() => handleDeleteImage(index)}
-                            >
-                              <i className="fa-solid fa-xmark"></i>
-                            </button>
-                          </div>
-                        );
-                      })
-                    : ""}
-                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleUpgradeLandLord}
+                >
+                  Gửi yêu cầu
+                </button>
+              </>
+            ) : (
+              <div className="d-flex align-items-center justify-content-center">
+                <h1 className="text-danger">
+                  Đã gửi yêu cầu nâng cấp tài khoản chủ trọ
+                </h1>
               </div>
-            </div>
-            <button className="btn btn-primary">Gửi yêu cầu</button>
+            )}
           </Tab>
         </Tabs>
       </div>

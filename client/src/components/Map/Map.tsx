@@ -1,9 +1,6 @@
 import ReactMapGL, {
-  GeolocateControl,
   Layer,
-  MapController,
   Marker,
-  NavigationControl,
   Source,
 } from "@goongmaps/goong-map-react";
 import "@goongmaps/goong-js/dist/goong-js.css";
@@ -23,7 +20,18 @@ const Map = ({ viewportData }) => {
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [viewportData.latitude, viewportData.longitude],
+          coordinates: [viewportData.longitude, viewportData.latitude],
+        },
+      },
+      {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [viewportData.longitude, viewportData.latitude],
+            ],
+          ],
         },
       },
     ],
@@ -52,8 +60,9 @@ const Map = ({ viewportData }) => {
           id="point"
           type="circle"
           paint={{
-            "circle-radius": 10,
+            "circle-radius": 100,
             "circle-color": "#FF0000",
+            "circle-opacity": 0.2
           }}
         />
       </Source>

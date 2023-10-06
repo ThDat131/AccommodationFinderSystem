@@ -45,8 +45,7 @@ const FindByCoordinates = () => {
           };
         });
         setAddressData([]);
-        console.log(res.data)
-
+        console.log(res.data);
       }
     });
   };
@@ -80,27 +79,25 @@ const FindByCoordinates = () => {
               >
                 {addressData.map((data: any, index: number) => {
                   return (
-                    <>
-                      <li
-                        className="list-group-item"
-                        key={index}
-                        onClick={() => handleSelect(data)}
-                      >
-                        <div className="d-flex flex-wrap">
-                          <div className="px-3 z-1">
-                            {data.description.slice(
-                              0,
-                              data.description.indexOf(", ")
-                            )}
-                          </div>
-                          <div className="px-3 z-1">
-                            {data.description.slice(
-                              data.description.indexOf(",") + 1
-                            )}
-                          </div>
+                    <li
+                      className="list-group-item"
+                      key={index}
+                      onClick={() => handleSelect(data)}
+                    >
+                      <div className="d-flex flex-wrap">
+                        <div className="px-3 z-1">
+                          {data.description.slice(
+                            0,
+                            data.description.indexOf(", ")
+                          )}
                         </div>
-                      </li>
-                    </>
+                        <div className="px-3 z-1">
+                          {data.description.slice(
+                            data.description.indexOf(",") + 1
+                          )}
+                        </div>
+                      </div>
+                    </li>
                   );
                 })}
               </ul>

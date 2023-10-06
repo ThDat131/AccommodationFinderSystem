@@ -40,3 +40,16 @@ export const createPost = async (data: any) => {
         console.error(err)
     }
 }
+
+export const createLandlord = async (data: any) => {
+    try {
+        const res = await axios.post(`${BASE_URL}/api/landlords/create`, data, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}
