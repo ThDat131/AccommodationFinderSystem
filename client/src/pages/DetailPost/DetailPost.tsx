@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Map from "../../components/Map/Map";
 import { MyUserContext } from "../../App";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ const DetailPost = () => {
   const [listFollow, setListFollow] = useState([]);
   const [isFollow, setIsFollow] = useState(null);
   const [viewportData, setViewPortData] = useState({
-    width: '100%',
+    width: "100%",
     height: 400,
     latitude: 16.5552212,
     longitude: 105.2351686,
@@ -44,36 +44,36 @@ const DetailPost = () => {
   useEffect(() => {
     getDetailPost(id).then((res) => {
       if (res.status === 200) {
-        console.log(res.data)
+        console.log(res.data);
         setDetailPost(res.data);
         setViewPortData((prevValue) => {
-            return {
-              ...prevValue,
-              latitude: res.data.latitude,
-              longitude: res.data.longitude,
-            };
-        })
-        setIsLoading(false)
+          return {
+            ...prevValue,
+            latitude: res.data.latitude,
+            longitude: res.data.longitude,
+          };
+        });
+        setIsLoading(false);
       }
     });
   }, []);
 
-//   useEffect(() => {
-//     if (user !== null) {
-//       if (user.role === -1) {
-//         setListFollow(user.tentant.followSet);
-//       }
-//     }
-//   }, [user]);
+  //   useEffect(() => {
+  //     if (user !== null) {
+  //       if (user.role === -1) {
+  //         setListFollow(user.tentant.followSet);
+  //       }
+  //     }
+  //   }, [user]);
 
-//   useEffect(() => {
-//     if (listFollow && detailPost) {
-//       const isFollowing = listFollow.some(
-//         (follow) => follow.landLordId.id === detailPost.username.landLord.id
-//       );
-//       setIsFollow(isFollowing);
-//     }
-//   }, [listFollow, detailPost]);
+  //   useEffect(() => {
+  //     if (listFollow && detailPost) {
+  //       const isFollowing = listFollow.some(
+  //         (follow) => follow.landLordId.id === detailPost.username.landLord.id
+  //       );
+  //       setIsFollow(isFollowing);
+  //     }
+  //   }, [listFollow, detailPost]);
 
   if (isLoading)
     return (
@@ -126,36 +126,45 @@ const DetailPost = () => {
             <span className="visually-hidden">Next</span>
           </button>
         </div>
-
-        <div className="d-flex align-items-center gap-3 my-3">
-          <img
-            className="rounded-circle"
-            src={detailPost.userId.avatar}
-            alt=""
-            width={40}
-            height={40}
-          />
-          <p className="m-0">{detailPost.userId.fullName}</p>
-          {/* <button type="button" className="btn btn-info" onClick={handleFollow}>Theo dõi</button> */}
-          {user !== null && user.role === -1 ? (
-            isFollow ? (
-              <>
+        <Link to={`/personal/${detailPost.userId._id}`}>
+          <div
+            className="d-flex align-items-center gap-3 my-3"
+            style={{ cursor: "pointer" }}
+          >
+            <div className="d-flex align-items-center gap-3">
+              <img
+                className="rounded-circle"
+                src={detailPost.userId.avatar}
+                alt=""
+                width={40}
+                height={40}
+              />
+              <p className="m-0 text-dark">
+                {detailPost.userId.fullName}
+              </p>
+            </div>
+            {/* <button type="button" className="btn btn-info" onClick={handleFollow}>Theo dõi</button> */}
+            {user !== null && user.role === -1 ? (
+              isFollow ? (
+                <>
+                  <button type="button" className="btn btn-success">
+                    Đã theo dõi
+                  </button>
+                  <button type="button" className="btn btn-danger">
+                    Huỷ theo dõi
+                  </button>
+                </>
+              ) : (
                 <button type="button" className="btn btn-success">
-                  Đã theo dõi
+                  Theo dõi
                 </button>
-                <button type="button" className="btn btn-danger">
-                  Huỷ theo dõi
-                </button>
-              </>
+              )
             ) : (
-              <button type="button" className="btn btn-success">
-                Theo dõi
-              </button>
-            )
-          ) : (
-            ""
-          )}
-        </div>
+              ""
+            )}
+          </div>
+        </Link>
+
         <h3 className="text-danger my-2">{detailPost.name}</h3>
         <p>Địa chỉ: {detailPost.address}</p>
         <div className="room-info-post d-flex gap-3 align-items-center mb-2">

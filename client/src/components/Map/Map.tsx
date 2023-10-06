@@ -1,4 +1,11 @@
-import ReactMapGL, { Marker } from "@goongmaps/goong-map-react";
+import ReactMapGL, {
+  GeolocateControl,
+  Layer,
+  MapController,
+  Marker,
+  NavigationControl,
+  Source,
+} from "@goongmaps/goong-map-react";
 import "@goongmaps/goong-js/dist/goong-js.css";
 import { useEffect, useState } from "react";
 const Map = ({ viewportData }) => {
@@ -8,6 +15,19 @@ const Map = ({ viewportData }) => {
     longitude: 106,
     zoom: 0,
   });
+
+  const geojson = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [viewportData.latitude, viewportData.longitude],
+        },
+      },
+    ],
+  };
   useEffect(() => {
     setViewPort(viewportData);
   }, [viewportData]);
@@ -27,6 +47,16 @@ const Map = ({ viewportData }) => {
           <i className="fa-solid fa-location-dot" style={{ color: "#000" }}></i>
         </div>
       </Marker>
+      <Source type="geojson" data={geojson}>
+        <Layer
+          id="point"
+          type="circle"
+          paint={{
+            "circle-radius": 10,
+            "circle-color": "#FF0000",
+          }}
+        />
+      </Source>
     </ReactMapGL>
   );
 };

@@ -22,6 +22,7 @@ import MyChatUserReducer from "./reducers/MyChatUserReducer";
 import AdminCategories from "./components/AdminCategories/AdminCategories";
 import PostByCategory from "./pages/PostsByCategory/PostByCategory";
 import DetailPost from "./pages/DetailPost/DetailPost";
+import FindByCoordinates from "./pages/FindByCoordinates/FindByCoordinates";
 
 export const MyUserContext = createContext(null);
 
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/message-app" element={<MessageApp />} />
                 <Route path="/category/:id" element={<PostByCategory />} />
                 <Route path="/post/:id" element={<DetailPost/>} />
+                <Route path="/find-by-coordinates" element={<FindByCoordinates />} />
               </Route>
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup" element={<Signup />} />

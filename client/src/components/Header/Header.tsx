@@ -50,6 +50,11 @@ const Header = () => {
               <Link to="/">
                 <Nav.Link href="/">Home</Nav.Link>
               </Link>
+              <Link to={"/find-by-coordinates"}>
+                <Nav.Link href="/find-by-coordinates">
+                  Tìm nhà trọ theo toạ độ
+                </Nav.Link>
+              </Link>
               <Nav.Link>Rent a room</Nav.Link>
               <Nav.Link>Find a room</Nav.Link>
               <Nav.Link>Find a roommate</Nav.Link>

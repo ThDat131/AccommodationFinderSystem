@@ -129,7 +129,11 @@ export const getCategoryById = async(id: string) => {
 
 export const getPosts = async(data: any) => {
     try {
-        const res = await axios.get(`${BASE_URL}/api/posts`, data)
+        let params = ""
+        for (const field in data) {
+            params += field + "=" + data[field] + "&"
+        }
+        const res = await axios.get(`${BASE_URL}/api/posts/?${params}`)
         return res
     } catch (err) {
         return err
@@ -139,6 +143,24 @@ export const getPosts = async(data: any) => {
 export const getDetailPost = async(data: any) => {
     try {
         const res = await axios.get(`${BASE_URL}/api/posts/${data}`)
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const PlaceSearch = async (input: string) => {
+    try {
+        const res = await axios.get(`https://rsapi.goong.io/Place/AutoComplete?api_key=${API_GOONG_KEY}&input=${input}&limit=5`)
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const getPlaceDetailById = async (id: string) => {
+    try {
+        const res = await axios.get(`https://rsapi.goong.io/Place/Detail?place_id=${id}&api_key=${API_GOONG_KEY}`)
         return res
     } catch (err) {
         return err
