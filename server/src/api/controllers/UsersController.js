@@ -96,7 +96,10 @@ const UsersController = {
           id: user._id,
           role: user.role,
         },
-        process.env.SECRET_KEY
+        process.env.SECRET_KEY,
+        {
+          expiresIn: "2h"
+        }
       );
 
       return res
@@ -171,7 +174,7 @@ const UsersController = {
       const default_avatar = "https://phongtro123.com/images/default-user.png";
       const file = req.file;
       const path = file?.path;
-      const { fullName, avatar, phone, role } = req.body;
+      const { fullName, avatar, phone, role, landlordId } = req.body;
 
       const user = await UserModel.findOneAndUpdate(
         { _id: req.params.id },
@@ -180,6 +183,7 @@ const UsersController = {
           avatar: path,
           role,
           phone,
+          landlordId
         },
         { new: true }
       );

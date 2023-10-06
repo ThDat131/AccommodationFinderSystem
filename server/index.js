@@ -33,7 +33,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 io.on('connection', (socket) => {
   socket.on('comment', (newComment) => {
-    
+    io.emit('new-comment', newComment);
   })
 })
 
