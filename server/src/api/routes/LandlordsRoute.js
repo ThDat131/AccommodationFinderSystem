@@ -5,7 +5,7 @@ import { uploadCloud } from "../../config/cloudinary/index.js";
 
 const router = Router();
 
-router.post("/landlords/create", verifyUser, uploadCloud.array('images'), LandlordsController.create); // Đăng ký chủ trọ
+router.post("/landlords/create/", verifyUser, uploadCloud.array('images'), LandlordsController.create); // Đăng ký chủ trọ
 router.put("/landlords/:id/update/", verifyAdmin, LandlordsController.update); // Duyệt thông tin chủ trọ
 router.get("/landlords/", verifyAdmin, LandlordsController.getAll); // Lấy danh sách dựa trên active
 

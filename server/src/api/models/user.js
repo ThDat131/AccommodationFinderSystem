@@ -18,13 +18,13 @@ const User = new Schema(
     role: {
       type: String,
       require: true,
-    }, 
+    },
     active: {
       type: Boolean,
     },
     fullName: {
       type: String,
-      require: true
+      require: true,
     },
     phone: {
       type: String,
@@ -33,15 +33,15 @@ const User = new Schema(
     },
     landlordId: {
       type: Schema.Types.ObjectId,
-      ref: "Landlord" 
-    }
-
+      ref: "Landlord",
+      default: null,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-User.plugin(mongooseDelete, { deletedAt : true, overrideMethods: 'all' });
+User.plugin(mongooseDelete, { deletedAt: true, overrideMethods: "all" });
 
 export default model("User", User);

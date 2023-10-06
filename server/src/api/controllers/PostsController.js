@@ -48,14 +48,23 @@ const PostsController = {
     }
   },
 
-  // [GET] /api/posts/ { price, acreage, categoryId, province, district, ward }
+  // [GET] /api/posts/ { price, acreage, categoryId, province, district, ward, longitude, latitude }
   getAllPost: async (req, res, next) => {
     try {
       const query = {};
-      const { price, acreage, categoryId, province, district, ward } = req.query;
+      const {
+        price,
+        acreage,
+        categoryId,
+        province,
+        district,
+        ward,
+        longitude,
+        latitude,
+      } = req.query;
 
       if (price) {
-        query.price = { $lte: parseFloat(price) }; 
+        query.price = { $lte: parseFloat(price) };
       }
 
       if (acreage) {
@@ -63,7 +72,7 @@ const PostsController = {
       }
 
       if (categoryId) {
-        query.categoryId = {$eq: categoryId};
+        query.categoryId = { $eq: categoryId };
       }
 
       if (province) {
@@ -76,10 +85,25 @@ const PostsController = {
         }
       }
       if (categoryId) {
-        query.categoryId = {$eq: categoryId};
+        query.categoryId = { $eq: categoryId };
       }
 
-      const posts = await PostModel.find(query).populate('userId');
+      // longitude: { $lte: longitude + 0.05, $gte: longitude - 0.05 }, // Khoảng cách dự đoán: ~5km
+      // latitude: { $lte: latitude + 0.05, $gte: latitude - 0.05 }, // Khoảng cách dự đoán: ~5km
+
+      if (longitude && latitude) {
+        query.location = {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: [parseFloat(longitude), parseFloat(latitude)],
+            },
+            $maxDistance: 5000,
+          },
+        };
+      }
+
+      const posts = await PostModel.find(query).populate("userId");
 
       if (!posts) {
         return res.status(404).send("Posts not found");
@@ -93,7 +117,9 @@ const PostsController = {
   // [GET] /api/posts/:id
   getPost: async (req, res, next) => {
     try {
-      const post = await PostModel.findById({ _id: req.params.id }).populate("userId");
+      const post = await PostModel.findById({ _id: req.params.id }).populate(
+        "userId"
+      );
       if (!post) {
         return res.status(404).send("Post not found!!!");
       }
