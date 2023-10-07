@@ -1,4 +1,5 @@
 import LandlordModel from "../models/landlord.js";
+import UserdModel from "../models/user.js";
 
 const LandlordsController = {
   create: async (req, res, next) => {
@@ -9,22 +10,23 @@ const LandlordsController = {
         res.status(400).send("Upload minimum 3 photos");
         return next(createError(400, "Upload minimum 3 photos"));
       }
+      const { userId, personalId, address } = req.body;
 
-      const { personalId, address } = req.body;
-
-      if (personalId.length !== 12 || personalId) {
+      if (!personalId) {
         return res
           .status(400)
           .send("Personal identification number is invalid");
       }
-
       const landlord = await LandlordModel.create({
         personalId,
         address,
         active: 0,
         images: paths,
       });
-
+      await UserdModel.findByIdAndUpdate(
+        { _id: userId },
+        { landlordId: landlord._id }
+      );
       return res.status(201).json(landlord);
     } catch (error) {
       return next(error);
