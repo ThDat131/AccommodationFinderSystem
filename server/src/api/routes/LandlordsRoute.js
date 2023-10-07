@@ -1,5 +1,5 @@
 import { Router } from "express";
-import LandlordsController from "../controllers/LanlordsController.js";
+import LandlordsController from "../controllers/LandlordsController.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../middlewares/verifyToken.js";
 import { uploadCloud } from "../../config/cloudinary/index.js";
 

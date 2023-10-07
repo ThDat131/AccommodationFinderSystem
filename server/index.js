@@ -8,6 +8,7 @@ import CategoriesRoute from "./src/api/routes/CategoriesRoute.js";
 import LandlordsRoute from "./src/api/routes/LandlordsRoute.js";
 import FollowsRoute from "./src/api/routes/FollowsRoute.js";
 import CommentsRoute from "./src/api/routes/CommentsRoute.js";
+import NotificationsRoute from "./src/api/routes/NotificationsRoute.js";
 import methodOverride from "method-override";
 import http from "http";
 import { Server } from "socket.io";
@@ -28,14 +29,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-// configuration socker.io
+// configuration socket.io
 const server = http.createServer(app);
 const io = new Server(server);
-io.on('connection', (socket) => {
-  socket.on('comment', (newComment) => {
-    io.emit('new-comment', newComment);
-  })
-})
+io.on("connection", (socket) => {
+  socket.on("comment", (newComment) => {
+    io.emit("new-comment", newComment);
+  });
+
+  socket.on("notification", (newNotification) => {
+    io.emit("new-notification", newNotification);
+  });
+});
 
 app.use("/api", UsersRoute);
 app.use("/api", PostsRoute);
@@ -43,7 +48,8 @@ app.use("/api", CategoriesRoute);
 app.use("/api", LandlordsRoute);
 app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
+app.use("/api", NotificationsRoute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);
 });

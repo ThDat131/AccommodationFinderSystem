@@ -8,13 +8,13 @@ const Notification = new Schema(
     active: {
       type: Boolean,
     },
-    userId: {
+    sender: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    landlordId: {
+    receiver: {
       type: Schema.Types.ObjectId,
-      ref: "Landlord",
+      ref: "User",
     },
   },
   { timestamps: true }
