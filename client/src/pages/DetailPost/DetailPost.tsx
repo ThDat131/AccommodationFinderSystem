@@ -2,23 +2,30 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Map from "../../components/Map/Map";
 import { MyUserContext } from "../../App";
-import { toast } from "react-toastify";
-import { useRef } from "react";
-import cookie from "react-cookies";
-import { getDetailPost } from "../../services/Apis";
+import { getCommentByPost, getDetailPost } from "../../services/Apis";
 import { Spinner } from "react-bootstrap";
 import { VNDCurrencyFormat } from "../../utils/Utils";
 import DOMPurify from "dompurify";
+import { createComment } from "../../services/AuthApis";
+import { toast } from "react-toastify";
+import Comment from "../../components/Comment/Comment";
+import { io } from "socket.io-client";
 
 const DetailPost = () => {
-  const [user, dispatch] = useContext(MyUserContext);
+  const socket = io("http://localhost:8085", {
+    reconnection: true,
+  });
+  const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
   const [imgPos, setImgPos] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [comment, setComment] = useState("");
-  const [listFollow, setListFollow] = useState([]);
-  const [isFollow, setIsFollow] = useState(null);
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<Array<Comment>>([]);
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [status, setStatus] = useState(false);
+  // const [listFollow, setListFollow] = useState([]);
+  // const [isFollow, setIsFollow] = useState(null);
   const [viewportData, setViewPortData] = useState({
     width: "100%",
     height: 400,
@@ -41,10 +48,35 @@ const DetailPost = () => {
     );
   };
 
+  const handleComment = () => {
+    setStatus(true);
+    if (!comment) {
+      toast.error("Vui lòng nhập bình luận!");
+      return;
+    }
+    setDisabled(true);
+    createComment({
+      content: comment,
+      postId: id,
+      userId: user._id,
+    }).then((res: any) => {
+      if (res.status === 201) {
+        socket.emit("send_comment", res.data);
+        setComment("");
+      }
+    });
+  };
+
+  useEffect(() => {
+    socket.on("receive_comment", (data: any) => {
+      setComments([...comments, data]);
+    });
+  }, [comments]);
+
   useEffect(() => {
     getDetailPost(id).then((res) => {
       if (res.status === 200) {
-        console.log(res.data);
+        // console.log(res.data);
         setDetailPost(res.data);
         setViewPortData((prevValue) => {
           return {
@@ -58,22 +90,13 @@ const DetailPost = () => {
     });
   }, []);
 
-  //   useEffect(() => {
-  //     if (user !== null) {
-  //       if (user.role === -1) {
-  //         setListFollow(user.tentant.followSet);
-  //       }
-  //     }
-  //   }, [user]);
-
-  //   useEffect(() => {
-  //     if (listFollow && detailPost) {
-  //       const isFollowing = listFollow.some(
-  //         (follow) => follow.landLordId.id === detailPost.username.landLord.id
-  //       );
-  //       setIsFollow(isFollowing);
-  //     }
-  //   }, [listFollow, detailPost]);
+  useEffect(() => {
+    getCommentByPost(id).then((res: any) => {
+      if (res.status === 200) {
+        setComments(res.data);
+      }
+    });
+  }, []);
 
   if (isLoading)
     return (
@@ -139,29 +162,8 @@ const DetailPost = () => {
                 width={40}
                 height={40}
               />
-              <p className="m-0 text-dark">
-                {detailPost.userId.fullName}
-              </p>
+              <p className="m-0 text-dark">{detailPost.userId.fullName}</p>
             </div>
-            {/* <button type="button" className="btn btn-info" onClick={handleFollow}>Theo dõi</button> */}
-            {user !== null && user.role === -1 ? (
-              isFollow ? (
-                <>
-                  <button type="button" className="btn btn-success">
-                    Đã theo dõi
-                  </button>
-                  <button type="button" className="btn btn-danger">
-                    Huỷ theo dõi
-                  </button>
-                </>
-              ) : (
-                <button type="button" className="btn btn-success">
-                  Theo dõi
-                </button>
-              )
-            ) : (
-              ""
-            )}
           </div>
         </Link>
 
@@ -199,7 +201,7 @@ const DetailPost = () => {
         <div>
           <h3 className="my-2">Vị trí</h3>
           <div className="w-100 h-100 my-3">
-            <Map viewportData={viewportData} />
+            <Map viewportData={viewportData} layer={false} />
           </div>
         </div>
         <div>
@@ -234,26 +236,32 @@ const DetailPost = () => {
                     value={comment}
                   ></textarea>
                   <label htmlFor="floatingTextarea">
-                    Đánh giá về nhà trọ ở đây
+                    Bình luận về nhà trọ ở đây
                   </label>
                 </div>
               </div>
               <div className="float-end mt-2 pt-1">
-                <button type="button" className="btn btn-primary btn">
+                <button
+                  type="button"
+                  className="btn btn-primary btn"
+                  onClick={handleComment}
+                >
                   Bình luận
                 </button>
               </div>
             </div>
           </div>
-          {/* <div className="d-flex flex-start my-3 flex-wrap">
-            {listComment.length >= 1 ? (
-              listComment.map((comment, index) => {
-                return <Comment key={index} comment={comment} />;
+          <div className="d-flex flex-start my-3 flex-wrap">
+            {comments.length >= 1 ? (
+              comments.map((comment) => {
+                if (!comment.commentId) {
+                  return <Comment key={comment._id} comment={comment} />;
+                }
               })
             ) : (
               <div className="alert alert-danger">Chưa có bình luận</div>
             )}
-          </div> */}
+          </div>
         </div>
       </div>
     </>

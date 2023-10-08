@@ -8,10 +8,10 @@ const CommentsController = {
       const comment = await CommentModel.create({
         commentId,
         content,
-        active: 0,
         postId,
         userId,
-      });
+      }); 
+      await comment.populate("userId");
       return res.status(201).json(comment);
     } catch (error) {
       return next(error);
@@ -23,7 +23,7 @@ const CommentsController = {
     try {
       const comments = await CommentModel.find({
         postId: req.params.postId,
-      }).populate("commentId");
+      }).populate("commentId").populate("userId");
       if (comments.length === 0) {
         return res.status(404).json({ message: "Comment not found" });
       }

@@ -53,3 +53,16 @@ export const createLandlord = async (data: any) => {
         return err
     }
 }
+
+export const createComment = async(data: any) => {
+    try {
+        const res = await axios.post(`${BASE_URL}/api/comments`, data, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}

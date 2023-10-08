@@ -2,7 +2,8 @@ import { FlyToInterpolator } from "@goongmaps/goong-map-react";
 import { useState } from "react";
 import Map from "../../components/Map/Map";
 import { FloatingLabel, Form } from "react-bootstrap";
-import { PlaceSearch, getPlaceDetailById } from "../../services/Apis";
+import { PlaceSearch, getPlaceDetailById, getPosts } from "../../services/Apis";
+import { Post } from "../../interface/Post";
 
 const FindByCoordinates = () => {
   const [viewportData, setViewPortData] = useState({
@@ -10,13 +11,16 @@ const FindByCoordinates = () => {
     height: 400,
     latitude: 20.5552212,
     longitude: 105.2351686,
-    zoom: 4,
+    zoom: 11,
+    maxZoom: 11,
+    minZoom: 11,
     transitionDuration: 1000,
     transitionInterpolator: new FlyToInterpolator(),
   });
 
   const [address, setAddress] = useState<string>("");
   const [addressData, setAddressData] = useState<Array<any>>([]);
+  const [markers, setMarkers] = useState<Array<Post>>([]);
 
   const handleChangeAddress = (evt: any) => {
     setAddress(evt.target.value);
@@ -28,7 +32,7 @@ const FindByCoordinates = () => {
     PlaceSearch(address).then((res) => {
       if (res.status === 200) {
         setAddressData(res.data.predictions);
-        console.log(res.data.predictions);
+        // console.log(res.data.predictions);
       }
     });
   };
@@ -45,6 +49,15 @@ const FindByCoordinates = () => {
           };
         });
         setAddressData([]);
+        getPosts({
+          longitude: res.data.result.geometry.location.lng,
+          latitude: res.data.result.geometry.location.lat,
+        }).then((res: any) => {
+          if (res.status === 200) {
+            setMarkers(res.data);
+            console.log(res.data);
+          }
+        });
         console.log(res.data);
       }
     });
@@ -57,7 +70,7 @@ const FindByCoordinates = () => {
         </h2>
         <div className="d-flex">
           <div className="col-8 col-md-8 col-xs-8 col-lg-8">
-            <Map viewportData={viewportData} />
+            <Map viewportData={viewportData} layer={true} markers={markers} />
           </div>
           <div className="col-4 col-md-4 col-xs-4 col-lg-4 p-3">
             <FloatingLabel

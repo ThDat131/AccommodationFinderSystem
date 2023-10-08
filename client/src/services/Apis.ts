@@ -4,7 +4,7 @@ import cookie from "react-cookies"
 const BASE_URL = "http://localhost:8085"
 const API_GOONG_KEY = import.meta.env.VITE_GOONG_API_KEY
 
-const userSignUp = async (data) => {
+export const userSignUp = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/signup`, data)
         console.log(res);
@@ -14,7 +14,7 @@ const userSignUp = async (data) => {
     }
 }
 
-const sendConfirmCode = async (data) => {
+export const sendConfirmCode = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/confirmCode`, data)
         return res
@@ -23,7 +23,7 @@ const sendConfirmCode = async (data) => {
     }
 }
 
-const userSignIn = async (data) => {
+export const userSignIn = async (data) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/signin`, data)
         return res
@@ -32,7 +32,7 @@ const userSignIn = async (data) => {
     }
 }
 
-const getCurrentUser = async () => {
+export const getCurrentUser = async () => {
     try {
         const res = await axios.get(`${BASE_URL}/api/getCurrentUser`, {
             headers: {
@@ -45,7 +45,7 @@ const getCurrentUser = async () => {
     }
 }
 
-const updateUser = async (userId, data) => {
+export const updateUser = async (userId, data) => {
     try {
         const res = await axios.put(`${BASE_URL}/api/users/${userId}/updateUser`, data, {
             headers: {
@@ -58,7 +58,7 @@ const updateUser = async (userId, data) => {
     }
 }
 
-const getProvinces = async (depth: number) => {
+export const getProvinces = async (depth: number) => {
     try {
         const res = await axios.get(`https://provinces.open-api.vn/api/p/?depth=${depth}`)
         return res
@@ -67,7 +67,7 @@ const getProvinces = async (depth: number) => {
     }
 }
 
-const getDistrictsByProvinceCode = async (provincesCode: string, depth: number) => {
+export const getDistrictsByProvinceCode = async (provincesCode: string, depth: number) => {
     try {
         const res = await axios.get(`https://provinces.open-api.vn/api/p/${provincesCode}/?depth=${depth}`)
         return res
@@ -75,7 +75,7 @@ const getDistrictsByProvinceCode = async (provincesCode: string, depth: number) 
         return err
     }
 }
-const getWardsByDistrictCode = async (districtCode: string, depth: number) => {
+export const getWardsByDistrictCode = async (districtCode: string, depth: number) => {
     try {
         const res = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}/?depth=${depth}`)
         return res
@@ -84,7 +84,7 @@ const getWardsByDistrictCode = async (districtCode: string, depth: number) => {
     }
 }
 
-const ForwardGeocoding = async (data: string) => {
+export const ForwardGeocoding = async (data: string) => {
     try {
         const res = await axios.get(`https://rsapi.goong.io/geocode?address=${data}&api_key=${API_GOONG_KEY}`)
         return res
@@ -167,15 +167,11 @@ export const getPlaceDetailById = async (id: string) => {
     }
 }
 
-
-export {
-    userSignUp,
-    sendConfirmCode,
-    userSignIn,
-    getCurrentUser,
-    updateUser,
-    getProvinces,
-    getDistrictsByProvinceCode,
-    getWardsByDistrictCode,
-    ForwardGeocoding
+export const getCommentByPost = async(postId: string) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/comments/${postId}`)
+        return res
+    } catch (err) {
+        return (err)
+    }
 }

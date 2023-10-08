@@ -30,12 +30,18 @@ app.use((err, req, res, next) => {
 
 // configuration socker.io
 const server = http.createServer(app);
-const io = new Server(server);
-io.on('connection', (socket) => {
-  socket.on('comment', (newComment) => {
-    io.emit('new-comment', newComment);
-  })
-})
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
+io.on("connection", (socket) => {
+  socket.on("send_comment", (data) => {
+    socket.broadcast.emit("receive_comment", data);
+    console.log(data);
+  });
+});
 
 app.use("/api", UsersRoute);
 app.use("/api", PostsRoute);
@@ -44,6 +50,6 @@ app.use("/api", LandlordsRoute);
 app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);
 });

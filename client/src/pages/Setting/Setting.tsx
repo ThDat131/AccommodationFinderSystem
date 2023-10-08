@@ -3,7 +3,7 @@ import { Button, FloatingLabel, Modal, Tab, Tabs } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { MyUserContext } from "../../App";
 import Avatar from "react-avatar-edit";
-import { updateUser } from "../../services/Apis";
+import { getCurrentUser, updateUser } from "../../services/Apis";
 import { toast } from "react-toastify";
 import cookie from "react-cookies";
 import ImagePreview from "../../components/ImagePreview/ImagePreview";
@@ -29,12 +29,13 @@ const Setting = () => {
     fullName: "",
     phone: "",
     address: "",
-    personalId: ""
+    personalId: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState<Array<string>>([]);
   const [address, setAddress] = useState<string>("");
   const [personalId, setPersonalId] = useState<string>("");
+  const [disabled, setDisabled] = useState<boolean>(false)
 
   const handleClose = () => {
     setShowModalAvatar(false);
@@ -154,19 +155,21 @@ const Setting = () => {
     console.log(filesRef);
   };
   const validationUpgradeLandlord = (msgError: any) => {
-    if (!address) 
-      msgError.address = "Vui lòng nhập địa chỉ"
+    if (!address) msgError.address = "Vui lòng nhập địa chỉ";
     if (!personalId) {
-      msgError.personalId = "Vui lòng nhập căn cước công dân"
+      msgError.personalId = "Vui lòng nhập căn cước công dân";
     }
   };
 
   const handleUpgradeLandLord = () => {
+    setDisabled(true);
     const msgError: any = {};
     validationUpgradeLandlord(msgError);
     if (Object.keys(msgError).length > 0) {
       setErrors(msgError);
       console.log(msgError);
+      setDisabled(false);
+
       return;
     }
 
@@ -174,25 +177,35 @@ const Setting = () => {
     const data: any = {
       personalId: personalId,
       address: address,
-      userId: user._id
+      userId: user._id,
     };
 
     for (const field in data) {
       formData.append(field, data[field]);
     }
-    console.log(filesRef);
     if (filesRef.current && filesRef.current.length >= 3)
       for (let i = 0; i < filesRef.current.length; i++)
         formData.append("images", filesRef.current[i]);
     else {
       toast.error("Vui lòng thêm ít nhất 3 ảnh");
+      setDisabled(false);
+
       return;
     }
     createLandlord(formData).then((res: any) => {
       if (res.status === 201) {
-        toast.success(
-          "Yêu cầu thành công, vui lòng chờ quản trị viên xét duyệt"
-        );
+        getCurrentUser().then((res) => {
+          if (res.status === 200) {
+            toast.success(
+              "Yêu cầu thành công, vui lòng chờ quản trị viên xét duyệt"
+            );
+            cookie.save("user", res.data, {});
+            dispatch({
+              type: "login",
+              payload: res.data,
+            });
+          }
+        });
       }
     });
   };
@@ -250,6 +263,22 @@ const Setting = () => {
                 </button>
               </div>
               <div className="col-10 p-2">
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  <span className="col-2 text-center">Loại tài khoản</span>
+                  {user.role === "ROLE_ADMIN" ||
+                  user.role === "ROLE_SUPERADMIN" ? (
+                    <p className="text-center text-danger m-0">Quản trị</p>
+                  ) : user.landlordId === null ||
+                    user.landlordId.active === false ? (
+                    <p className="text-center text-danger m-0">
+                      Người thuê trọ
+                    </p>
+                  ) : (
+                    <p className="text-center text-danger m-0">Chủ trọ</p>
+                  )}
+
+                  <div className="text-danger"></div>
+                </div>
                 <div className="d-flex align-items-center gap-3 mb-3">
                   <span className="col-2 text-center">Email</span>
                   <FloatingLabel
@@ -423,6 +452,7 @@ const Setting = () => {
                 <button
                   className="btn btn-primary"
                   onClick={handleUpgradeLandLord}
+                  disabled={disabled}
                 >
                   Gửi yêu cầu
                 </button>

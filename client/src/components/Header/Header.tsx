@@ -1,4 +1,10 @@
-import { Container, ListGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import {
+  Container,
+  ListGroup,
+  Nav,
+  NavDropdown,
+  Navbar,
+} from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/img/D2 -logos_transparent.png";
 import { useContext, useEffect, useState } from "react";
@@ -58,9 +64,14 @@ const Header = () => {
               <Nav.Link>Rent a room</Nav.Link>
               <Nav.Link>Find a room</Nav.Link>
               <Nav.Link>Find a roommate</Nav.Link>
-              <Link to="/create-post">
-                <Nav.Link href="/create-post">Create Post</Nav.Link>
-              </Link>
+              {user && user.landlordId && user.landlordId.active === true ? (
+                <Link to="/create-post">
+                  <Nav.Link href="/create-post">Create Post</Nav.Link>
+                </Link>
+              ) : (
+                ""
+              )}
+
               <NavDropdown title="Danh mục" id="basic-nav-dropdown">
                 {categories.map((c) => {
                   const h = `/category/${c._id}`;
