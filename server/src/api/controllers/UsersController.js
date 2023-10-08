@@ -149,11 +149,12 @@ const UsersController = {
       return next(error);
     }
   },
-
+  //[GET] /api/users/ => query phone
   getAllUser: async (req, res, next) => {
     try {
       const users = await UserModel.find({
         phone: { $regex: req.query?.phone || "", $options: "i" },
+        role: {$in: ['ROLE_USER', 'ROLE_LANDLORD']}
       });
       if (!users) {
         return next(createError(404, "Users not found!"));
@@ -164,6 +165,22 @@ const UsersController = {
     }
   },
 
+  //[GET] /api/admin/users/ => query phone
+  getAllAdmin: async (req, res, next) => {
+    try {
+      const users = await UserModel.find({
+        phone: { $regex: req.query?.phone || "", $options: "i" },
+        role: 'ROLE_ADMIN',
+      });
+      if (!users) {
+        return next(createError(404, "Users not found!"));
+      }
+      res.status(200).json(users);
+    } catch (err) {
+      next(err);
+    }
+  },
+ 
   // [PUT] /users/:id/updateUser  {fullName, avatar, phone}
   updateUser: async (req, res, next) => {
     try {
