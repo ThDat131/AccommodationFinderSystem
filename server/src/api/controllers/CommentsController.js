@@ -55,7 +55,7 @@ const CommentsController = {
     try {
       const comments = await CommentModel.find({
         postId: req.params.postId,
-      }).populate("commentId");
+      }).populate({ path: "replies.userId", model: "User" });
       if (comments.length === 0) {
         return res.status(404).json({ message: "Comment not found" });
       }
