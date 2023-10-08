@@ -5,6 +5,7 @@ import { uploadCloud } from "../../config/cloudinary/index.js";
 
 const router = Router();
 
+router.post("/createUser", verifyAdmin, UsersController.createByAdmin); // Tạo tài khoản người dùng bởi admin
 router.post("/confirmCode", UsersController.confirmCode); // Xác nhận mã
 router.post("/signup", UsersController.signup); // Đăng ký
 router.post("/signin", UsersController.signin); // Đăng nhập
