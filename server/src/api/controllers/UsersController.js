@@ -124,7 +124,7 @@ const UsersController = {
       const userId = decodedToken.id;
       console.log(userId);
 
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById(userId).populate("landlordId");
 
       if (!user) {
         return next(createError(404, "User not found"));

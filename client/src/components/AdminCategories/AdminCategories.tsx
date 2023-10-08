@@ -8,7 +8,12 @@ import {
   Table,
 } from "react-bootstrap";
 import { Category } from "../../interface/Category";
-import { createCategory, getCategories } from "../../services/AuthApis";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+} from "../../services/AuthApis";
+import { toast } from "react-toastify";
 
 const AdminCategories = () => {
   const [show, setShow] = useState(false);
@@ -18,7 +23,7 @@ const AdminCategories = () => {
       active: false,
     });
     setShow(false);
-  }
+  };
   const handleShow = () => setShow(true);
   const [newCategory, setNewCategory] = useState<Category>({
     name: "",
@@ -63,6 +68,17 @@ const AdminCategories = () => {
       }
     });
     handleClose();
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    if (confirm("Bạn có chắc chắn muốn xoá danh mục này?")) {
+      deleteCategory(id).then((res: any) => {
+        if (res.status === 200) {
+          toast.success("Xoá danh mục thành công");
+          setCategories(categories.filter((category) => category._id !== id));
+        }
+      });
+    }
   };
 
   if (isLoading)
@@ -155,7 +171,14 @@ const AdminCategories = () => {
                           )}
                         </td>
                         <td className="text-center">
-                          <button className="btn btn-primary">Update</button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => {
+                              handleDeleteCategory(category._id);
+                            }}
+                          >
+                            Xoá
+                          </button>
                         </td>
                       </tr>
                     );

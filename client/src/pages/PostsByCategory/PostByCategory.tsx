@@ -4,9 +4,9 @@ import { getCategoryById, getPosts } from "../../services/Apis";
 import { Category } from "../../interface/Category";
 import { Spinner } from "react-bootstrap";
 import LocationBox from "../../components/LocationBox/LocationBox";
-import DNPic from "../../../public/img/location_dn.jpg";
-import HCMPic from "../../../public/img/location_hcm.jpg";
-import HNPic from "../../../public/img/location_hn.jpg";
+import DNPic from "../../assets/img/location_dn.jpg"
+import HCMPic from "../../assets/img/location_hcm.jpg";
+import HNPic from "../../assets/img/location_hn.jpg";
 import PostBox from "../../components/PostBox/PostBox";
 import FilterPricePost from "../../components/FilterPricePost/FilterPricePost";
 import FilterAcreagePost from "../../components/FilterAcreagePost/FilterAcreagePost";
@@ -20,7 +20,7 @@ const PostByCategory = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getPosts(id).then((res) => {
+    getPosts({categoryId: id}).then((res) => {
       if (res.status === 200) {
         setPosts(res.data);
         console.log(res.data);

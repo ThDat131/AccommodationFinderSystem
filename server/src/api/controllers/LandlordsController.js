@@ -6,9 +6,9 @@ const LandlordsController = {
     try {
       const files = req.files;
       const paths = files?.map((file) => file.path);
-      if (paths.length > 3) {
-        res.status(400).send("Upload maximum 3 photos");
-        return next(createError(400, "Upload maximum 3 photos"));
+      if (paths.length < 3) {
+        res.status(400).send("Upload minimum 3 photos");
+        return next(createError(400, "Upload minimum 3 photos"));
       }
       const { userId, personalId, address } = req.body;
 

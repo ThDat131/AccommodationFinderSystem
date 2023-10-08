@@ -551,7 +551,7 @@ const CreatePost = () => {
           </div>
 
           <div className="col-4 p-3">
-            <Map viewportData={viewportData} />
+            <Map viewportData={viewportData} layer={false}/>
           </div>
         </div>
         <button className="btn-primary btn my-3" onClick={handleCreatePost} disabled={disabled}>

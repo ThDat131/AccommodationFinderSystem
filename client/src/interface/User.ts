@@ -1,9 +1,10 @@
 export interface User {
-    _id: string;
+    _id?: string;
     email: string;
-    avatar: string;
+    avatar?: string;
     role: string;
-    active: boolean;
+    active?: boolean;
     fullName: string;
     phone: string;
+    password?: string
 }

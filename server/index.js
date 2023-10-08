@@ -42,7 +42,11 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive_comment", newComment);
   });
 
-  socket.on("send_cnotification", (newNotification) => {
+  socket.on("reply_comment", data => {
+    socket.broadcast.emit("reply_comment", data);
+  });
+
+  socket.on("send_notification", (newNotification) => {
     socket.broadcast.emit("receive_notification", newNotification);
   });
 });

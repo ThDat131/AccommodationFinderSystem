@@ -93,12 +93,15 @@ const PostsController = {
         query.categoryId = { $eq: categoryId };
       }
 
-      // longitude: { $lte: longitude + 0.05, $gte: longitude - 0.05 }, // Khoảng cách dự đoán: ~5km
-      // latitude: { $lte: latitude + 0.05, $gte: latitude - 0.05 }, // Khoảng cách dự đoán: ~5km
-
       if (longitude && latitude) {
-        query.longitude = { $lte: parseFloat(longitude) + 0.05, $gte: parseFloat(longitude) - 0.05 } // Khoảng cách dự đoán: ~5km
-        query.latitude = { $lte: parseFloat(latitude) + 0.05, $gte: parseFloat(latitude) - 0.05 } // Khoảng cách dự đoán: ~5km
+        query.longitude = {
+          $lte: parseFloat(longitude) + 0.05,
+          $gte: parseFloat(longitude) - 0.05,
+        }; // Khoảng cách dự đoán: ~5km
+        query.latitude = {
+          $lte: parseFloat(latitude) + 0.05,
+          $gte: parseFloat(latitude) - 0.05,
+        }; // Khoảng cách dự đoán: ~5km
       }
 
       const posts = await PostModel.find(query).populate("userId");

@@ -7,10 +7,9 @@ const CommentsController = {
       const { content, postId, userId } = req.body;
       const comment = await CommentModel.create({
         content,
-        active: 0,
         postId,
         userId,
-      });
+      }); 
       await comment.populate("userId");
       return res.status(201).json(comment);
     } catch (error) {
