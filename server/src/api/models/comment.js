@@ -3,11 +3,6 @@ import mongooseDelete from "mongoose-delete";
 
 const Comment = new Schema(
   {
-    commentId: {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-      default: null,
-    },
     content: {
       type: String,
       require: true,
@@ -23,6 +18,25 @@ const Comment = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    replies: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        content: {
+          type: String,
+          require: true,
+        },
+        commentId: {
+          type: Schema.Types.ObjectId,
+          require: true,
+        },
+      },
+      {
+        timestamps: true,
+      },
+    ],
   },
   {
     timestamps: true,

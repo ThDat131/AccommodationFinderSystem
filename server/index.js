@@ -31,14 +31,19 @@ app.use((err, req, res, next) => {
 
 // configuration socket.io
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
 io.on("connection", (socket) => {
-  socket.on("comment", (newComment) => {
-    io.emit("new-comment", newComment);
+  socket.on("send_comment", (newComment) => {
+    socket.broadcast.emit("receive_comment", newComment);
   });
 
-  socket.on("notification", (newNotification) => {
-    io.emit("new-notification", newNotification);
+  socket.on("send_cnotification", (newNotification) => {
+    socket.broadcast.emit("receive_notification", newNotification);
   });
 });
 
