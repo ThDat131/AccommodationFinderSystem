@@ -1,5 +1,7 @@
 import { createError } from "../../utils/error.js";
 import PostModel from "../models/post.js";
+import FollowModel from "../models/follow.js";
+import NotificationModel from "../models/notification.js";
 
 const PostsController = {
   // [POST] /api/posts/create/ {name, content, price, images, acreage, longitude, latitude, address, userId, categoryId}
@@ -41,6 +43,9 @@ const PostsController = {
         active: 0,
         userId,
       });
+
+      // const followers = await FollowModel.find({follower: userId})
+      // const notifications = 
 
       return res.status(201).json(post);
     } catch (error) {

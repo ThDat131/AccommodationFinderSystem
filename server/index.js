@@ -8,6 +8,7 @@ import CategoriesRoute from "./src/api/routes/CategoriesRoute.js";
 import LandlordsRoute from "./src/api/routes/LandlordsRoute.js";
 import FollowsRoute from "./src/api/routes/FollowsRoute.js";
 import CommentsRoute from "./src/api/routes/CommentsRoute.js";
+import NotificationsRoute from "./src/api/routes/NotificationsRoute.js";
 import methodOverride from "method-override";
 import http from "http";
 import { Server } from "socket.io";
@@ -28,7 +29,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// configuration socker.io
+// configuration socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -37,9 +38,16 @@ const io = new Server(server, {
   }
 });
 io.on("connection", (socket) => {
-  socket.on("send_comment", (data) => {
-    socket.broadcast.emit("receive_comment", data);
-    console.log(data);
+  socket.on("send_comment", (newComment) => {
+    socket.broadcast.emit("receive_comment", newComment);
+  });
+
+  socket.on("reply_comment", data => {
+    socket.broadcast.emit("reply_comment", data);
+  });
+
+  socket.on("send_notification", (newNotification) => {
+    socket.broadcast.emit("receive_notification", newNotification);
   });
 });
 
@@ -49,6 +57,7 @@ app.use("/api", CategoriesRoute);
 app.use("/api", LandlordsRoute);
 app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
+app.use("/api", NotificationsRoute);
 
 server.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);

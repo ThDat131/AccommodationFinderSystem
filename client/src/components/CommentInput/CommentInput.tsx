@@ -1,26 +1,23 @@
 import { useEffect, useState } from "react";
-import { createComment } from "../../services/AuthApis";
+import { replyComment } from "../../services/AuthApis";
 import { io } from "socket.io-client";
 
-const CommentInput = ({ user, comment, commentParent }) => {
-  const socket = io("http://localhost:8085", {
-    reconnection: true,
-  });
+const CommentInput = ({ user, comment, commentParent, isClose }) => {
+  const socket = io("http://localhost:8085");
   const [commentContent, setCommentContent] = useState<string>("");
   useEffect(() => {
     setCommentContent(comment);
   }, [comment]);
   const handleComment = () => {
-    createComment({
-      commentId: commentParent._id,
+    replyComment(commentParent._id, {
       content: commentContent,
-      postId: commentParent.postId,
       userId: commentParent.userId._id,
     }).then((res: any) => {
-      //   socket.emit("send_comment", res.data);
-      if (res.status === 201) {
-        console.log(res.data);
+      if (res.status === 200) {
+        // console.log(res.data);
+        socket.emit("reply_comment", res.data);
         setCommentContent("");
+        isClose(true)
       }
     });
   };

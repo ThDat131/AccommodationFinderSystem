@@ -4,6 +4,8 @@ import { getAllUser } from "../../services/Apis";
 import { MyUserContext } from "../../App";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../../interface/User";
+import { createUserByAdmin, deleteUser } from "../../services/AuthApis";
+import { toast } from "react-toastify";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<Array<User>>([]);
@@ -13,14 +15,14 @@ const AdminUsers = () => {
     email: "",
     fullName: "",
     password: "",
-    phone: ""
+    phone: "",
   });
   const [createdUser, setCreatedUser] = useState<User>({
     email: "",
     fullName: "",
     password: "",
     phone: "",
-    role: ""
+    role: "",
   });
   const [active, setActive] = useState<boolean>(false);
 
@@ -36,19 +38,34 @@ const AdminUsers = () => {
 
   const handleClose = () => {
     setShow(false);
+    setCreatedUser({
+      email: "",
+      fullName: "",
+      password: "",
+      phone: "",
+      role: "",
+    });
   };
 
   const handleShow = () => setShow(true);
 
   const handleCreateUser = () => {
-     const msgError: any = {};
-     validation(msgError);
-     if (Object.keys(msgError).length > 0) {
-       setErrors(msgError);
-       return;
-     }
+    const msgError: any = {};
+    validation(msgError);
+    if (Object.keys(msgError).length > 0) {
+      setErrors(msgError);
+      return;
+    }
 
     createdUser.active = active;
+
+    createUserByAdmin(createdUser).then((res: any) => {
+      if (res.status === 201) {
+        setUsers([...users, res.data]);
+        toast.success("Tạo tài khoản thành công");
+        setShow(false);
+      }
+    });
     console.log(createdUser);
   };
 
@@ -59,6 +76,17 @@ const AdminUsers = () => {
       setUsers(res.data);
     });
   }, []);
+
+  const handleDeleteUser = (id: string) => {
+    if (confirm("Bạn có chắc chắn muốn xoá người dùng này?")) {
+      deleteUser(id).then((res: any) => {
+        if (res.status === 200) {
+          toast.success("Xoá người dùng thành công");
+          setUsers(users.filter((user) => user._id !== id));
+        }
+      });
+    }
+  };
 
   const validation = (msgError: any) => {
     if (!createdUser.email.trim()) {
@@ -99,6 +127,7 @@ const AdminUsers = () => {
               type="text"
               placeholder="email"
               isInvalid={!!errors.email}
+              value={createdUser.email}
             />
             <Form.Control.Feedback type="invalid">
               {errors.email}
@@ -113,6 +142,7 @@ const AdminUsers = () => {
               type="password"
               placeholder="password"
               isInvalid={!!errors.password}
+              value={createdUser.password}
               onChange={(evt: any) => handleChangeInfo(evt, "password")}
             />
             <Form.Control.Feedback type="invalid">
@@ -128,6 +158,7 @@ const AdminUsers = () => {
               type="text"
               placeholder="fullName"
               isInvalid={!!errors.fullName}
+              value={createdUser.fullName}
               onChange={(evt: any) => handleChangeInfo(evt, "fullName")}
             />
             <Form.Control.Feedback type="invalid">
@@ -143,6 +174,7 @@ const AdminUsers = () => {
               type="text"
               placeholder="phone"
               isInvalid={!!errors.phone}
+              value={createdUser.phone}
               onChange={(evt: any) => handleChangeInfo(evt, "phone")}
             />
             <Form.Control.Feedback type="invalid">
@@ -152,7 +184,8 @@ const AdminUsers = () => {
           <FloatingLabel className="mt-3" controlId="role" label="Vai trò">
             <Form.Select
               className="mt-3"
-              onChange={(evt: any) => handleChangeInfo(evt, "email")}
+              onChange={(evt: any) => handleChangeInfo(evt, "role")}
+              value={createdUser.role}
             >
               <option value="ROLE_ADMIN">Admin</option>
               <option value="ROLE_USER">User</option>
@@ -210,7 +243,6 @@ const AdminUsers = () => {
                       <td>
                         <img src={user.avatar} alt="" width={50} height={50} />
                       </td>
-
                       <td>
                         <Link to={`/admin/update-user/${user._id}`}>
                           <button type="button" className="btn btn-primary">
@@ -224,7 +256,11 @@ const AdminUsers = () => {
                         </button>
                       </td>
                       <td>
-                        <button type="button" className="btn btn-danger">
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteUser(user._id)}
+                        >
                           Delete
                         </button>
                       </td>

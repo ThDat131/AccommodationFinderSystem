@@ -10,18 +10,17 @@ import { createComment } from "../../services/AuthApis";
 import { toast } from "react-toastify";
 import Comment from "../../components/Comment/Comment";
 import { io } from "socket.io-client";
+import { IComment } from "../../interface/IComment";
 
 const DetailPost = () => {
-  const socket = io("http://localhost:8085", {
-    reconnection: true,
-  });
+  const socket = io("http://localhost:8085");
   const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
   const [imgPos, setImgPos] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [comment, setComment] = useState<string>("");
-  const [comments, setComments] = useState<Array<Comment>>([]);
+  const [comments, setComments] = useState<Array<IComment>>([]);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [status, setStatus] = useState(false);
   // const [listFollow, setListFollow] = useState([]);
@@ -70,6 +69,16 @@ const DetailPost = () => {
   useEffect(() => {
     socket.on("receive_comment", (data: any) => {
       setComments([...comments, data]);
+    });
+  }, [comments]);
+
+  useEffect(() => {
+    socket.on("reply_comment", (data: any) => {
+      setComments(() => {
+        return comments.map((comment: IComment) => {
+          return comment._id === data._id ? data : comment;
+        });
+      });
     });
   }, [comments]);
 
