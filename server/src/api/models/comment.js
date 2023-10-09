@@ -28,6 +28,9 @@ const Comment = new Schema(
           type: String,
           require: true,
         },
+        active: {
+          type: Boolean,
+        },
         commentId: {
           type: Schema.Types.ObjectId,
           require: true,
