@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { editReplyComment } from "../../services/AuthApis";
+import { deleteReplyComment, editReplyComment } from "../../services/AuthApis";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { MyUserContext } from "../../App";
@@ -7,7 +7,7 @@ import { MyUserContext } from "../../App";
 const ReplyComment = ({ reply, commentId }) => {
   const [isEditReply, setIsEditReply] = useState<boolean>(false);
   const [editedReply, setEditedReply] = useState<string>("");
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [user, _dispatch] = useContext(MyUserContext);
 
   const handleChangeReplyComment = () => {
@@ -16,8 +16,20 @@ const ReplyComment = ({ reply, commentId }) => {
       userId: reply.userId._id,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("edit_comment", res.data);
-        setIsEditReply(false)
+        socket.timeout(1000).emit("edit_comment", res.data);
+        setIsEditReply(false);
+      }
+    });
+  };
+
+  const handleDeleteReply = (commentId, replyId) => {
+    confirm("Bạn có chắc chắn muốn xoá không?");
+    if (!confirm) return;
+    deleteReplyComment(commentId, replyId, {
+      userId: reply.userId._id,
+    }).then((res: any) => {
+      if (res.status === 200) {
+        socket.emit("delete_reply", res.data);
       }
     });
   };
@@ -68,7 +80,7 @@ const ReplyComment = ({ reply, commentId }) => {
           <p className="small mb-0">{reply.content}</p>
         )}
         {/* <p className="small mb-0">{reply.content}</p> */}
-        {user && user._id === reply.userId._id? (
+        {user && user._id === reply.userId._id ? (
           <div className="d-flex gap-2">
             <div
               className="position-relative d-flex gap-2"
@@ -79,6 +91,12 @@ const ReplyComment = ({ reply, commentId }) => {
                 onClick={() => setIsEditReply(true)}
               >
                 Sửa
+              </span>
+              <span
+                className="text-danger"
+                onClick={() => handleDeleteReply(commentId, reply._id)}
+              >
+                Xoá
               </span>
             </div>
           </div>

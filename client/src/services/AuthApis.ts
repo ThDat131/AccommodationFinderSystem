@@ -11,7 +11,7 @@ export const createCategory = async (data) => {
             }
         })
         return res
-    } catch(err) {
+    } catch (err) {
         console.error(err)
     }
 }
@@ -54,7 +54,7 @@ export const createLandlord = async (data: any) => {
     }
 }
 
-export const createComment = async(data: any) => {
+export const createComment = async (data: any) => {
     try {
         const res = await axios.post(`${BASE_URL}/api/comments`, data, {
             headers: {
@@ -92,6 +92,35 @@ export const editComment = async (commentId: string, data: any) => {
         return err
     }
 }
+
+export const deleteComment = async (id: string, data: any) => {
+    try {
+        const res = await axios.delete(`${BASE_URL}/api/comments/${id}`, {
+            headers: {
+                Authorization: cookie.load("token")
+            },
+            data: data
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const deleteReplyComment = async (id: string, replyId: string, data: any) => {
+    try {
+        const res = await axios.delete(`${BASE_URL}/api/comments/${id}/replies/${replyId} `, {
+            headers: {
+                Authorization: cookie.load("token")
+            },
+            data: data
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
 
 export const editReplyComment = async (commentId: string, replyId: string, data: any) => {
     try {

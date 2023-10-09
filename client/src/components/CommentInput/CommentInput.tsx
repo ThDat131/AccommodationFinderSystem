@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { MyUserContext } from "../../App";
 
 const CommentInput = ({ user, comment, commentParent, isClose }) => {
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [commentContent, setCommentContent] = useState<string>("");
   const [currentUser, _dispatch] = useContext(MyUserContext)
   useEffect(() => {
@@ -17,7 +17,7 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
     }).then((res: any) => {
       if (res.status === 200) {
         // console.log(res.data);
-        socket.emit("reply_comment", res.data);
+        socket.timeout(1000).emit("reply_comment", res.data);
         setCommentContent("");
         isClose(true);
       }

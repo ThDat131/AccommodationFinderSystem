@@ -110,14 +110,14 @@ const CommentsController = {
       }
 
       reply.content = contentReply; // chỉnh sửa lại nội dụng của phản hồi
-      const newComment = await comment.save(); // lưu lại bình luận
-      const newComment1 = newComment
+      await comment.save(); // lưu lại bình luận
+      const newComment = await CommentModel.findById(commentId)
         .populate({
           path: "userId",
           model: "User",
         })
         .populate({ path: "replies.userId", model: "User" });
-      return res.status(200).json(newComment1);
+      return res.status(200).json(newComment);
     } catch (error) {
       return next(error);
     }
@@ -152,11 +152,15 @@ const CommentsController = {
       if (!reply) {
         return res.status(404).json("Reply not found");
       }
-
       reply.remove();
       await comment.save();
-
-      return res.status(200).json(comment);
+      const newComment = await CommentModel.findById(commentId)
+        .populate({
+          path: "userId",
+          model: "User",
+        })
+        .populate({ path: "replies.userId", model: "User" });
+      return res.status(200).json(newComment);
     } catch (error) {
       return next(error);
     }

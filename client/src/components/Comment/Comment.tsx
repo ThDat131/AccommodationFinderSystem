@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import CommentInput from "../CommentInput/CommentInput";
 import { io } from "socket.io-client";
-import { editComment } from "../../services/AuthApis";
+import { deleteComment, editComment } from "../../services/AuthApis";
 import { MyUserContext } from "../../App";
 import ReplyComment from "../ReplyComment/ReplyComment";
 import { toast } from "react-toastify";
 
 const Comment = ({ comment }) => {
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [showCommentReplyInput, setShowCommentReplyInput] =
     useState<boolean>(false);
 
@@ -23,8 +23,19 @@ const Comment = ({ comment }) => {
       content: editedComment,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("edit_comment", res.data);
+        socket.timeout(1000).emit("edit_comment", res.data);
         setIsEdit(false);
+      }
+    });
+  };
+
+  const handleDeleteComment = (id: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xoá không?")) {
+      return;
+    }
+    deleteComment(id, { userId: user._id }).then((res: any) => {
+      if (res.status === 200) {
+        socket.emit("delete_comment", id);
       }
     });
   };
@@ -97,7 +108,12 @@ const Comment = ({ comment }) => {
                     >
                       Sửa
                     </span>
-                    <span className="text-danger">Xoá</span>
+                    <span
+                      className="text-danger"
+                      onClick={() => handleDeleteComment(comment._id)}
+                    >
+                      Xoá
+                    </span>
                   </>
                 ) : (
                   ""
