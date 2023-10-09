@@ -31,18 +31,18 @@ app.use((err, req, res, next) => {
 
 // configuration socket.io
 const server = http.createServer(app);
-const io = new Server(server, {
+const io = new Server( server, {
   cors: {
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 io.on("connection", (socket) => {
   socket.on("send_comment", (newComment) => {
     socket.broadcast.emit("receive_comment", newComment);
   });
 
-  socket.on("reply_comment", data => {
+  socket.on("reply_comment", (data) => {
     socket.broadcast.emit("reply_comment", data);
   });
 
@@ -50,9 +50,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("edit_comment", data);
   });
 
-  socket.on("delete_comment", (data => {
+  socket.on("delete_comment", (data) => {
     socket.broadcast.emit("delete_comment", data);
-  }));
+  });
 
   socket.on("send_notification", (newNotification) => {
     socket.broadcast.emit("receive_notification", newNotification);
@@ -70,6 +70,7 @@ app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
 app.use("/api", NotificationsRoute);
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);
 });
+
