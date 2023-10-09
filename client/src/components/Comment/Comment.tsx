@@ -1,20 +1,44 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CommentInput from "../CommentInput/CommentInput";
 import { io } from "socket.io-client";
+import { deleteComment, editComment } from "../../services/AuthApis";
+import { MyUserContext } from "../../App";
+import ReplyComment from "../ReplyComment/ReplyComment";
+import { toast } from "react-toastify";
 
 const Comment = ({ comment }) => {
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [showCommentReplyInput, setShowCommentReplyInput] =
     useState<boolean>(false);
 
+  const [user, _dispatch] = useContext(MyUserContext);
   const [replyComment, _setReplyComment] = useState<string>("");
   const [replies, setReplies] = useState([]);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editedComment, setEditedComment] = useState<string>("");
 
-  const handleChangeComment = () => {
-    console.log(editedComment)
-  }
+  const handleChangeComment = (id: string) => {
+    editComment(id, {
+      userId: comment.userId._id,
+      content: editedComment,
+    }).then((res: any) => {
+      if (res.status === 200) {
+        socket.timeout(1000).emit("edit_comment", res.data);
+        setIsEdit(false);
+      }
+    });
+  };
+
+  const handleDeleteComment = (id: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xoá không?")) {
+      return;
+    }
+    deleteComment(id, { userId: user._id }).then((res: any) => {
+      if (res.status === 200) {
+        socket.emit("delete_comment", id);
+      }
+    });
+  };
 
   useEffect(() => {
     setReplies(comment.replies);
@@ -45,10 +69,16 @@ const Comment = ({ comment }) => {
                 value={editedComment}
                 onChange={(evt: any) => setEditedComment(evt.target.value)}
               />
-              <button className="btn btn-danger" onClick={() => setIsEdit(false)}>
+              <button
+                className="btn btn-danger"
+                onClick={() => setIsEdit(false)}
+              >
                 Huỷ
               </button>
-              <button className="btn btn-primary" onClick={handleChangeComment}>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleChangeComment(comment._id)}
+              >
                 Xác nhận
               </button>
             </div>
@@ -57,23 +87,41 @@ const Comment = ({ comment }) => {
           )}
 
           <div className="d-flex gap-2">
-            <div
-              className="position-relative d-flex gap-2"
-              style={{ cursor: "pointer" }}
-            >
-              <span
-                className="text-secondary"
-                onClick={() => {
-                  setShowCommentReplyInput(!showCommentReplyInput);
-                }}
+            {user ? (
+              <div
+                className="position-relative d-flex gap-2"
+                style={{ cursor: "pointer" }}
               >
-                Phản hồi
-              </span>
-              <span className="text-primary" onClick={() => setIsEdit(!isEdit)}>
-                Sửa
-              </span>
-              <span className="text-danger">Xoá</span>
-            </div>
+                <span
+                  className="text-secondary"
+                  onClick={() => {
+                    setShowCommentReplyInput(!showCommentReplyInput);
+                  }}
+                >
+                  Phản hồi
+                </span>
+                {user._id === comment.userId._id ? (
+                  <>
+                    <span
+                      className="text-primary"
+                      onClick={() => setIsEdit(!isEdit)}
+                    >
+                      Sửa
+                    </span>
+                    <span
+                      className="text-danger"
+                      onClick={() => handleDeleteComment(comment._id)}
+                    >
+                      Xoá
+                    </span>
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
@@ -89,32 +137,7 @@ const Comment = ({ comment }) => {
         {replies &&
           replies.map((reply: any, index: number) => {
             return (
-              <div key={index} className="ms-5 d-flex gap-2 mb-3">
-                <img
-                  className="rounded-circle shadow-1-strong me-3"
-                  src={reply.userId.avatar}
-                  alt="avatar"
-                  width="65"
-                  height="65"
-                />
-                <div className="flex-grow-1 flex-shrink-1 d-flex flex-column">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p className="mb-1" style={{ fontWeight: 600 }}>
-                      {reply.userId.fullName}
-                    </p>
-                  </div>
-                  <p className="small mb-0">{reply.content}</p>
-                  <div className="d-flex gap-2">
-                    <div
-                      className="position-relative d-flex gap-2"
-                      style={{ cursor: "pointer" }}
-                    >
-                      {/* <span className="text-primary">Sửa</span>
-                    <span className="text-danger">Xoá</span> */}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ReplyComment reply={reply} key={index} commentId={comment._id} />
             );
           })}
       </div>

@@ -13,7 +13,7 @@ import { io } from "socket.io-client";
 import { IComment } from "../../interface/IComment";
 
 const DetailPost = () => {
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
@@ -60,7 +60,8 @@ const DetailPost = () => {
       userId: user._id,
     }).then((res: any) => {
       if (res.status === 201) {
-        socket.emit("send_comment", res.data);
+        socket.timeout(1000).emit("send_comment", res.data);
+        console.log(socket);
         setComment("");
       }
     });
@@ -70,10 +71,26 @@ const DetailPost = () => {
     socket.on("receive_comment", (data: any) => {
       setComments([...comments, data]);
     });
-  }, [comments]);
-
-  useEffect(() => {
     socket.on("reply_comment", (data: any) => {
+      setComments(() => {
+        return comments.map((comment: IComment) => {
+          return comment._id === data._id ? data : comment;
+        });
+      });
+    });
+    socket.on("edit_comment", (data: any) => {
+      setComments(() => {
+        return comments.map((comment: IComment) => {
+          return comment._id === data._id ? data : comment;
+        });
+      });
+    });
+    socket.on("delete_comment", (data: any) => {
+      setComments(() => {
+        return comments.filter((comment) => comment._id !== data);
+      });
+    });
+    socket.on("delete_reply", (data: any) => {
       setComments(() => {
         return comments.map((comment: IComment) => {
           return comment._id === data._id ? data : comment;

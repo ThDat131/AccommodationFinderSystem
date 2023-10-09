@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { replyComment } from "../../services/AuthApis";
 import { io } from "socket.io-client";
+import { MyUserContext } from "../../App";
 
 const CommentInput = ({ user, comment, commentParent, isClose }) => {
-  const socket = io("http://localhost:8085");
+  const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [commentContent, setCommentContent] = useState<string>("");
+  const [currentUser, _dispatch] = useContext(MyUserContext)
   useEffect(() => {
     setCommentContent(comment);
   }, [comment]);
   const handleComment = () => {
     replyComment(commentParent._id, {
       content: commentContent,
-      userId: commentParent.userId._id,
+      userId: currentUser._id,
     }).then((res: any) => {
       if (res.status === 200) {
         // console.log(res.data);
-        socket.emit("reply_comment", res.data);
+        socket.timeout(1000).emit("reply_comment", res.data);
         setCommentContent("");
-        isClose(true)
+        isClose(true);
       }
     });
   };

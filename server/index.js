@@ -46,8 +46,19 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("reply_comment", data);
   });
 
+  socket.on("edit_comment", (data) => {
+    socket.broadcast.emit("edit_comment", data);
+  });
+
+  socket.on("delete_comment", (data => {
+    socket.broadcast.emit("delete_comment", data);
+  }));
+
   socket.on("send_notification", (newNotification) => {
     socket.broadcast.emit("receive_notification", newNotification);
+  });
+  socket.on("delete_reply", (data) => {
+    socket.broadcast.emit("delete_reply", data);
   });
 });
 
