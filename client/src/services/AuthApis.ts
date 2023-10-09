@@ -69,7 +69,33 @@ export const createComment = async(data: any) => {
 
 export const replyComment = async (id: string, data: any) => {
     try {
-        const res = await axios.put(`${BASE_URL}/api/comments/${id}`, data, {
+        const res = await axios.put(`${BASE_URL}/api/comments/${id}/reply`, data, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const editComment = async (commentId: string, data: any) => {
+    try {
+        const res = await axios.put(`${BASE_URL}/api/comments/${commentId}`, data, {
+            headers: {
+                Authorization: cookie.load("token")
+            }
+        })
+        return res
+    } catch (err) {
+        return err
+    }
+}
+
+export const editReplyComment = async (commentId: string, replyId: string, data: any) => {
+    try {
+        const res = await axios.put(`${BASE_URL}/api/comments/${commentId}/replies/${replyId}`, data, {
             headers: {
                 Authorization: cookie.load("token")
             }

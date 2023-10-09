@@ -77,7 +77,12 @@ const CommentsController = {
         { _id: req.params.id },
         { content },
         { new: true }
-      );
+      )
+        .populate({
+          path: "userId",
+          model: "User",
+        })
+        .populate({ path: "replies.userId", model: "User" });
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
       }
@@ -104,9 +109,14 @@ const CommentsController = {
       }
 
       reply.content = contentReply; // chỉnh sửa lại nội dụng của phản hồi
-
-      comment.save(); // lưu lại bình luận
-      return res.status(200).json(reply);
+      const newComment = await comment.save(); // lưu lại bình luận
+      const newComment1 = newComment
+        .populate({
+          path: "userId",
+          model: "User",
+        })
+        .populate({ path: "replies.userId", model: "User" });
+      return res.status(200).json(newComment1);
     } catch (error) {
       return next(error);
     }

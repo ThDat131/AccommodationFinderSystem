@@ -80,6 +80,13 @@ const DetailPost = () => {
         });
       });
     });
+    socket.on("edit_comment", (data: any) => {
+      setComments(() => {
+        return comments.map((comment: IComment) => {
+          return comment._id === data._id ? data : comment;
+        });
+      });
+    });
   }, [comments]);
 
   useEffect(() => {
