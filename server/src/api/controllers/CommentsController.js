@@ -106,8 +106,16 @@ const CommentsController = {
 
       reply.content = contentReply; // chỉnh sửa lại nội dụng của phản hồi
 
-      comment.save(); // lưu lại bình luận
-      return res.status(200).json(reply);
+      await comment.save(); // lưu lại bình luận
+
+      const newComment = await CommentModel.findById(commentId)
+        .populate({
+          path: "userId",
+          model: "User",
+        })
+        .populate({ path: "replies.userId", model: "User" });
+
+      return res.status(200).json(newComment);
     } catch (error) {
       return next(error);
     }
