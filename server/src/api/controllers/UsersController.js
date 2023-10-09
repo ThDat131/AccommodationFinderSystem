@@ -59,7 +59,7 @@ const UsersController = {
           avatar: default_avatar,
           landlordId: null,
         });
-
+      
         const { password: demo, ...data } = user._doc;
         return res.status(201).json(data);
       }
@@ -154,7 +154,7 @@ const UsersController = {
     try {
       const users = await UserModel.find({
         phone: { $regex: req.query?.phone || "", $options: "i" },
-        role: {$in: ['ROLE_USER', 'ROLE_LANDLORD']}
+        role: { $in: ["ROLE_USER", "ROLE_LANDLORD"] },
       });
       if (!users) {
         return next(createError(404, "Users not found!"));
@@ -170,7 +170,7 @@ const UsersController = {
     try {
       const users = await UserModel.find({
         phone: { $regex: req.query?.phone || "", $options: "i" },
-        role: 'ROLE_ADMIN',
+        role: "ROLE_ADMIN",
       });
       if (!users) {
         return next(createError(404, "Users not found!"));
@@ -180,7 +180,7 @@ const UsersController = {
       next(err);
     }
   },
- 
+
   // [PUT] /users/:id/updateUser  {fullName, avatar, phone}
   updateUser: async (req, res, next) => {
     try {
@@ -258,7 +258,7 @@ const UsersController = {
       const { fullName, email, phone, password, role, active } = req.body;
       var salt = bcrypt.genSaltSync(10);
       var hash = bcrypt.hashSync(password, salt);
-      const default_avatar = 'https://phongtro123.com/images/default-user.png'
+      const default_avatar = "https://phongtro123.com/images/default-user.png";
       const user = await UserModel.create({
         fullName,
         email,

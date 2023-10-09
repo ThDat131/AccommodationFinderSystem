@@ -32,6 +32,10 @@ const Comment = new Schema(
           type: Schema.Types.ObjectId,
           require: true,
         },
+        createAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
       {
         timestamps: true,
@@ -42,5 +46,7 @@ const Comment = new Schema(
     timestamps: true,
   }
 );
+
 Comment.plugin(mongooseDelete, { overrideMethods: "all" });
+
 export default model("Comment", Comment);

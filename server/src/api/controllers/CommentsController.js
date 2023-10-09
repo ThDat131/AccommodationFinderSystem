@@ -9,7 +9,7 @@ const CommentsController = {
         content,
         postId,
         userId,
-      }); 
+      });
       await comment.populate("userId");
       return res.status(201).json(comment);
     } catch (error) {
@@ -68,12 +68,50 @@ const CommentsController = {
       return next(error);
     }
   },
+
+  //[PUT] /api/comments/:id => body { content, userId } truyền thêm userId để verify chứ k dùng nên dưới hàm edit không có userId
   edit: async (req, res, next) => {
     try {
+      const { content } = req.body;
+      const comment = await CommentModel.findByIdAndUpdate(
+        { _id: req.params.id },
+        { content },
+        { new: true }
+      );
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      return res.status(200).json(comment);
     } catch (error) {
       return next(error);
     }
   },
+  //[PUT] /api/comments/:id/replies/:replyId  => body { contentReply, userId } truyền thêm userId để verify chứ k dùng nên dưới hàm editReply không có userId
+  editReply: async (req, res, next) => {
+    try {
+      const commentId = req.params.id;
+      const replyId = req.params.replyId;
+      const { contentReply } = req.body;
+
+      const comment = await CommentModel.findById({ _id: commentId }); // tìm bình luận
+      if (!comment) {
+        return res.status(404).json("Comment not found");
+      }
+
+      const reply = comment.replies.id(replyId); // tìm phản hồi của bình luận
+      if (!reply) {
+        return res.status(404).json("Reply not found");
+      }
+
+      reply.content = contentReply; // chỉnh sửa lại nội dụng của phản hồi
+
+      comment.save(); // lưu lại bình luận
+      return res.status(200).json(reply);
+    } catch (error) {
+      return next(error);
+    }
+  },
+
   delete: async (req, res, next) => {
     try {
     } catch (error) {

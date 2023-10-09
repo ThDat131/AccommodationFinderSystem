@@ -55,12 +55,22 @@ export const verifySuperAdmin = (req, res, next) => {
   });
 };
 
-// export const verifyPost = (req, res, next) => {
-//   verifyToken(req, res, () => {
-//     if (req.user.role === "ROLE_USER" || req.user.role === "ROLE_LANDLORD") {
-//       next();
-//     } else {
-//       return res.status(401).send("Unauthorized");
-//     }
-//   });
-// };
+export const verifyEditComment = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.id === req.body.userId) {
+      next();
+    } else {
+      return res.status(401).send("Unauthorized");
+    }
+  });
+}
+
+export const verifyEditReplyComment = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.id === req.body.userId) {
+      next();
+    } else {
+      return res.status(401).send("Unauthorized");
+    }
+  });
+}
