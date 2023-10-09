@@ -6,7 +6,7 @@ import { MyUserContext } from "../../App";
 const CommentInput = ({ user, comment, commentParent, isClose }) => {
   const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [commentContent, setCommentContent] = useState<string>("");
-  const [currentUser, _dispatch] = useContext(MyUserContext)
+  const [currentUser, _dispatch] = useContext(MyUserContext);
   useEffect(() => {
     setCommentContent(comment);
   }, [comment]);

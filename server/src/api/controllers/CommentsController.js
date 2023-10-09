@@ -142,25 +142,39 @@ const CommentsController = {
       const replyId = req.params.replyId;
 
       // tìm bình luận
-      const comment = await CommentModel.findById({ _id: commentId });
-      if (!comment) {
-        return res.status(404).json("Comment not found");
-      }
-
-      // tìm phản hồi của bình luận
-      const reply = comment.replies.id(replyId);
-      if (!reply) {
-        return res.status(404).json("Reply not found");
-      }
-      reply.remove();
-      await comment.save();
-      const newComment = await CommentModel.findById(commentId)
+      const comment = await CommentModel.findByIdAndUpdate(
+        { _id: commentId },
+        {
+          $pull: { replies: { _id: replyId } },
+        },
+        {
+          new: true,
+        }
+      )
         .populate({
           path: "userId",
           model: "User",
         })
         .populate({ path: "replies.userId", model: "User" });
-      return res.status(200).json(newComment);
+      if (!comment) {
+        return res.status(404).json("Comment not found");
+      }
+
+      // tìm phản hồi của bình luận
+      // const reply = comment.replies.id(replyId);
+      // const reply = comment.replies.id(replyId);
+      // if (!reply) {
+      //   return res.status(404).json("Reply not found");
+      // }
+
+      // await comment.save();
+      // const newComment = await CommentModel.findById(commentId)
+      // .populate({
+      //   path: "userId",
+      //   model: "User",
+      // })
+      // .populate({ path: "replies.userId", model: "User" });
+      return res.status(200).json(comment);
     } catch (error) {
       return next(error);
     }
