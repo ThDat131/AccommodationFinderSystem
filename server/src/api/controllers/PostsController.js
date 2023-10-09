@@ -107,7 +107,7 @@ const PostsController = {
       const posts = await PostModel.find(query).populate("userId");
 
       if (!posts) {
-        return res.status(404).send("Posts not found");
+        return res.status(404).send("Post not found");
       }
       return res.status(200).json(posts);
     } catch (error) {

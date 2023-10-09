@@ -27,6 +27,7 @@ const CommentsController = {
           commentId,
           content,
           userId,
+          actice: 1,
         };
         const newComment = await CommentModel.findByIdAndUpdate(
           { _id: commentId },
@@ -121,9 +122,41 @@ const CommentsController = {
       return next(error);
     }
   },
-
+  //[DELETE] /api/comments/:id => body {userId} userId này là của comment
   delete: async (req, res, next) => {
     try {
+      const deleteComment = await CommentModel.delete({ _id: req.params.id });
+      if (!deleteComment) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      return res.status(200).json({ message: "Comment has deleted" });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  //[DELETE] /api/comments/:id/replies/:replyId  => body { userId } userId này là của reply
+  deleteReply: async (req, res, next) => {
+    try {
+      const commentId = req.params.id;
+      const replyId = req.params.replyId;
+
+      // tìm bình luận
+      const comment = await CommentModel.findById({ _id: commentId });
+      if (!comment) {
+        return res.status(404).json("Comment not found");
+      }
+
+      // tìm phản hồi của bình luận
+      const reply = comment.replies.id(replyId);
+      if (!reply) {
+        return res.status(404).json("Reply not found");
+      }
+
+      reply.remove();
+      await comment.save();
+
+      return res.status(200).json(comment);
     } catch (error) {
       return next(error);
     }

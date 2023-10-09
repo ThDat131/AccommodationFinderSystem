@@ -9,6 +9,7 @@ router.put("/comments/:id/reply", verifyToken, CommentsController.reply); // Ph�
 router.get("/comments/:postId", CommentsController.getAll); // Lấy tất cả bình luận theo id bài viết (post)
 router.put("/comments/:id", verifyEditComment, CommentsController.edit); // Chỉnh sửa bình luận
 router.put("/comments/:id/replies/:replyId", verifyEditReplyComment, CommentsController.editReply); // Chỉnh sửa phản hồi bình luận
-router.delete("/comments/:id", verifyToken, CommentsController.delete); // Xoá bình luận
+router.delete("/comments/:id", verifyEditComment, CommentsController.delete); // Xoá bình luận
+router.delete("/comments/:id/replies/:replyId", verifyEditReplyComment, CommentsController.deleteReply); // Xoá phản hồi
 
 export default  router;
