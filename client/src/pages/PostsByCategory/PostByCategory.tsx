@@ -23,7 +23,6 @@ const PostByCategory = () => {
     getPosts({categoryId: id}).then((res) => {
       if (res.status === 200) {
         setPosts(res.data);
-        console.log(res.data);
         setIsLoading(false);
       }
     });

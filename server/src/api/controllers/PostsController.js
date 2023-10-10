@@ -45,7 +45,7 @@ const PostsController = {
       });
 
       // const followers = await FollowModel.find({follower: userId})
-      // const notifications = 
+      // const notifications =
 
       return res.status(201).json(post);
     } catch (error) {
@@ -58,8 +58,10 @@ const PostsController = {
     try {
       const query = {};
       const {
-        price,
-        acreage,
+        minPrice,
+        maxPrice,
+        minAcreage,
+        maxAcreage,
         categoryId,
         province,
         district,
@@ -68,12 +70,18 @@ const PostsController = {
         latitude,
       } = req.query;
 
-      if (price) {
-        query.price = { $lte: parseFloat(price) };
+      if (minPrice && maxPrice) {
+        query.price = {
+          $gte: parseFloat(minPrice),
+          $lte: parseFloat(maxPrice),
+        };
       }
 
-      if (acreage) {
-        query.acreage = { $lte: parseFloat(acreage) };
+      if (minAcreage && maxAcreage) {
+        query.acreage = {
+          $gte: parseFloat(minAcreage),
+          $lte: parseFloat(maxAcreage),
+        };
       }
 
       if (categoryId) {
