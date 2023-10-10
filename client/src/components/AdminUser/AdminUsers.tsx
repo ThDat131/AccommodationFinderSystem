@@ -66,13 +66,11 @@ const AdminUsers = () => {
         setShow(false);
       }
     });
-    console.log(createdUser);
   };
 
   const navigate = useNavigate();
   useEffect(() => {
     getAllUser().then((res) => {
-      console.log(res.data);
       setUsers(res.data);
     });
   }, []);
@@ -208,22 +206,22 @@ const AdminUsers = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container px-5 pt-2">
+      <div className="px-5 pt-2">
         <div className="row justify-content-center align-items-center">
           <div className="col-12">
-            <h1 className="text-center text-primary">List user</h1>
+            <h1 className="text-center text-primary">Quản lý người dùng</h1>
             <button className="btn btn-primary my-3" onClick={handleShow}>
               Tạo người dùng
             </button>
             <Table striped hover variant="light">
               <thead>
                 <tr>
-                  <th>Full Name</th>
+                  <th >Họ và tên</th>
                   <th>Email</th>
-                  <th>Phone</th>
-                  <th>Role</th>
-                  <th>Active</th>
-                  <th>Avatar</th>
+                  <th>Số điện thoại</th>
+                  <th>Vai trò</th>
+                  <th className="text-center">Trạng thái</th>
+                  <th className="text-center">ảnh đại diện</th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -233,35 +231,35 @@ const AdminUsers = () => {
                 {users.map((user, index) => {
                   return (
                     <tr key={index}>
-                      <td>{user.fullName}</td>
-                      <td>{user.email}</td>
-                      <td>{user.phone}</td>
-                      <td>{user.role}</td>
-                      <td>
+                      <td className="align-middle">{user.fullName}</td>
+                      <td className="align-middle">{user.email}</td>
+                      <td className="align-middle">{user.phone}</td>
+                      <td className="align-middle">{user.role}</td>
+                      <td className="align-middle text-center">
                         {user.role ? <i className="fa-solid fa-check"></i> : ""}
                       </td>
-                      <td>
+                      <td className="text-center">
                         <img src={user.avatar} alt="" width={50} height={50} />
                       </td>
-                      <td>
+                      <td className="align-middle">
                         <Link to={`/admin/update-user/${user._id}`}>
                           <button type="button" className="btn btn-primary">
-                            Update
+                            Cập nhật
                           </button>
                         </Link>
                       </td>
-                      <td>
+                      <td className="align-middle">
                         <button type="button" className="btn btn-primary">
-                          Reset Password
+                          Đổi mật khẩu
                         </button>
                       </td>
-                      <td>
+                      <td className="align-middle">
                         <button
                           type="button"
                           className="btn btn-danger"
                           onClick={() => handleDeleteUser(user._id)}
                         >
-                          Delete
+                          Xoá
                         </button>
                       </td>
                     </tr>

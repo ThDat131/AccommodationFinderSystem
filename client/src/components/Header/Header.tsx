@@ -37,7 +37,7 @@ const Header = () => {
 
   return (
     <>
-      <Navbar expand="lg" data-bs-theme="dark" bg="primary">
+      <Navbar className="mb-3" expand="lg" data-bs-theme="dark" bg="primary">
         <Container>
           <Link to="/">
             <Navbar.Brand href="/">
@@ -54,16 +54,16 @@ const Header = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Link to="/">
-                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link href="/">Trang chủ</Nav.Link>
               </Link>
               <Link to={"/find-by-coordinates"}>
                 <Nav.Link href="/find-by-coordinates">
                   Tìm nhà trọ theo toạ độ
                 </Nav.Link>
               </Link>
-              <Nav.Link>Rent a room</Nav.Link>
-              <Nav.Link>Find a room</Nav.Link>
-              <Nav.Link>Find a roommate</Nav.Link>
+              <Nav.Link>Thuê phòng</Nav.Link>
+              <Nav.Link>Tìm phòng</Nav.Link>
+              <Nav.Link>Tìm bạn ở ghép</Nav.Link>
               {user && user.landlordId && user.landlordId.active === true ? (
                 <Link to="/create-post">
                   <Nav.Link href="/create-post">Create Post</Nav.Link>
