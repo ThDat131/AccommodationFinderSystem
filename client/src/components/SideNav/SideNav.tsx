@@ -33,7 +33,7 @@ const SideNav = () => {
               active={selectedNav === 1}
               onClick={() => setSelectedNav(1)}
             >
-              User Management
+              Quản lý người dùng
             </ListGroup.Item>
           </Link>
           <Link to="/admin/categories">
@@ -43,29 +43,33 @@ const SideNav = () => {
               active={selectedNav === 2}
               onClick={() => setSelectedNav(2)}
             >
-              Categories Management
+              Quản lý danh mục
             </ListGroup.Item>
           </Link>
 
-          <ListGroup.Item
+          {/* <ListGroup.Item
             action
             as="li"
             active={selectedNav === 2}
             onClick={() => setSelectedNav(2)}
           >
             Approve Post
-          </ListGroup.Item>
-          <ListGroup.Item
-            action
-            as="li"
-            active={selectedNav === 3}
-            onClick={() => setSelectedNav(3)}
-          >
-            Post
-          </ListGroup.Item>
-          <ListGroup.Item action as="li">
-            Porta ac consectetur ac
-          </ListGroup.Item>
+          </ListGroup.Item> */}
+          <Link to="/admin/stats">
+            <ListGroup.Item
+              action
+              as="li"
+              active={selectedNav === 3}
+              onClick={() => setSelectedNav(3)}
+            >
+              Thống kê
+            </ListGroup.Item>
+          </Link>
+          <Link to="/">
+            <ListGroup.Item action as="li">
+              Trở về trang chủ
+            </ListGroup.Item>
+          </Link>
         </ListGroup>
       </div>
     </>

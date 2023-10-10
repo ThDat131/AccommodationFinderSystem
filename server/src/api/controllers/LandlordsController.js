@@ -1,5 +1,5 @@
 import LandlordModel from "../models/landlord.js";
-import UserdModel from "../models/user.js";
+import UserModel from "../models/user.js";
 
 const LandlordsController = {
   create: async (req, res, next) => {
@@ -23,7 +23,7 @@ const LandlordsController = {
         active: 0,
         images: paths,
       });
-      await UserdModel.findByIdAndUpdate(
+      await UserModel.findByIdAndUpdate(
         { _id: userId },
         { landlordId: landlord._id }
       );
@@ -35,10 +35,19 @@ const LandlordsController = {
 
   update: async (req, res, next) => {
     try {
-      const { active } = req.body.active;
+      const { active } = req.body;
       const landlord = await LandlordModel.findOneAndUpdate(
         { _id: req.params.id },
         { active },
+        { new: true }
+      );
+      await UserModel.findOneAndUpdate(
+        {
+          landlordId: req.params.id,
+        },
+        {
+          role: "ROLE_LANDLORD",
+        },
         { new: true }
       );
       if (!landlord) {

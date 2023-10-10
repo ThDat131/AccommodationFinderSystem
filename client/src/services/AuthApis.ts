@@ -3,6 +3,8 @@ import cookie from "react-cookies";
 
 const BASE_URL = "http://localhost:8085";
 
+// export const getStatsPost = async(data)
+
 export const createCategory = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/api/categories/create/`, data, {

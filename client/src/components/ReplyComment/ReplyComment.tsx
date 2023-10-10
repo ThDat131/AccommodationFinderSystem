@@ -7,6 +7,7 @@ import { MyUserContext } from "../../App";
 const ReplyComment = ({ reply, commentId }) => {
   const [isEditReply, setIsEditReply] = useState<boolean>(false);
   const [editedReply, setEditedReply] = useState<string>("");
+  // const socket = io("http://localhost:8085");
   const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [user, _dispatch] = useContext(MyUserContext);
 
