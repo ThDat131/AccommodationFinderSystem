@@ -1,6 +1,7 @@
 import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
+import Logo from "../../assets/img/D2 -logos_blue.png";
 import Button from "react-bootstrap/Button";
 import './signin.css'
 import HouseImage from "../../assets/img/house-img.png"
@@ -25,9 +26,8 @@ const Signin = () => {
   const handleSubmit = (evt) => {
     evt.preventDefault()
     userSignIn(userSignin).then((res) => {
-      console.log(res)
       if (res.status === 200) {
-        toast.success("Sign In successfully!");
+        toast.success("Đăng nhập thành công");
         cookie.save("token", res.data, {})
         getCurrentUser()
         .then(res => {
@@ -41,11 +41,9 @@ const Signin = () => {
           }
         })
       }
-      if (res.response.status === 404) {
-        toast.error("User not found!");
-      }
-      if (res.response.status === 400) {
-        toast.error("Wrong email or password!");
+
+      if (res.response.status === 400 || res.response.status === 404) {
+        toast.error("Sai tài khoản hoặc mật khẩu");
       }
     });
 
@@ -53,8 +51,8 @@ const Signin = () => {
 
   return (
     <>
-      <div className="container vh-100 d-flex align-items-center justify-content-center">
-        <div className="row container-fluid rounded p-5" style={{}}>
+      <div className="d-flex align-items-center justify-content-center">
+        <div className="row vh-100 container-fluid rounded px-5" style={{}}>
           <div
             className="col-6"
             style={{
@@ -64,11 +62,14 @@ const Signin = () => {
             }}
           ></div>
           <div className="col-6 d-flex flex-column justify-content-center px-5">
-            <Form onSubmit={handleSubmit}>
-              <h1 className="text-center text-primary mb-3">Sign in</h1>
+            <div className="text-center">
+              <img src={Logo} width={250} height={200} color="#0d6efd"/>
+            </div>
+            <Form onSubmit={handleSubmit} style={{marginTop: -20}} className="px-5">
+              <h1 className="text-center text-primary mb-3">Đăng nhập</h1>
               <FloatingLabel
                 controlId="floatingInput"
-                label="Email address"
+                label="Địa chỉ email"
                 className="mb-3"
               >
                 <Form.Control
@@ -83,7 +84,7 @@ const Signin = () => {
               </FloatingLabel>
               <FloatingLabel
                 controlId="floatingPassword"
-                label="Password"
+                label="Mật khẩu"
                 className="mb-3"
               >
                 <Form.Control
@@ -96,22 +97,22 @@ const Signin = () => {
                   }
                 />
               </FloatingLabel>
-              <div className="d-flex align-items-center justify-content-between px-5 mb-3">
-                <Form.Check label="Remember me?" />
-                <a href="">Forgot password?</a>
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <Form.Check label="Nhớ mật khẩu?" />
+                <a href="" className="text-danger">Quên mật khẩu?</a>
               </div>
               <div className="d-grid mb-3">
                 <Button variant="primary" size="lg" type="submit">
-                  Sign In
+                  Đăng nhập
                 </Button>
               </div>
             </Form>
             <div className="mb-3 d-flex justify-content-center align-items-center gap-2">
-              <p className="m-0">Not a member?</p>
-              <Link to={"/signup"}>Sign up</Link>
+              <p className="m-0">chưa đăng ký?</p>
+              <Link to={"/signup"}>Đăng ký</Link>
             </div>
             <div className="mb-3 d-flex justify-content-center align-items-center">
-              <p className="m-0">Or sign up with:</p>
+              <p className="m-0">Đăng nhập với:</p>
             </div>
             <div className="mb-3 d-flex justify-content-center align-items-center">
               <div className="d-flex gap-2">
