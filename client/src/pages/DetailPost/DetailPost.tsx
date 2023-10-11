@@ -196,6 +196,9 @@ const DetailPost = () => {
             </Link>
 
             <h3 className="text-danger my-2">{detailPost.name}</h3>
+            <div className="my-2">
+              <p>Danh mục: {detailPost.categoryId.name}</p>
+            </div>
             <p>Địa chỉ: {detailPost.address}</p>
             <div className="room-info-post d-flex gap-3 align-items-center mb-2">
               <div className="price">
