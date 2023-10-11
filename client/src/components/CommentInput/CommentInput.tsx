@@ -27,7 +27,7 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
     <div className="ms-5 d-flex flex-start w-75 align-items-center gap-2">
       <img
         className="rounded-circle shadow-1-strong me-3"
-        src={user.avatar}
+        src={currentUser.avatar}
         alt="avatar"
         width="40"
         height="40"

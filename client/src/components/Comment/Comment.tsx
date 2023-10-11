@@ -52,8 +52,8 @@ const Comment = ({ comment }) => {
           className="rounded-circle shadow-1-strong me-3"
           src={comment.userId.avatar}
           alt="avatar"
-          width="65"
-          height="65"
+          width="60"
+          height="60"
         />
         <div className="flex-grow-1 flex-shrink-1 d-flex flex-column">
           <div className="d-flex justify-content-between align-items-center">

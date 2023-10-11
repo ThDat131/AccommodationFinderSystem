@@ -1,6 +1,6 @@
 import { Router } from "express";
 import FollowsController from "../controllers/FollowsController.js";
-import { verifyToken } from "../middlewares/verifyToken.js";
+import { verifyToken, verifyUser } from "../middlewares/verifyToken.js";
 
 const router = Router();
 
