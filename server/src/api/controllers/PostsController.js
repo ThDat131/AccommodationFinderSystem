@@ -44,9 +44,6 @@ const PostsController = {
         userId,
       });
 
-      // const followers = await FollowModel.find({follower: userId})
-      // const notifications =
-
       return res.status(201).json(post);
     } catch (error) {
       return next(error);

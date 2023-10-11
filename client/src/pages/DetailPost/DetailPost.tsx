@@ -145,7 +145,7 @@ const DetailPost = () => {
                   src={img}
                   className="d-block w-100"
                   alt=""
-                  style={{ objectFit: "cover", width: "100%", height: "300px" }}
+                  style={{ objectFit: "cover", width: "100%", height: "500px" }}
                 />
               </div>
             ))}
@@ -175,83 +175,79 @@ const DetailPost = () => {
             <span className="visually-hidden">Next</span>
           </button>
         </div>
-        <Link to={`/personal/${detailPost.userId._id}`}>
-          <div
-            className="d-flex align-items-center gap-3 my-3"
-            style={{ cursor: "pointer" }}
-          >
-            <div className="d-flex align-items-center gap-3">
-              <img
-                className="rounded-circle"
-                src={detailPost.userId.avatar}
-                alt=""
-                width={40}
-                height={40}
-              />
-              <p className="m-0 text-dark">{detailPost.userId.fullName}</p>
+        <div className="row">
+          <div className="col-6">
+            <Link to={`/personal/${detailPost.userId._id}`}>
+              <div
+                className="d-flex align-items-center gap-3 my-3"
+                style={{ cursor: "pointer" }}
+              >
+                <div className="d-flex align-items-center gap-3">
+                  <img
+                    className="rounded-circle"
+                    src={detailPost.userId.avatar}
+                    alt=""
+                    width={40}
+                    height={40}
+                  />
+                  <p className="m-0 text-dark">{detailPost.userId.fullName}</p>
+                </div>
+              </div>
+            </Link>
+
+            <h3 className="text-danger my-2">{detailPost.name}</h3>
+            <p>Địa chỉ: {detailPost.address}</p>
+            <div className="room-info-post d-flex gap-3 align-items-center mb-2">
+              <div className="price">
+                <h4 className="text-success" style={{ margin: "0" }}>
+                  {VNDCurrencyFormat.format(detailPost.price)}/tháng
+                </h4>
+              </div>
+              <div className="acreage">
+                <p style={{ margin: "0" }}>
+                  {detailPost.acreage} m<sup>2</sup>
+                </p>
+              </div>
+              <div>
+                <p style={{ margin: "0" }}>
+                  Ngày đăng bài: {new Date(detailPost.createdAt).getDate()}/
+                  {new Date(detailPost.createdAt).getMonth() + 1}/
+                  {new Date(detailPost.createdAt).getFullYear()}
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="my-2">Thông tin mô tả</h3>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(detailPost.content, {
+                    USE_PROFILES: { html: true },
+                  }),
+                }}
+              ></div>
             </div>
           </div>
-        </Link>
 
-        <h3 className="text-danger my-2">{detailPost.name}</h3>
-        <p>Địa chỉ: {detailPost.address}</p>
-        <div className="room-info-post d-flex gap-3 align-items-center mb-2">
-          <div className="price">
-            <h4 className="text-success" style={{ margin: "0" }}>
-              {VNDCurrencyFormat.format(detailPost.price)}/tháng
-            </h4>
-          </div>
-          <div className="acreage">
-            <p style={{ margin: "0" }}>
-              {detailPost.acreage} m<sup>2</sup>
-            </p>
-          </div>
-          <div>
-            <p style={{ margin: "0" }}>
-              Ngày đăng bài: {new Date(detailPost.createdAt).getDate()}/
-              {new Date(detailPost.createdAt).getMonth() + 1}/
-              {new Date(detailPost.createdAt).getFullYear()}
-            </p>
+          <div className="col-6">
+            <h3 className="my-2">Vị trí</h3>
+            <div className="w-100 my-3">
+              <Map viewportData={viewportData} layer={false} />
+            </div>
           </div>
         </div>
-        <div>
-          <h3 className="my-2">Thông tin mô tả</h3>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(detailPost.content, {
-                USE_PROFILES: { html: true },
-              }),
-            }}
-          ></div>
-        </div>
-        <div>
-          <h3 className="my-2">Vị trí</h3>
-          <div className="w-100 h-100 my-3">
-            <Map viewportData={viewportData} layer={false} />
-          </div>
-        </div>
-        <div>
+
+        <div className="w-100">
           <h3 className="my-2">Bình luận</h3>
-          <div className="row d-flex justify-content-start my-3">
-            <div className="col-md-12 col-lg-10 col-xl-8">
+          <div className="d-flex justify-content-start my-3">
+            <div className="w-100">
               <div className="d-flex flex-start w-100">
-                {user === null ? (
-                  <img
-                    className="rounded-circle shadow-1-strong me-3"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Font_Awesome_5_solid_user.svg/1792px-Font_Awesome_5_solid_user.svg.png"
-                    alt="avatar"
-                    width="40"
-                    height="40"
-                  />
-                ) : (
-                  <img
-                    className="rounded-circle shadow-1-strong me-3"
-                    src={user.avatar}
-                    alt="avatar"
-                    width="40"
-                    height="40"
-                  />
-                )}
+                <img
+                  className="rounded-circle shadow-1-strong me-3"
+                  src={user.avatar}
+                  alt="avatar"
+                  width="60"
+                  height="60"
+                />
 
                 <div className="form-floating w-100">
                   <textarea

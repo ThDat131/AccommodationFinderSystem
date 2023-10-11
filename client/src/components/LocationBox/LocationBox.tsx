@@ -4,7 +4,7 @@ const LocationBox = ({ category, image, locationName }) => {
     <div
       className="d-flex flex-column justify-content-center rounded overflow-hidden hover"
       style={{
-        boxShadow: "1px 1px 9px 2px rgba(0, 0, 0, 0.5)",
+        boxShadow: "1px 1px 9px 2px rgba(0, 0, 0, 0.25)",
         width: "250px",
         cursor: "pointer",
       }}

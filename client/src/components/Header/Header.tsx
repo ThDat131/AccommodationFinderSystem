@@ -60,7 +60,7 @@ const Header = () => {
               })}
               {user && user.landlordId && user.landlordId.active === true ? (
                 <Nav.Link as={Link} to="/create-post">
-                  Create Post
+                  Đăng tin
                 </Nav.Link>
               ) : (
                 ""
@@ -85,8 +85,8 @@ const Header = () => {
                   <img
                     src={user.avatar}
                     alt=""
-                    width={30}
-                    height={30}
+                    width={50}
+                    height={50}
                     className="rounded-circle"
                   />
                   <span className="text-light">{user.fullName}</span>
@@ -95,7 +95,7 @@ const Header = () => {
                   className={
                     openOption ? `list-group position-absolute` : "d-none"
                   }
-                  style={{ top: "65px", zIndex: "2" }}
+                  style={{ width: "200px", right: "185px", top: "65px", zIndex: "2" }}
                 >
                   <Link to={`personal/${user._id}`}>
                     <ListGroup.Item
@@ -103,7 +103,7 @@ const Header = () => {
                       variant="light"
                       onClick={() => setOpenOption(!openOption)}
                     >
-                      Personal Info
+                      Thông tin
                     </ListGroup.Item>
                   </Link>
 
@@ -114,7 +114,7 @@ const Header = () => {
                         variant="light"
                         onClick={() => setOpenOption(!openOption)}
                       >
-                        Admin Page
+                        Trang quản trị (admin)
                       </ListGroup.Item>
                     </Link>
                   ) : (
@@ -127,7 +127,7 @@ const Header = () => {
                       variant="light"
                       onClick={() => setOpenOption(!openOption)}
                     >
-                      Message
+                      Tin nhắn
                     </ListGroup.Item>
                   </Link>
 
@@ -137,11 +137,11 @@ const Header = () => {
                       variant="light"
                       onClick={() => setOpenOption(!openOption)}
                     >
-                      Setting
+                      Thông tin cá nhân
                     </ListGroup.Item>
                   </Link>
                   <ListGroup.Item action variant="light" onClick={logout}>
-                    Logout
+                    Đăng xuất
                   </ListGroup.Item>
                 </ListGroup>
               </Nav>

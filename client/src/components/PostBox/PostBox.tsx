@@ -1,7 +1,28 @@
 import { Link } from "react-router-dom";
 import { VNDCurrencyFormat, decodeHtmlEntities } from "../../utils/Utils";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const PostBox = ({ data }) => {
+  const [city, setCity] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
+  const fetchCity = async () => {
+    await axios
+      .get(`https://provinces.open-api.vn/api/p/${data.province}`)
+      .then((res) => setCity(res.data.name))
+      .catch((err) => console.log(err));
+  };
+  const fetchDistrict = async () => {
+    await axios
+      .get(`https://provinces.open-api.vn/api/d/${data.district}`)
+      .then((res) => setDistrict(res.data.name))
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    fetchCity();
+    fetchDistrict();
+  }, [])
+
   return (
     <Link to={`/post/${data._id}`}>
       <div
@@ -35,7 +56,8 @@ const PostBox = ({ data }) => {
               {data.acreage} m<sup>2</sup>
             </p>
             <p className="location m-0 text-dark">
-              {data.address.slice(data.address.indexOf("Quận"))}
+              {/* {data.address.slice(data.address.indexOf("Quận"))} */}
+              {district}, {city}
             </p>
           </div>
           <div
