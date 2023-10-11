@@ -17,17 +17,17 @@ const PostByCategory = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [posts, setPosts] = useState<Array<Post>>([]);
+  const [params, getParams] = useState({});
 
   useEffect(() => {
     setIsLoading(true);
-    getPosts({categoryId: id}).then((res) => {
+    getPosts(Object.assign({ categoryId: id }, params)).then((res) => {
       if (res.status === 200) {
         setPosts(res.data);
-        console.log(res.data);
         setIsLoading(false);
       }
     });
-  }, [id]);
+  }, [id, params]);
   useEffect(() => {
     setIsLoading(true);
     getCategoryById(id).then((res) => {
@@ -73,17 +73,14 @@ const PostByCategory = () => {
           <div className="col-8 rounded my-3 p-3">
             <div className="p-3" style={{ backgroundColor: "#f5f5f5" }}>
               <h4 className="text-dark">Tổng {posts.length} Kết quả</h4>
-              {
-                posts.map((post: Post) => {
-                  return <PostBox key={post._id} data={post} />;
-                })
-              }
-              
+              {posts.map((post: Post) => {
+                return <PostBox key={post._id} data={post} />;
+              })}
             </div>
           </div>
           <div className="col-4 rounded my-3 p-3">
-            <FilterPricePost />
-            <FilterAcreagePost />
+            <FilterPricePost getParams={getParams} />
+            <FilterAcreagePost getParams={getParams} />
           </div>
         </div>
       </div>

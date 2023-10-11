@@ -143,12 +143,13 @@ export const getCategoryById = async (id: string) => {
   }
 };
 
-export const getPosts = async (data: any) => {
+export const getPosts = async (data?: any) => {
   try {
     let params = "";
-    for (const field in data) {
-      params += field + "=" + data[field] + "&";
-    }
+    if (data !== null)
+      for (const field in data) {
+        params += field + "=" + data[field] + "&";
+      }
     const res = await axios.get(`${BASE_URL}/api/posts/?${params}`);
     return res;
   } catch (err) {

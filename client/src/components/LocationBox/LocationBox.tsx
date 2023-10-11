@@ -26,7 +26,7 @@ const LocationBox = ({ category, image, locationName }) => {
             textOverflow: "ellipsis",
           }}
         >
-          {category.name} {locationName}
+          {category ? category.name: "Nhà trọ"} {locationName}
         </p>
       </div>
     </div>

@@ -92,7 +92,7 @@ const AdminCategories = () => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Create Category</Modal.Title>
+          <Modal.Title>Tạo danh mục mới</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FloatingLabel label="Name" className="mb-3">
@@ -135,26 +135,26 @@ const AdminCategories = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Huỷ
           </Button>
           <Button variant="primary" onClick={handleCreate}>
-            Create
+            Tạo
           </Button>
         </Modal.Footer>
       </Modal>
       <div className="container px-5 pt-2">
         <div className="row justify-content-center align-items-center">
           <div className="col-12">
-            <h1 className="text-center text-primary">List Categories</h1>
+            <h1 className="text-center text-primary">Quản lý danh mục</h1>
             <button className="btn btn-primary my-3" onClick={handleShow}>
-              Create Category
+              Tạo danh mục
             </button>
             {categories.length > 0 ? (
               <Table striped hover variant="light">
                 <thead>
                   <tr>
-                    <th className="text-center">Name</th>
-                    <th className="text-center">Active</th>
+                    <th className="text-center">Tên danh mục</th>
+                    <th className="text-center">Trạng thái</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -162,15 +162,15 @@ const AdminCategories = () => {
                   {categories.map((category: Category, index: number) => {
                     return (
                       <tr key={index}>
-                        <td className="text-center">{category.name}</td>
-                        <td className="text-center">
+                        <td className="text-center align-middle">{category.name}</td>
+                        <td className="text-center align-middle">
                           {category.active ? (
                             <i className="fa-solid fa-check"></i>
                           ) : (
                             ""
                           )}
                         </td>
-                        <td className="text-center">
+                        <td className="text-center align-middle">
                           <button
                             className="btn btn-danger"
                             onClick={() => {
@@ -190,7 +190,7 @@ const AdminCategories = () => {
                 className="d-flex align-items-center justify-content-center w-100"
                 style={{ height: "500px" }}
               >
-                <h4>Nothing here</h4>
+                <h4>Chưa có danh mục nào</h4>
               </div>
             )}
           </div>

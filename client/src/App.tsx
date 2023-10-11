@@ -24,6 +24,7 @@ import PostByCategory from "./pages/PostsByCategory/PostByCategory";
 import DetailPost from "./pages/DetailPost/DetailPost";
 import FindByCoordinates from "./pages/FindByCoordinates/FindByCoordinates";
 import AdminLandlords from "./components/AdminLandlords/AdminLandlords";
+import AdminStats from "./components/AdminStats/AdminStats";
 
 export const MyUserContext = createContext(null);
 
@@ -55,8 +56,11 @@ function App() {
                 <Route path="/personal/:id" element={<Personal />} />
                 <Route path="/message-app" element={<MessageApp />} />
                 <Route path="/category/:id" element={<PostByCategory />} />
-                <Route path="/post/:id" element={<DetailPost/>} />
-                <Route path="/find-by-coordinates" element={<FindByCoordinates />} />
+                <Route path="/post/:id" element={<DetailPost />} />
+                <Route
+                  path="/find-by-coordinates"
+                  element={<FindByCoordinates />}
+                />
               </Route>
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup" element={<Signup />} />
@@ -65,7 +69,11 @@ function App() {
                 <Route path="/admin" element={<MainAdmin />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="admin/categories" element={<AdminCategories />} />
-                <Route path="admin/landlorđs-approve" element={<AdminLandlords />} />
+                <Route
+                  path="admin/landlorđs-approve"
+                  element={<AdminLandlords />}
+                />
+                <Route path="admin/stats" element={<AdminStats />} />
                 <Route
                   path="/admin/update-user/:id"
                   element={<AdminUpdateUser />}

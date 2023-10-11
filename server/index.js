@@ -9,6 +9,7 @@ import LandlordsRoute from "./src/api/routes/LandlordsRoute.js";
 import FollowsRoute from "./src/api/routes/FollowsRoute.js";
 import CommentsRoute from "./src/api/routes/CommentsRoute.js";
 import NotificationsRoute from "./src/api/routes/NotificationsRoute.js";
+import StatsRoute from "./src/api/routes/StatsRoute.js";
 import methodOverride from "method-override";
 import http from "http";
 import { Server } from "socket.io";
@@ -17,7 +18,6 @@ const PORT = process.env.PORT || 8085;
 
 const app = express();
 app.use(express.json(), express.urlencoded(), cors(), cookieParser());
-// app.use(methodOverride('_method'))
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong!";
@@ -31,7 +31,7 @@ app.use((err, req, res, next) => {
 
 // configuration socket.io
 const server = http.createServer(app);
-const io = new Server( server, {
+const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
@@ -69,6 +69,7 @@ app.use("/api", LandlordsRoute);
 app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
 app.use("/api", NotificationsRoute);
+app.use("/api", StatsRoute);
 
 server.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);
