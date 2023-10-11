@@ -70,7 +70,7 @@ app.use("/api", FollowsRoute);
 app.use("/api", CommentsRoute);
 app.use("/api", NotificationsRoute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`);
 });
 

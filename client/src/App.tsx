@@ -23,6 +23,7 @@ import AdminCategories from "./components/AdminCategories/AdminCategories";
 import PostByCategory from "./pages/PostsByCategory/PostByCategory";
 import DetailPost from "./pages/DetailPost/DetailPost";
 import FindByCoordinates from "./pages/FindByCoordinates/FindByCoordinates";
+import AdminLandlords from "./components/AdminLandlords/AdminLandlords";
 
 export const MyUserContext = createContext(null);
 
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/admin" element={<MainAdmin />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="admin/categories" element={<AdminCategories />} />
+                <Route path="admin/landlorđs-approve" element={<AdminLandlords />} />
                 <Route
                   path="/admin/update-user/:id"
                   element={<AdminUpdateUser />}

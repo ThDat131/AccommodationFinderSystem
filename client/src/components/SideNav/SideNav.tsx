@@ -47,19 +47,22 @@ const SideNav = () => {
             </ListGroup.Item>
           </Link>
 
+          <Link to="/admin/landlorđs-approve">
+            <ListGroup.Item
+              action
+              as="li"
+              active={selectedNav === 3}
+              onClick={() => setSelectedNav(3)}
+            >
+              Duyệt chủ trọ
+            </ListGroup.Item>
+          </Link>
+
           <ListGroup.Item
             action
             as="li"
-            active={selectedNav === 2}
-            onClick={() => setSelectedNav(2)}
-          >
-            Approve Post
-          </ListGroup.Item>
-          <ListGroup.Item
-            action
-            as="li"
-            active={selectedNav === 3}
-            onClick={() => setSelectedNav(3)}
+            active={selectedNav === 4}
+            onClick={() => setSelectedNav(4)}
           >
             Post
           </ListGroup.Item>
