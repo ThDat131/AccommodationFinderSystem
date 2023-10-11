@@ -1,10 +1,4 @@
-import {
-  Container,
-  ListGroup,
-  Nav,
-  NavDropdown,
-  Navbar,
-} from "react-bootstrap";
+import { Container, ListGroup, Nav, NavLink, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/img/D2 -logos_transparent.png";
 import { useContext, useEffect, useState } from "react";
@@ -39,58 +33,47 @@ const Header = () => {
     <>
       <Navbar className="mb-3" expand="lg" data-bs-theme="dark" bg="primary">
         <Container>
-          <Link to="/">
-            <Navbar.Brand href="/">
-              <img
-                src={Logo}
-                alt=""
-                className="d-inline-block align-top"
-                width={60}
-                height={60}
-              />
-            </Navbar.Brand>
-          </Link>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Brand as={Link} to="/">
+            <img
+              src={Logo}
+              alt=""
+              className="d-inline-block align-top"
+              width={60}
+              height={60}
+            />
+          </Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Link to="/">
-                <Nav.Link href="/">Trang chủ</Nav.Link>
-              </Link>
-              <Link to={"/find-by-coordinates"}>
-                <Nav.Link href="/find-by-coordinates">
-                  Tìm nhà trọ theo toạ độ
-                </Nav.Link>
-              </Link>
-              <Nav.Link>Thuê phòng</Nav.Link>
-              <Nav.Link>Tìm phòng</Nav.Link>
-              <Nav.Link>Tìm bạn ở ghép</Nav.Link>
+              <Nav.Link as={Link} to="/">
+                Trang chủ
+              </Nav.Link>
+              <Nav.Link as={Link} to="/find-by-coordinates">
+                Tìm nhà trọ theo toạ độ
+              </Nav.Link>
+              {categories.map((c, index: number) => {
+                const h = `/category/${c._id}`;
+                return (
+                  <NavLink as={Link} to={h} key={index}>
+                    {c.name}
+                  </NavLink>
+                );
+              })}
               {user && user.landlordId && user.landlordId.active === true ? (
-                <Link to="/create-post">
-                  <Nav.Link href="/create-post">Đăng tin</Nav.Link>
-                </Link>
+                <Nav.Link as={Link} to="/create-post">
+                  Đăng tin
+                </Nav.Link>
               ) : (
                 ""
               )}
-
-              <NavDropdown title="Danh mục" id="basic-nav-dropdown">
-                {categories.map((c) => {
-                  const h = `/category/${c._id}`;
-                  return (
-                    <Link to={h} className="dropdown-item" key={c._id}>
-                      <NavDropdown.Item href={h}>{c.name}</NavDropdown.Item>
-                    </Link>
-                  );
-                })}
-              </NavDropdown>
             </Nav>
             {user === null ? (
               <Nav className="ms-auto">
-                <Link to="/signin">
-                  <Nav.Link href="/signin">Sign In</Nav.Link>
-                </Link>
-                <Link to="signup">
-                  <Nav.Link href="/signup">Sign Up</Nav.Link>
-                </Link>
+                <Nav.Link as={Link} to="/signin">
+                  Sign In
+                </Nav.Link>
+                <Nav.Link as={Link} to="/signup">
+                  Sign Up
+                </Nav.Link>
               </Nav>
             ) : (
               <Nav className="ms-auto">

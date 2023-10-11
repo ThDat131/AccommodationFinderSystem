@@ -74,10 +74,22 @@ const PostsController = {
         };
       }
 
+      if (minPrice && !maxPrice) {
+        query.price = {
+          $gte: parseFloat(minPrice),
+        };
+      }
+
       if (minAcreage && maxAcreage) {
         query.acreage = {
           $gte: parseFloat(minAcreage),
           $lte: parseFloat(maxAcreage),
+        };
+      }
+
+      if (minAcreage && !maxAcreage) {
+        query.acreage = {
+          $gte: parseFloat(minAcreage),
         };
       }
 
@@ -93,9 +105,6 @@ const PostsController = {
             query.ward = { $eq: ward };
           }
         }
-      }
-      if (categoryId) {
-        query.categoryId = { $eq: categoryId };
       }
 
       if (longitude && latitude) {

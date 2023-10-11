@@ -97,7 +97,7 @@ const DetailPost = () => {
         });
       });
     });
-  }, [comments]);
+  }, []);
 
   useEffect(() => {
     getDetailPost(id).then((res) => {

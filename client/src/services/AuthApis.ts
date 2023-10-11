@@ -189,3 +189,29 @@ export const deleteCategory = async (id: string) => {
     return err;
   }
 };
+
+export const getLandlords = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/landlords/`, {
+      headers: {
+        Authorization: cookie.load("token"),
+      },
+    });
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const approveLandlord = async (id: string, data: any) => {
+  try {
+    const res = await axios.put(`${BASE_URL}/api/landlords/${id}/update/`, data,{
+      headers: {
+        Authorization: cookie.load("token"),
+      },
+    });
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
