@@ -95,7 +95,12 @@ const Header = () => {
                   className={
                     openOption ? `list-group position-absolute` : "d-none"
                   }
-                  style={{ width: "200px", right: "185px", top: "65px", zIndex: "2" }}
+                  style={{
+                    width: "200px",
+                    right: "185px",
+                    top: "65px",
+                    zIndex: "2",
+                  }}
                 >
                   <Link to={`personal/${user._id}`}>
                     <ListGroup.Item
