@@ -132,9 +132,10 @@ const PostsController = {
   // [GET] /api/posts/:id
   getPost: async (req, res, next) => {
     try {
-      const post = await PostModel.findById({ _id: req.params.id }).populate(
-        "userId"
-      );
+      const post = await PostModel.findById({ _id: req.params.id }).populate([
+        "userId",
+        "categoryId",
+      ]);
       if (!post) {
         return res.status(404).send("Post not found!!!");
       }

@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getUserById } from "../../services/Apis";
 import { Spinner } from "react-bootstrap";
+import { follow, getListFollowing, unFollow } from "../../services/AuthApis";
+import { MyUserContext } from "../../App";
+import { toast } from "react-toastify";
 
 const Personal = () => {
   interface User {
@@ -15,14 +18,55 @@ const Personal = () => {
   }
 
   const { id } = useParams();
+  const [currentUser, _dispatch] = useContext(MyUserContext);
   const [userPersonal, setUserPersonal] = useState<User>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [followings, setFollowings] = useState([]);
+  const [isFollow, setisFollow] = useState<boolean>(null);
   useEffect(() => {
     getUserById(id).then((res) => {
       setUserPersonal(res.data);
       setIsLoading(false);
     });
-  });
+    getListFollowing(id).then((res) => {
+      if (res.status === 200) setFollowings(res.data);
+    });
+  }, [isFollow]);
+
+  useEffect(() => {
+    followings.map((follow) => {
+      if (follow.following === currentUser._id) {
+        setisFollow(true);
+        return;
+      } else setisFollow(false);
+    });
+  }, [followings.length]);
+  const handleFollow = () => {
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để tiếp tục");
+      return;
+    }
+    if (userPersonal._id === currentUser._id) {
+      toast.error("Không thể tự follow chính mình!");
+      return;
+    }
+    follow({ follower: userPersonal._id, following: currentUser._id }).then(
+      (res) => {
+        if (res.status === 200) {
+          setisFollow(true)
+        }
+      }
+    );
+  };
+  const handleUnFollow = () => {
+    unFollow({ follower: userPersonal._id, following: currentUser._id }).then(
+      (res) => {
+        if (res.status === 204) {
+          setisFollow(false);
+        }
+      }
+    );
+  };
 
   if (isLoading)
     return (
@@ -34,7 +78,7 @@ const Personal = () => {
     <>
       <div className="container px-5 pt-2">
         <div className="row align-items-end">
-          <div className="col-6 d-flex align-items-end gap-3">
+          <div className="col-6 d-flex align-items-center gap-3">
             <img
               src={userPersonal.avatar}
               alt=""
@@ -61,12 +105,21 @@ const Personal = () => {
                 }}
                 className="m-0"
               >
-                1xxx Followers
+                {followings.length} Followers
               </p>
             </div>
           </div>
           <div className="col-6 d-flex gap-3 align-items-end justify-content-end">
-            <button className="btn btn-primary">+ Follow</button>
+            {!isFollow ? (
+              <button className="btn btn-primary" onClick={handleFollow}>
+                + Follow
+              </button>
+            ) : (
+              <button className="btn btn-danger" onClick={handleUnFollow}>
+                Unfollow
+              </button>
+            )}
+
             <button className="btn btn-primary">Message</button>
           </div>
         </div>

@@ -16,8 +16,8 @@ const FollowsController = {
   unFollow: async (req, res, next) => {
     try {
       await FollowModel.deleteOne({
-        follower: req.body.follower,
-        following: req.body.following,
+        follower: req.query.follower,
+        following: req.query.following,
       });
       return res.status(204).json({ message: "Unfollow success" });
     } catch (error) {

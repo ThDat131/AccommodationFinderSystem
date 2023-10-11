@@ -21,17 +21,17 @@ const PostBox = ({ data }) => {
   useEffect(() => {
     fetchCity();
     fetchDistrict();
-  }, [])
+  }, []);
 
   return (
-    <Link to={`/post/${data._id}`}>
-      <div
-        className="d-flex border-bottom border-secondary overflow-hidden my-3"
-        style={{
-          maxHeight: "250px",
-        }}
-      >
-        <div className="col-4 p-3">
+    <div
+      className="d-flex border-bottom border-secondary overflow-hidden my-3"
+      style={{
+        maxHeight: "250px",
+      }}
+    >
+      <div className="col-4 p-3">
+        <Link to={`/post/${data._id}`}>
           <img
             className="w-100 h-100 rounded"
             src={data.images[0]}
@@ -40,32 +40,38 @@ const PostBox = ({ data }) => {
               objectFit: "cover",
             }}
           />
+        </Link>
+      </div>
+      <div className="col-8 p-1">
+        <div className="my-2 overflow-hidden" style={{ height: "24px" }}>
+          <h5>
+            <Link className="text-dark" to={`/post/${data._id}`}>
+              {data.name}
+            </Link>
+          </h5>
         </div>
-        <div className="col-8 p-1">
-          <div className="my-2 overflow-hidden" style={{ height: "24px" }}>
-            <h5 className="text-dark">{data.name}</h5>
-          </div>
-          <div
-            className="d-flex gap-2 my-2 overflow-hidden"
-            style={{ height: "24px" }}
-          >
-            <p className="price text-success m-0">
-              {VNDCurrencyFormat.format(data.price)} triệu/tháng
-            </p>
-            <p className="acreage m-0 text-dark">
-              {data.acreage} m<sup>2</sup>
-            </p>
-            <p className="location m-0 text-dark">
-              {/* {data.address.slice(data.address.indexOf("Quận"))} */}
-              {district}, {city}
-            </p>
-          </div>
-          <div
-            className="my-2 overflow-hidden"
-            style={{ height: "80px", lineHeight: "1.2" }}
-          >
-            <p className="text-dark">{decodeHtmlEntities(data.content)}</p>
-          </div>
+        <div
+          className="d-flex gap-2 my-2 overflow-hidden"
+          style={{ height: "24px" }}
+        >
+          <p className="price text-success m-0">
+            {VNDCurrencyFormat.format(data.price)} triệu/tháng
+          </p>
+          <p className="acreage m-0 text-dark">
+            {data.acreage} m<sup>2</sup>
+          </p>
+          <p className="location m-0 text-dark">
+            {/* {data.address.slice(data.address.indexOf("Quận"))} */}
+            {district}, {city}
+          </p>
+        </div>
+        <div
+          className="my-2 overflow-hidden"
+          style={{ height: "80px", lineHeight: "1.2" }}
+        >
+          <p className="text-dark">{decodeHtmlEntities(data.content)}</p>
+        </div>
+        <Link to={`/personal/${data.userId._id}`}>
           <div className="d-flex gap-2 align-items-center my-2">
             <img
               className="rounded rounded-circle"
@@ -76,9 +82,9 @@ const PostBox = ({ data }) => {
             />
             <p className="m-0 text-secondary">{data.userId.fullName}</p>
           </div>
-        </div>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 
