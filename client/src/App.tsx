@@ -75,7 +75,7 @@ function App() {
           </BrowserRouter>
         </ChatUserContext.Provider>
       </MyUserContext.Provider>
-      <ToastContainer />
+      <ToastContainer autoClose={1500} />
     </>
   );
 }
