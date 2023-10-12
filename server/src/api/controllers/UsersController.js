@@ -44,8 +44,8 @@ const UsersController = {
 
       if (savedCode && savedCode.toString() === confirmationCode) {
         cache.del(email);
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(password, salt);
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
 
         const default_avatar =
           "https://phongtro123.com/images/default-user.png";
@@ -106,6 +106,25 @@ const UsersController = {
         })
         .status(200)
         .send(token);
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  signinWithFacebook: async (req, res, next) => {
+    try {
+      const { fullName, email, phone, password, avatar } = req.body;
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
+
+      const user = await UserModel.create({
+        fullName,
+        email,
+        phone: phone || '',
+        password: hash,
+        avatar,
+      })
+      return res.status(201).json(user);
     } catch (error) {
       return next(error);
     }
