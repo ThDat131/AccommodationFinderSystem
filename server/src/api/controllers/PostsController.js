@@ -65,6 +65,8 @@ const PostsController = {
         ward,
         longitude,
         latitude,
+        pageNumber,
+        pageSize,
       } = req.query;
 
       if (minPrice && maxPrice) {
@@ -117,13 +119,19 @@ const PostsController = {
           $gte: parseFloat(latitude) - 0.05,
         }; // Khoảng cách dự đoán: ~5km
       }
+      const page = parseInt(pageNumber) || 1;
+      const limit = parseInt(pageSize) || 10;
+      const skip = (page - 1) * limit;
 
-      const posts = await PostModel.find(query).populate("userId");
-
+      const posts = await PostModel.find(query)
+        .populate("userId")
+        .skip(skip)
+        .limit(limit);
+      const totalPosts = await PostModel.countDocuments();
       if (!posts) {
         return res.status(404).send("Post not found");
       }
-      return res.status(200).json(posts);
+      return res.status(200).json({posts, totalPosts});
     } catch (error) {
       return next(error);
     }

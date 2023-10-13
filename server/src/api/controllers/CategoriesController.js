@@ -17,7 +17,7 @@ const CategoriesController = {
   // [GET] /api/categories/
   getAllCategory: async (req, res, next) => {
     try {
-      const categories = await CategoryModel.find();
+      const categories = await CategoryModel.find({active: 1});
       if (!categories) {
         return res.status(404).send("Categories not found");
       }
@@ -43,8 +43,7 @@ const CategoriesController = {
   //[DELETE] /api/categories/:id
   delete: async (req, res, next) => {
     try {
-      const category = await CategoryModel.delete({ _id: req.params.id });
-
+      const category = await CategoryModel.findByIdAndUpdate({ _id: req.params.id }, {active: 0});
       if (category.modifiedCount === 0) {
         return res.status(400).send("Something wrong!!!");
       }

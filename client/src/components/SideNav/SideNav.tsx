@@ -55,14 +55,24 @@ const SideNav = () => {
           >
             Approve Post
           </ListGroup.Item> */}
-          <Link to="/admin/stats">
+          <Link to="/admin/posts/stats">
             <ListGroup.Item
               action
               as="li"
               active={selectedNav === 3}
               onClick={() => setSelectedNav(3)}
             >
-              Thống kê
+              Thống kê số lượng bài đăng
+            </ListGroup.Item>
+          </Link>
+          <Link to="/admin/users/stats">
+            <ListGroup.Item
+              action
+              as="li"
+              active={selectedNav === 4}
+              onClick={() => setSelectedNav(4)}
+            >
+              Thống kê số lượng người dùng
             </ListGroup.Item>
           </Link>
           <Link to="/">
