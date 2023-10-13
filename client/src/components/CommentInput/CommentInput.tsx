@@ -22,6 +22,9 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
       }
     });
   };
+  if (!currentUser) {
+    return <></>
+  }
   return (
     <div className="ms-5 d-flex flex-start w-75 align-items-center gap-2">
       <img

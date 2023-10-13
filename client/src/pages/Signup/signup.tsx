@@ -303,17 +303,23 @@ const Signup = () => {
               <p className="m-0">Already sign up?</p>
               <Link to={"/signin"}>Sign in</Link>
             </div>
-            <div className="mb-3 d-flex justify-content-center align-items-center">
+            <div className="d-flex justify-content-center align-items-center gap-2">
               <p className="m-0">Or sign up with:</p>
-            </div>
-            <div className="mb-3 d-flex justify-content-center align-items-center">
-              <div className="d-flex gap-2">
-                <button type="button" className="btn rounded-circle hover-btn">
-                  <i className="fa-brands fa-google"></i>
-                </button>
-                <button type="button" className="btn rounded-circle hover-btn">
-                  <i className="fa-brands fa-facebook"></i>
-                </button>
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="d-flex gap-2">
+                  <button
+                    type="button"
+                    className="btn rounded-circle hover-btn"
+                  >
+                    <i className="fa-brands fa-google"></i>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn rounded-circle hover-btn"
+                  >
+                    <i className="fa-brands fa-facebook"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
