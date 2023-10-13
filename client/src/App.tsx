@@ -30,6 +30,8 @@ export const MyUserContext = createContext(null);
 
 export const ChatUserContext = createContext(null);
 
+export const SocketContext = createContext(null);
+
 function App() {
   const [user, dispatch] = useReducer(
     MyUserReducer,
