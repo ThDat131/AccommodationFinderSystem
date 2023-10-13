@@ -3,34 +3,34 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
 import Logo from "../../assets/img/D2 -logos_blue.png";
 import Button from "react-bootstrap/Button";
-import './signin.css'
-import HouseImage from "../../assets/img/house-img.png"
+import "./signin.css";
+import HouseImage from "../../assets/img/house-img.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { getCurrentUser, userSignIn } from "../../services/Apis";
 import { toast } from "react-toastify";
-import cookie from "react-cookies"
+import cookie from "react-cookies";
 import { MyUserContext } from "../../App";
+import { FacebookAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { auth } from "../../configs/firebase";
 
 const Signin = () => {
+  const nav = useNavigate();
 
-  const nav = useNavigate()
-
-  const [_user, dispatch] = useContext(MyUserContext)
+  const [_user, dispatch] = useContext(MyUserContext);
 
   const [userSignin, setUserSignin] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
 
   const handleSubmit = (evt) => {
-    evt.preventDefault()
+    evt.preventDefault();
     userSignIn(userSignin).then((res) => {
       if (res.status === 200) {
         toast.success("Đăng nhập thành công");
-        cookie.save("token", res.data, {})
-        getCurrentUser()
-        .then(res => {
+        cookie.save("token", res.data, {});
+        getCurrentUser().then((res) => {
           if (res.status === 200) {
             cookie.save("user", res.data, {});
             dispatch({
@@ -39,14 +39,28 @@ const Signin = () => {
             });
             nav("/");
           }
-        })
+        });
       }
 
       if (res.response.status === 400 || res.response.status === 404) {
         toast.error("Sai tài khoản hoặc mật khẩu");
       }
     });
+  };
 
+  const SignInWithFacebook = () => {
+    const provider = new FacebookAuthProvider();
+    signInWithPopup(auth, provider).then((res) => {
+      const credential = FacebookAuthProvider.credentialFromResult(res);
+      console.log(credential.accessToken)
+    });
+  };
+
+  const SignInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).then((res) => {
+      console.log(res);
+    });
   }
 
   return (
@@ -63,9 +77,13 @@ const Signin = () => {
           ></div>
           <div className="col-6 d-flex flex-column justify-content-center px-5">
             <div className="text-center">
-              <img src={Logo} width={250} height={200} color="#0d6efd"/>
+              <img src={Logo} width={250} height={200} color="#0d6efd" />
             </div>
-            <Form onSubmit={handleSubmit} style={{marginTop: -20}} className="px-5">
+            <Form
+              onSubmit={handleSubmit}
+              style={{ marginTop: -20 }}
+              className="px-5"
+            >
               <h1 className="text-center text-primary mb-3">Đăng nhập</h1>
               <FloatingLabel
                 controlId="floatingInput"
@@ -99,7 +117,9 @@ const Signin = () => {
               </FloatingLabel>
               <div className="d-flex align-items-center justify-content-between mb-3">
                 <Form.Check label="Nhớ mật khẩu?" />
-                <a href="" className="text-danger">Quên mật khẩu?</a>
+                <a href="" className="text-danger">
+                  Quên mật khẩu?
+                </a>
               </div>
               <div className="d-grid mb-3">
                 <Button variant="primary" size="lg" type="submit">
@@ -116,10 +136,14 @@ const Signin = () => {
             </div>
             <div className="mb-3 d-flex justify-content-center align-items-center">
               <div className="d-flex gap-2">
-                <button type="button" className="btn rounded-circle hover-btn">
+                <button type="button" className="btn rounded-circle hover-btn" onClick={SignInWithGoogle}>
                   <i className="fa-brands fa-google"></i>
                 </button>
-                <button type="button" className="btn rounded-circle hover-btn">
+                <button
+                  type="button"
+                  className="btn rounded-circle hover-btn"
+                  onClick={SignInWithFacebook}
+                >
                   <i className="fa-brands fa-facebook"></i>
                 </button>
               </div>

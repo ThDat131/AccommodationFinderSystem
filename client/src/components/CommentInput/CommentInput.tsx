@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 import { MyUserContext } from "../../App";
 
 const CommentInput = ({ user, comment, commentParent, isClose }) => {
+  const default_avatar = "https://phongtro123.com/images/default-user.png";
   const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [commentContent, setCommentContent] = useState<string>("");
   const [currentUser, _dispatch] = useContext(MyUserContext);
@@ -27,7 +28,7 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
     <div className="ms-5 d-flex flex-start w-75 align-items-center gap-2">
       <img
         className="rounded-circle shadow-1-strong me-3"
-        src={currentUser.avatar}
+        src={currentUser ? currentUser.avatar : default_avatar}
         alt="avatar"
         width="40"
         height="40"

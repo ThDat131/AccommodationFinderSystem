@@ -14,6 +14,7 @@ import { IComment } from "../../interface/IComment";
 
 const DetailPost = () => {
   const socket = io("http://localhost:8085", { transports: ["websocket"] });
+  const default_avatar = "https://phongtro123.com/images/default-user.png";
   const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
@@ -97,7 +98,7 @@ const DetailPost = () => {
         });
       });
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     getDetailPost(id).then((res) => {
@@ -246,7 +247,7 @@ const DetailPost = () => {
               <div className="d-flex flex-start w-100">
                 <img
                   className="rounded-circle shadow-1-strong me-3"
-                  src={user.avatar}
+                  src={user ? user.avatar : default_avatar}
                   alt="avatar"
                   width="60"
                   height="60"
