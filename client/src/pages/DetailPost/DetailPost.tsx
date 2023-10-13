@@ -13,8 +13,8 @@ import { io } from "socket.io-client";
 import { IComment } from "../../interface/IComment";
 
 const DetailPost = () => {
-  const socket = io("http://localhost:8085", { transports: ["websocket"] });
-  const default_avatar = "https://phongtro123.com/images/default-user.png";
+  // const socket = io("http://localhost:8085", { transports: ["websocket"] });
+  const [socket, setSocket] = useState(null);
   const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
@@ -62,43 +62,51 @@ const DetailPost = () => {
     }).then((res: any) => {
       if (res.status === 201) {
         socket.timeout(1000).emit("send_comment", res.data);
-        console.log(socket);
         setComment("");
       }
     });
   };
 
   useEffect(() => {
-    socket.on("receive_comment", (data: any) => {
+    if (!socket) {
+      setSocket(io("ws://localhost:3005"));
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on("receive_comment", (data: any) => {
       setComments([...comments, data]);
     });
-    socket.on("reply_comment", (data: any) => {
+    socket?.on("reply_comment", (data: any) => {
       setComments(() => {
         return comments.map((comment: IComment) => {
           return comment._id === data._id ? data : comment;
         });
       });
     });
-    socket.on("edit_comment", (data: any) => {
+    socket?.on("edit_comment", (data: any) => {
       setComments(() => {
         return comments.map((comment: IComment) => {
           return comment._id === data._id ? data : comment;
         });
       });
     });
-    socket.on("delete_comment", (data: any) => {
+    socket?.on("delete_comment", (data: any) => {
       setComments(() => {
         return comments.filter((comment) => comment._id !== data);
       });
     });
-    socket.on("delete_reply", (data: any) => {
+    socket?.on("delete_reply", (data: any) => {
       setComments(() => {
         return comments.map((comment: IComment) => {
           return comment._id === data._id ? data : comment;
         });
       });
     });
-  }, [socket]);
+    return () => {
+      socket?.removeAllListerner();
+    };
+  }, []);
 
   useEffect(() => {
     getDetailPost(id).then((res) => {
@@ -242,41 +250,49 @@ const DetailPost = () => {
 
         <div className="w-100">
           <h3 className="my-2">Bình luận</h3>
-          <div className="d-flex justify-content-start my-3">
-            <div className="w-100">
-              <div className="d-flex flex-start w-100">
-                <img
-                  className="rounded-circle shadow-1-strong me-3"
-                  src={user ? user.avatar : default_avatar}
-                  alt="avatar"
-                  width="60"
-                  height="60"
-                />
+          {!user ? (
+            <div className="alert alert-danger">
+              Vui lòng đăng nhập để bình luận{" "}
+              <Link to={"/signin"}>Đăng nhập</Link>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-start my-3">
+              <div className="w-100">
+                <div className="d-flex flex-start w-100">
+                  <img
+                    className="rounded-circle shadow-1-strong me-3"
+                    src={user ? user.avatar : default_avatar}
+                    alt="avatar"
+                    width="60"
+                    height="60"
+                  />
 
-                <div className="form-floating w-100">
-                  <textarea
-                    className="form-control"
-                    placeholder="Leave a comment here"
-                    id="floatingTextarea"
-                    onChange={(e) => setComment(e.target.value)}
-                    value={comment}
-                  ></textarea>
-                  <label htmlFor="floatingTextarea">
-                    Bình luận về nhà trọ ở đây
-                  </label>
+                  <div className="form-floating w-100">
+                    <textarea
+                      className="form-control"
+                      placeholder="Leave a comment here"
+                      id="floatingTextarea"
+                      onChange={(e) => setComment(e.target.value)}
+                      value={comment}
+                    ></textarea>
+                    <label htmlFor="floatingTextarea">
+                      Bình luận về nhà trọ ở đây
+                    </label>
+                  </div>
+                </div>
+                <div className="float-end mt-2 pt-1">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn"
+                    onClick={handleComment}
+                  >
+                    Bình luận
+                  </button>
                 </div>
               </div>
-              <div className="float-end mt-2 pt-1">
-                <button
-                  type="button"
-                  className="btn btn-primary btn"
-                  onClick={handleComment}
-                >
-                  Bình luận
-                </button>
-              </div>
             </div>
-          </div>
+          )}
+
           <div className="d-flex flex-start my-3 flex-wrap">
             {comments.length >= 1 ? (
               comments.map((comment) => {

@@ -7,8 +7,8 @@ import { MyUserContext } from "../../App";
 const ReplyComment = ({ reply, commentId }) => {
   const [isEditReply, setIsEditReply] = useState<boolean>(false);
   const [editedReply, setEditedReply] = useState<string>("");
-  // const socket = io("http://localhost:8085");
-  const socket = io("http://localhost:8085", { transports: ["websocket"] });
+  const socket = io("ws://localhost:3005");
+  // const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [user, _dispatch] = useContext(MyUserContext);
 
   const handleChangeReplyComment = () => {
@@ -17,7 +17,7 @@ const ReplyComment = ({ reply, commentId }) => {
       userId: reply.userId._id,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.timeout(1000).emit("edit_comment", res.data);
+        socket.emit("edit_comment", res.data);
         setIsEditReply(false);
       }
     });

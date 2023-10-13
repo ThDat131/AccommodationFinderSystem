@@ -35,7 +35,7 @@ const Setting = () => {
   const [imageUrls, setImageUrls] = useState<Array<string>>([]);
   const [address, setAddress] = useState<string>("");
   const [personalId, setPersonalId] = useState<string>("");
-  const [disabled, setDisabled] = useState<boolean>(false)
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const handleClose = () => {
     setShowModalAvatar(false);
@@ -236,7 +236,7 @@ const Setting = () => {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className="text-center text-primary">Setting</h1>
+        <h1 className="text-center text-primary">Thông tin cá nhân</h1>
         <Tabs
           id="tab"
           activeKey={key}
@@ -244,10 +244,10 @@ const Setting = () => {
           className="mb-3"
         >
           <Tab eventKey="profile" title="Profile">
-            <div className="d-flex">
-              <div className="col-2 d-flex justify-content-center align-items-center flex-column">
+            <div className="d-flex gap-5">
+              <div className="col-2 d-flex align-items-center flex-column">
                 <img
-                  className="rounded-circle mb-4"
+                  className="rounded-circle mb-4 mt-3"
                   style={{ boxShadow: "0px 0px 5px 1px rgba(0,0,0,0.5)" }}
                   src={avatar !== null ? avatar : updateInfoUser.avatar}
                   alt="Avatar"
@@ -259,20 +259,18 @@ const Setting = () => {
                   disabled={!isUpdateProfile}
                   onClick={handleShow}
                 >
-                  Update avatar
+                  Cập nhật ảnh
                 </button>
               </div>
               <div className="col-10 p-2">
                 <div className="d-flex align-items-center gap-3 mb-3">
-                  <span className="col-2 text-center">Loại tài khoản</span>
+                  <span className="col-2">Loại tài khoản</span>
                   {user.role === "ROLE_ADMIN" ||
                   user.role === "ROLE_SUPERADMIN" ? (
                     <p className="text-center text-danger m-0">Quản trị</p>
                   ) : user.landlordId === null ||
                     user.landlordId.active === false ? (
-                    <p className="text-center text-danger m-0">
-                      Người thuê trọ
-                    </p>
+                    <p className="text-center text-danger m-0">Người dùng</p>
                   ) : (
                     <p className="text-center text-danger m-0">Chủ trọ</p>
                   )}
@@ -280,7 +278,7 @@ const Setting = () => {
                   <div className="text-danger"></div>
                 </div>
                 <div className="d-flex align-items-center gap-3 mb-3">
-                  <span className="col-2 text-center">Email</span>
+                  <span className="col-2">Email</span>
                   <FloatingLabel
                     controlId="iEmail"
                     label="Email"
@@ -296,7 +294,7 @@ const Setting = () => {
                   </FloatingLabel>
                 </div>
                 <div className="d-flex align-items-center gap-3 mb-3">
-                  <span className="col-2 text-center">Full name</span>
+                  <span className="col-2">Tên đầy đủ</span>
                   <FloatingLabel
                     controlId="iFullName"
                     label="Full name"
@@ -316,7 +314,7 @@ const Setting = () => {
                   </FloatingLabel>
                 </div>
                 <div className="d-flex align-items-center gap-3 mb-3">
-                  <span className="col-2 text-center">Phone</span>
+                  <span className="col-2">Số điện thoại</span>
                   <FloatingLabel
                     controlId="iPhone"
                     label="Phone"
@@ -342,7 +340,7 @@ const Setting = () => {
                       onClick={handleUpdateProfile}
                       disabled={isLoading}
                     >
-                      Update
+                      Cập nhật
                     </button>
                     <button
                       className={isUpdateProfile ? "btn btn-danger" : "d-none"}
@@ -352,119 +350,123 @@ const Setting = () => {
                         setAvatar(user.avatar);
                       }}
                     >
-                      Cancel
+                      Huỷ
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </Tab>
-          <Tab eventKey="post" title="Nâng cấp tài khoản chủ trọ">
-            {user.landlordId === null ? (
-              <>
-                <h2 className="text-primary mb-3">Nhập thông tin</h2>
-                <div className="col-8">
-                  <FloatingLabel label="Địa chỉ" className="mb-3">
-                    <Form.Control
-                      type="text"
-                      placeholder="Địa chỉ"
-                      value={address}
-                      onChange={(evt: any) => {
-                        setAddress(evt.target.value);
-                        setErrors((prevValue: any) => {
-                          return {
-                            ...prevValue,
-                            address: "",
-                          };
-                        });
-                      }}
-                      isInvalid={!!errors.address}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.address}
-                    </Form.Control.Feedback>
-                  </FloatingLabel>
-                  <FloatingLabel label="Căn cước công dân" className="mb-3">
-                    <Form.Control
-                      type="text"
-                      placeholder="Căn cước công dân"
-                      value={personalId}
-                      onChange={(evt: any) => {
-                        setPersonalId(evt.target.value);
-                        setErrors((prevValue: any) => {
-                          return {
-                            ...prevValue,
-                            personalId: "",
-                          };
-                        });
-                      }}
-                      isInvalid={!!errors.personalId}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.personalId}
-                    </Form.Control.Feedback>
-                  </FloatingLabel>
-                  <div className="section-post-info mb-3">
-                    <h3 className="text-primary">Hình ảnh nhà trọ</h3>
-                    <div className="input-section mb-3">
-                      <input
-                        type="file"
-                        name="files"
-                        className="form-control"
-                        id="post-images"
-                        multiple
-                        accept=".jpg, .jpeg, .png"
-                        onChange={handleChangeFiles}
+          {user.role !== "ROLE_LANDLORD" && user.role !== "ROLE_ADMIN" ? (
+            <Tab eventKey="post" title="Nâng cấp tài khoản chủ trọ">
+              {user.landlordId === null ? (
+                <>
+                  <h2 className="text-primary mb-3">Nhập thông tin</h2>
+                  <div className="col-8">
+                    <FloatingLabel label="Địa chỉ" className="mb-3">
+                      <Form.Control
+                        type="text"
+                        placeholder="Địa chỉ"
+                        value={address}
+                        onChange={(evt: any) => {
+                          setAddress(evt.target.value);
+                          setErrors((prevValue: any) => {
+                            return {
+                              ...prevValue,
+                              address: "",
+                            };
+                          });
+                        }}
+                        isInvalid={!!errors.address}
                       />
-                      <label htmlFor="post-images" className="form-label">
-                        <i className="fa-solid fa-upload"></i> &nbsp; Ảnh về nhà
-                        trọ
-                      </label>
-                    </div>
-                    <div className="images-preview d-flex align-items-center justify-content-start gap-2 flex-wrap">
-                      {imageUrls && imageUrls.length > 0
-                        ? imageUrls.map((image, index) => {
-                            return (
-                              <div
-                                className=""
-                                key={index}
-                                style={{ position: "relative" }}
-                              >
-                                <ImagePreview sourceFile={image} />
-                                <button
-                                  style={{
-                                    position: "absolute",
-                                    top: "10px",
-                                    right: "10px",
-                                  }}
-                                  className="btn btn-danger rounded-circle"
-                                  onClick={() => handleDeleteImage(index)}
+                      <Form.Control.Feedback type="invalid">
+                        {errors.address}
+                      </Form.Control.Feedback>
+                    </FloatingLabel>
+                    <FloatingLabel label="Căn cước công dân" className="mb-3">
+                      <Form.Control
+                        type="text"
+                        placeholder="Căn cước công dân"
+                        value={personalId}
+                        onChange={(evt: any) => {
+                          setPersonalId(evt.target.value);
+                          setErrors((prevValue: any) => {
+                            return {
+                              ...prevValue,
+                              personalId: "",
+                            };
+                          });
+                        }}
+                        isInvalid={!!errors.personalId}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.personalId}
+                      </Form.Control.Feedback>
+                    </FloatingLabel>
+                    <div className="section-post-info mb-3">
+                      <h3 className="text-primary">Hình ảnh nhà trọ</h3>
+                      <div className="input-section mb-3">
+                        <input
+                          type="file"
+                          name="files"
+                          className="form-control"
+                          id="post-images"
+                          multiple
+                          accept=".jpg, .jpeg, .png"
+                          onChange={handleChangeFiles}
+                        />
+                        <label htmlFor="post-images" className="form-label">
+                          <i className="fa-solid fa-upload"></i> &nbsp; Ảnh về
+                          nhà trọ
+                        </label>
+                      </div>
+                      <div className="images-preview d-flex align-items-center justify-content-start gap-2 flex-wrap">
+                        {imageUrls && imageUrls.length > 0
+                          ? imageUrls.map((image, index) => {
+                              return (
+                                <div
+                                  className=""
+                                  key={index}
+                                  style={{ position: "relative" }}
                                 >
-                                  <i className="fa-solid fa-xmark"></i>
-                                </button>
-                              </div>
-                            );
-                          })
-                        : ""}
+                                  <ImagePreview sourceFile={image} />
+                                  <button
+                                    style={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "10px",
+                                    }}
+                                    className="btn btn-danger rounded-circle"
+                                    onClick={() => handleDeleteImage(index)}
+                                  >
+                                    <i className="fa-solid fa-xmark"></i>
+                                  </button>
+                                </div>
+                              );
+                            })
+                          : ""}
+                      </div>
                     </div>
                   </div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleUpgradeLandLord}
+                    disabled={disabled}
+                  >
+                    Gửi yêu cầu
+                  </button>
+                </>
+              ) : (
+                <div className="d-flex align-items-center justify-content-center">
+                  <h1 className="text-danger">
+                    Đã gửi yêu cầu nâng cấp tài khoản chủ trọ
+                  </h1>
                 </div>
-                <button
-                  className="btn btn-primary"
-                  onClick={handleUpgradeLandLord}
-                  disabled={disabled}
-                >
-                  Gửi yêu cầu
-                </button>
-              </>
-            ) : (
-              <div className="d-flex align-items-center justify-content-center">
-                <h1 className="text-danger">
-                  Đã gửi yêu cầu nâng cấp tài khoản chủ trọ
-                </h1>
-              </div>
-            )}
-          </Tab>
+              )}
+            </Tab>
+          ) : (
+            ""
+          )}
         </Tabs>
       </div>
     </>
