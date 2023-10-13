@@ -77,8 +77,8 @@ const Personal = () => {
   return (
     <>
       <div className="container px-5 pt-2">
-        <div className="row align-items-end">
-          <div className="col-6 d-flex align-items-center gap-3">
+        <div className="row align-items-end p-5 bg-body-secondary">
+          <div className="col-6 d-flex align-items-center gap-5">
             <img
               src={userPersonal.avatar}
               alt=""
@@ -86,7 +86,7 @@ const Personal = () => {
               width={150}
               height={150}
             />
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column gap-3">
               <p
                 style={{
                   fontSize: "24px",
@@ -105,22 +105,22 @@ const Personal = () => {
                 }}
                 className="m-0"
               >
-                {followings.length} Followers
+                {followings.length} Người theo dõi
               </p>
             </div>
           </div>
           <div className="col-6 d-flex gap-3 align-items-end justify-content-end">
             {!isFollow ? (
               <button className="btn btn-primary" onClick={handleFollow}>
-                + Follow
+                Theo dõi
               </button>
             ) : (
               <button className="btn btn-danger" onClick={handleUnFollow}>
-                Unfollow
+                Bỏ theo dõi
               </button>
             )}
 
-            <button className="btn btn-primary">Message</button>
+            <button className="btn btn-primary">Nhắn tin</button>
           </div>
         </div>
       </div>
