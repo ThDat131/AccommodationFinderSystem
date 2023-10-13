@@ -10,7 +10,6 @@ const User = new Schema(
     },
     password: {
       type: String,
-      require: true,
     },
     avatar: {
       type: String,
@@ -28,7 +27,6 @@ const User = new Schema(
     },
     phone: {
       type: String,
-      require: true,
       unique: true,
     },
     landlordId: {

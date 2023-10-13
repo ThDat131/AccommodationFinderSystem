@@ -7,7 +7,7 @@ import ReplyComment from "../ReplyComment/ReplyComment";
 import { toast } from "react-toastify";
 
 const Comment = ({ comment }) => {
-  const socket = io("http://localhost:8085", { transports: ["websocket"] });
+  const socket = io("ws://localhost:3005");
   const [showCommentReplyInput, setShowCommentReplyInput] =
     useState<boolean>(false);
 
@@ -23,7 +23,7 @@ const Comment = ({ comment }) => {
       content: editedComment,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.timeout(1000).emit("edit_comment", res.data);
+        socket.emit("edit_comment", res.data);
         setIsEdit(false);
       }
     });
