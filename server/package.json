@@ -30,6 +30,7 @@
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "request": "^2.88.2",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "ws": "^8.14.2"
   }
 }
