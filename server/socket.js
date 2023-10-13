@@ -1,40 +1,34 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
+import WebSocket, {WebSocketServer} from "ws";
 
-const httpServer = createServer();
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
+const wss =  new WebSocketServer({
+  port: 3005,
+})
 
-io.on("connection", (socket) => {
-  socket.on("send_comment", (newComment) => {
-    socket.broadcast.emit("receive_comment", newComment);
-  });
-  
-  socket.on("reply_comment", (data) => {
-    socket.broadcast.emit("reply_comment", data);
-  });
+// io.on("connection", (socket) => {
+//   socket.on("send_comment", (newComment) => {
+//     socket.broadcast.emit("receive_comment", newComment);
+//   });
 
-  socket.on("edit_comment", (data) => {
-    socket.broadcast.emit("edit_comment", data);
-  });
+wss.on('connection', (ws) => {
+  ws.on("send_comment", (newComment) => {
+    ws.send("receive_comment", newComment);
+  })
+  ws.on("reply_comment", (data) => {
+    ws.send("reply_comment", data);
+  })
+  ws.on("edit_comment", (data) => {
+    ws.send("edit_comment", data);
+  })
+  ws.on("delete_comment", (data) => {
+    ws.send("delete_comment", data);
+  })
+  ws.on("send_notification", (newNotification) => {
+    ws.send("send_notification", newNotification);
+  })
+  ws.on("delete_reply", (data) => {
+    ws.send("delete_reply", data);
+  })
+})
 
-  socket.on("delete_comment", (data) => {
-    socket.broadcast.emit("delete_comment", data);
-  });
-
-  socket.on("send_notification", (newNotification) => {
-    socket.broadcast.emit("receive_notification", newNotification);
-  });
-
-  socket.on("delete_reply", (data) => {
-    socket.broadcast.emit("delete_reply", data);
-  });
-});
-
-httpServer.listen(3005, () => {
-  console.log(`Socket is running at http://localhost:3005`);
-});
