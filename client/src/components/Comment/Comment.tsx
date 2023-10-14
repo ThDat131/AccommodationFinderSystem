@@ -1,13 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import CommentInput from "../CommentInput/CommentInput";
-import { io } from "socket.io-client";
 import { deleteComment, editComment } from "../../services/AuthApis";
 import { MyUserContext } from "../../App";
 import ReplyComment from "../ReplyComment/ReplyComment";
 import { toast } from "react-toastify";
+import { socket } from "../../configs/socket";
 
-const Comment = ({ comment }) => {
-  const socket = io("ws://localhost:3005");
+const Comment = ({ comment, setTrigger }) => {
   const [showCommentReplyInput, setShowCommentReplyInput] =
     useState<boolean>(false);
 
@@ -23,7 +22,8 @@ const Comment = ({ comment }) => {
       content: editedComment,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("edit_comment", res.data);
+        socket.emit("send_edit_comment", res.data);
+        setTrigger("edit_comment");
         setIsEdit(false);
       }
     });
@@ -35,7 +35,7 @@ const Comment = ({ comment }) => {
     }
     deleteComment(id, { userId: user._id }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("delete_comment", id);
+        socket.emit("send_delete_comment", id);
       }
     });
   };
@@ -131,13 +131,14 @@ const Comment = ({ comment }) => {
           comment={replyComment}
           user={comment.userId}
           isClose={setShowCommentReplyInput}
+          setTrigger={setTrigger}
         />
       </div>
       <div className="list-comment w-100">
         {replies &&
           replies.map((reply: any, index: number) => {
             return (
-              <ReplyComment reply={reply} key={index} commentId={comment._id} />
+              <ReplyComment reply={reply} key={index} commentId={comment._id} setTrigger={setTrigger} />
             );
           })}
       </div>

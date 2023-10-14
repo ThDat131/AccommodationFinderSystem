@@ -254,3 +254,12 @@ export const getListFollowing = async (id: string) => {
     return err;
   }
 }
+
+export const signInWithFacebook = async (data) => {
+  try {
+    const res = await axios.post(`${BASE_URL}/api/signin/facebook`, data)
+    return res;
+  } catch (err) {
+    return err;
+  }
+}
