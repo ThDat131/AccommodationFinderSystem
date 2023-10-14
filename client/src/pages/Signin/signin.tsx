@@ -11,8 +11,14 @@ import { getCurrentUser, userSignIn } from "../../services/Apis";
 import { toast } from "react-toastify";
 import cookie from "react-cookies";
 import { MyUserContext } from "../../App";
-import { FacebookAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../../configs/firebase";
+import { signInWithFacebook } from "../../services/AuthApis";
 
 const Signin = () => {
   const nav = useNavigate();
@@ -52,7 +58,22 @@ const Signin = () => {
     const provider = new FacebookAuthProvider();
     signInWithPopup(auth, provider).then((res) => {
       const credential = FacebookAuthProvider.credentialFromResult(res);
-      console.log(credential.accessToken)
+      signInWithFacebook({ access_token: credential.accessToken }).then(
+        (res) => {
+          toast.success("Đăng nhập thành công");
+          cookie.save("token", res.data, {});
+          getCurrentUser().then((res) => {
+            if (res.status === 200) {
+              cookie.save("user", res.data, {});
+              dispatch({
+                type: "login",
+                payload: res.data,
+              });
+              nav("/");
+            }
+          });
+        }
+      );
     });
   };
 
@@ -61,7 +82,7 @@ const Signin = () => {
     signInWithPopup(auth, provider).then((res) => {
       console.log(res);
     });
-  }
+  };
 
   return (
     <>
@@ -136,7 +157,11 @@ const Signin = () => {
             </div>
             <div className="mb-3 d-flex justify-content-center align-items-center">
               <div className="d-flex gap-2">
-                <button type="button" className="btn rounded-circle hover-btn" onClick={SignInWithGoogle}>
+                <button
+                  type="button"
+                  className="btn rounded-circle hover-btn"
+                  onClick={SignInWithGoogle}
+                >
                   <i className="fa-brands fa-google"></i>
                 </button>
                 <button

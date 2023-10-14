@@ -1,10 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { replyComment } from "../../services/AuthApis";
-import { io } from "socket.io-client";
 import { MyUserContext } from "../../App";
+import { socket } from "../../configs/socket";
 
-const CommentInput = ({ user, comment, commentParent, isClose }) => {
-  const socket = io("ws://localhost:3005");
+const CommentInput = ({
+  user,
+  comment,
+  commentParent,
+  isClose,
+  setTrigger,
+}) => {
   const [commentContent, setCommentContent] = useState<string>("");
   const [currentUser, _dispatch] = useContext(MyUserContext);
   useEffect(() => {
@@ -16,14 +21,15 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
       userId: currentUser._id,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("reply_comment", res.data);
+        socket.emit("send_reply_comment", res.data);
+        setTrigger("reply_comment");
         setCommentContent("");
-        isClose(true);
+        isClose(false);
       }
     });
   };
   if (!currentUser) {
-    return <></>
+    return <></>;
   }
   return (
     <div className="ms-5 d-flex flex-start w-75 align-items-center gap-2">
@@ -36,9 +42,9 @@ const CommentInput = ({ user, comment, commentParent, isClose }) => {
       />
       <div className="form-floating w-100">
         <input
+          id={commentParent._id}
           className="form-control"
           placeholder="Leave a comment here"
-          id="floatingTextarea"
           onChange={(e) => setCommentContent(e.target.value)}
           value={commentContent}
         ></input>

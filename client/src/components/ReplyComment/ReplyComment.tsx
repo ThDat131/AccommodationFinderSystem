@@ -1,14 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { deleteReplyComment, editReplyComment } from "../../services/AuthApis";
-import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { MyUserContext } from "../../App";
+import { socket } from "../../configs/socket";
 
-const ReplyComment = ({ reply, commentId }) => {
+const ReplyComment = ({ reply, commentId, setTrigger }) => {
   const [isEditReply, setIsEditReply] = useState<boolean>(false);
   const [editedReply, setEditedReply] = useState<string>("");
-  const socket = io("ws://localhost:3005");
-  // const socket = io("http://localhost:8085", { transports: ["websocket"] });
   const [user, _dispatch] = useContext(MyUserContext);
 
   const handleChangeReplyComment = () => {
@@ -17,10 +15,10 @@ const ReplyComment = ({ reply, commentId }) => {
       userId: reply.userId._id,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("edit_comment", res.data);
-        setIsEditReply(false);
+        socket.emit("send_edit_comment", res.data);
       }
     });
+    setIsEditReply(false);
   };
 
   const handleDeleteReply = (commentId, replyId) => {
@@ -30,7 +28,7 @@ const ReplyComment = ({ reply, commentId }) => {
       userId: reply.userId._id,
     }).then((res: any) => {
       if (res.status === 200) {
-        socket.emit("delete_reply", res.data);
+        socket.emit("send_delete_reply", res.data);
       }
     });
   };

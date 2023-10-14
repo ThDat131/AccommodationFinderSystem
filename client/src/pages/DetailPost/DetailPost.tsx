@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Map from "../../components/Map/Map";
 import { MyUserContext } from "../../App";
@@ -9,12 +9,10 @@ import DOMPurify from "dompurify";
 import { createComment } from "../../services/AuthApis";
 import { toast } from "react-toastify";
 import Comment from "../../components/Comment/Comment";
-import { io } from "socket.io-client";
 import { IComment } from "../../interface/IComment";
+import { socket } from "../../configs/socket";
 
 const DetailPost = () => {
-  // const socket = io("http://localhost:8085", { transports: ["websocket"] });
-  const [socket, setSocket] = useState(null);
   const [user, _dispatch] = useContext(MyUserContext);
   const { id } = useParams();
   const [detailPost, setDetailPost] = useState(null);
@@ -24,8 +22,91 @@ const DetailPost = () => {
   const [comments, setComments] = useState<Array<IComment>>([]);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [status, setStatus] = useState(false);
-  // const [listFollow, setListFollow] = useState([]);
-  // const [isFollow, setIsFollow] = useState(null);
+
+  // socket.on("receive_comment", async (data) => {
+  //   setComments([...comments, data]);
+  // });
+  // socket.on("reply_comment", async (data: any) => {
+  //   setComments((prevComments) => {
+  //     return prevComments.map((comment: IComment) => {
+  //       return comment._id === data._id ? data : comment;
+  //     });
+  //   });
+  // });
+  // socket.on("edit_comment", async (data: any) => {
+  //   setComments((prevComments) => {
+  //     return prevComments.map((comment: IComment) => {
+  //       return comment._id === data._id ? data : comment;
+  //     });
+  //   });
+  // });
+  // socket.on("delete_comment", async (data: any) => {
+  //   setComments((prevComments) => {
+  //     return prevComments.filter((comment) => comment._id !== data);
+  //   });
+  // });
+  // socket.on("delete_reply", async (data: any) => {
+  //   setComments((prevComments) => {
+  //     return prevComments.map((comment: IComment) => {
+  //       return comment._id === data._id ? data : comment;
+  //     });
+  //   });
+  // });
+
+  const [trigger, setTrigger] = useState("");
+
+  const addComment = (newComment) => {
+    setComments((prevComments) => [...prevComments, newComment]);
+  };
+
+  const editComment = (editedComment) => {
+    setComments((prevComments) => {
+      return prevComments.map((comment) =>
+        comment._id === editedComment._id ? editedComment : comment
+      );
+    });
+  };
+  const deleteComment = (commentId) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment._id !== commentId)
+    );
+  };
+
+  useEffect(() => {
+    socket.on("receive_reply_comment", (data) => {
+      console.log(data);
+      editComment(data);
+    });
+    socket.on("receive_comment", (data) => {
+      addComment(data);
+      console.log(data)
+    });
+    socket.on("receive_edit_comment", (data) => {
+      editComment(data);
+    });
+
+    socket.on("receive_delete_comment", (data) => {
+      deleteComment(data);
+    });
+
+    socket.on("receive_delete_reply", (data) => {
+      editComment(data);
+    });
+
+    const deleteComment = (commentId) => {
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment._id !== commentId)
+      );
+    };
+    return () => {
+      socket.off("receive_comment");
+      socket.off("receive_reply_comment");
+      socket.off("receive_edit_comment");
+      socket.off("receive_delete_comment");
+      socket.off("receive_delete_reply");
+    };
+  }, [trigger]);
+
   const [viewportData, setViewPortData] = useState({
     width: "100%",
     height: 400,
@@ -33,10 +114,6 @@ const DetailPost = () => {
     longitude: 105.2351686,
     zoom: 16,
   });
-
-  // const htmlFormatted = DOMPurify.sanitize(detailPost.content, {
-  //     USE_PROFILES: { html: true },
-  // });
 
   const clickNext = () => {
     setImgPos((prevImgPos) => (prevImgPos + 1) % detailPost.images.length);
@@ -61,54 +138,18 @@ const DetailPost = () => {
       userId: user._id,
     }).then((res: any) => {
       if (res.status === 201) {
-        socket.timeout(1000).emit("send_comment", res.data);
+        socket.emit("send_comment", res.data);
         setComment("");
       }
     });
   };
 
   useEffect(() => {
-    if (!socket) {
-      setSocket(io("ws://localhost:3005"));
-    }
-  }, [socket]);
-
-  useEffect(() => {
-    socket?.on("receive_comment", (data: any) => {
-      setComments([...comments, data]);
+    getCommentByPost(id).then((res: any) => {
+      if (res.status === 200) {
+        setComments(res.data);
+      }
     });
-    socket?.on("reply_comment", (data: any) => {
-      setComments(() => {
-        return comments.map((comment: IComment) => {
-          return comment._id === data._id ? data : comment;
-        });
-      });
-    });
-    socket?.on("edit_comment", (data: any) => {
-      setComments(() => {
-        return comments.map((comment: IComment) => {
-          return comment._id === data._id ? data : comment;
-        });
-      });
-    });
-    socket?.on("delete_comment", (data: any) => {
-      setComments(() => {
-        return comments.filter((comment) => comment._id !== data);
-      });
-    });
-    socket?.on("delete_reply", (data: any) => {
-      setComments(() => {
-        return comments.map((comment: IComment) => {
-          return comment._id === data._id ? data : comment;
-        });
-      });
-    });
-    return () => {
-      socket?.removeAllListerner();
-    };
-  }, []);
-
-  useEffect(() => {
     getDetailPost(id).then((res) => {
       if (res.status === 200) {
         // console.log(res.data);
@@ -121,14 +162,6 @@ const DetailPost = () => {
           };
         });
         setIsLoading(false);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    getCommentByPost(id).then((res: any) => {
-      if (res.status === 200) {
-        setComments(res.data);
       }
     });
   }, []);
@@ -261,7 +294,7 @@ const DetailPost = () => {
                 <div className="d-flex flex-start w-100">
                   <img
                     className="rounded-circle shadow-1-strong me-3"
-                    src={user ? user.avatar : default_avatar}
+                    src={user.avatar}
                     alt="avatar"
                     width="60"
                     height="60"
@@ -297,7 +330,13 @@ const DetailPost = () => {
             {comments.length >= 1 ? (
               comments.map((comment) => {
                 if (!comment.commentId) {
-                  return <Comment key={comment._id} comment={comment} />;
+                  return (
+                    <Comment
+                      key={comment._id}
+                      comment={comment}
+                      setTrigger={setTrigger}
+                    />
+                  );
                 }
               })
             ) : (
