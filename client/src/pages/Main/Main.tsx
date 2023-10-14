@@ -20,7 +20,7 @@ const Main = () => {
     setIsLoading(true);
     getPosts(params).then((res) => {
       if (res.status === 200) {
-        setPosts(res.data);
+        setPosts(res.data.posts);
         setIsLoading(false);
       }
     });

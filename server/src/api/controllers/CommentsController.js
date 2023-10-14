@@ -61,9 +61,9 @@ const CommentsController = {
           model: "User",
         })
         .populate({ path: "replies.userId", model: "User" });
-      if (comments.length === 0) {
-        return res.status(404).json({ message: "Comment not found" });
-      }
+      // if (comments.length === 0) {
+      //   return res.status(404).json(comments);
+      // }
       return res.status(200).json(comments);
     } catch (error) {
       return next(error);
@@ -84,9 +84,9 @@ const CommentsController = {
           model: "User",
         })
         .populate({ path: "replies.userId", model: "User" });
-      if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
-      }
+      // if (!comment) {
+      //   return res.status(404).json({ message: "Comment not found" });
+      // }
       return res.status(200).json(comment);
     } catch (error) {
       return next(error);
@@ -100,14 +100,14 @@ const CommentsController = {
       const { contentReply } = req.body;
 
       const comment = await CommentModel.findById({ _id: commentId }); // tìm bình luận
-      if (!comment) {
-        return res.status(404).json("Comment not found");
-      }
+      // if (!comment) {
+      //   return res.status(404).json("Comment not found");
+      // }
 
       const reply = comment.replies.id(replyId); // tìm phản hồi của bình luận
-      if (!reply) {
-        return res.status(404).json("Reply not found");
-      }
+      // if (!reply) {
+      //   return res.status(404).json("Reply not found");
+      // }
 
       reply.content = contentReply; // chỉnh sửa lại nội dụng của phản hồi
       await comment.save(); // lưu lại bình luận
@@ -126,10 +126,10 @@ const CommentsController = {
   delete: async (req, res, next) => {
     try {
       const deleteComment = await CommentModel.delete({ _id: req.params.id });
-      if (!deleteComment) {
-        return res.status(404).json({ message: "Comment not found" });
-      }
-      return res.status(200).json({ message: "Comment has deleted" });
+      // if (!deleteComment) {
+      //   return res.status(404).json({ message: "Comment not found" });
+      // }
+      return res.status(200).json(deleteComment);
     } catch (error) {
       return next(error);
     }

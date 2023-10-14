@@ -5,49 +5,7 @@ import { MyUserContext } from "../../App";
 import cookie from "react-cookies";
 import { Container, Form } from "react-bootstrap";
 
-const AdminStats = () => {
-  // const data = [
-  //   {
-  //     months: [
-  //       {
-  //         month: 2,
-  //         days: [
-  //           {
-  //             day: 9,
-  //             quantity: 1,
-  //           },
-  //         ],
-  //         total: 1,
-  //       },
-  //       {
-  //         month: 9,
-  //         days: [
-  //           {
-  //             day: 3,
-  //             quantity: 1,
-  //           },
-  //         ],
-  //         total: 1,
-  //       },
-  //       {
-  //         month: 10,
-  //         days: [
-  //           {
-  //             day: 5,
-  //             quantity: 1,
-  //           },
-  //           {
-  //             day: 3,
-  //             quantity: 1,
-  //           },
-  //         ],
-  //         total: 2,
-  //       },
-  //     ],
-  //     year: 2023,
-  //   },
-  // ];
-  const [user, dispatch] = useContext(MyUserContext);
+const AdminStatsUser = () => {
   const [originalData, setOriginalData] = useState([]);
   const [filter, setFilter] = useState({
     year: "",
@@ -65,7 +23,7 @@ const AdminStats = () => {
   useEffect(() => {
     const process = async () => {
       await axios
-        .get("http://127.0.0.1:8085/api/admin/posts/stats?", {
+        .get("http://127.0.0.1:8085/api/admin/users/stats?", {
           headers: {
             Authorization: cookie.load("token"),
           },
@@ -76,19 +34,17 @@ const AdminStats = () => {
             (a, b) => a.month - b.month
           );
           setOriginalData(sortedData);
-
           setData(res.data);
         })
         .catch((err) => console.log(err));
     };
     process();
   }, [filter]);
-
   return (
     <>
       <Container>
         <div>
-          <h1 className="text-center mt-3">THỐNG KÊ SỐ LƯỢNG BÀI ĐĂNG</h1>
+          <h1 className="text-center mt-3">THỐNG KÊ SỐ LƯỢNG NGƯỜI DÙNG</h1>
           <div className="">
             <Form className="d-flex justify-content-between">
               <Form.Group className="w-25">
@@ -147,4 +103,4 @@ const AdminStats = () => {
   );
 };
 
-export default AdminStats;
+export default AdminStatsUser;

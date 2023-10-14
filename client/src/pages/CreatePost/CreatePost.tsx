@@ -294,22 +294,22 @@ const CreatePost = () => {
     <>
       <div className="container">
         <h2 className="text-primary border-bottom border-primary pb-2">
-          Create new post
+          Đăng tin cho thuê
         </h2>
         <div className="d-flex justify-content-between">
           <div className="col-8 p-3">
             <div className="section-post-info mb-3">
-              <h3 className="text-primary">Address for rent</h3>
+              <h3 className="text-primary mb-3">Địa chỉ cho thuê</h3>
               <div className="d-flex align-items-center gap-3 flex-wrap">
-                <div className="d-flex flex-column col-3">
-                  <h4>Province</h4>
+                <div className="d-flex flex-column col-4">
+                  <h5>Tỉnh/Thành phố</h5>
                   <select
                     className="form-select"
                     onChange={handleChangeProvince}
                     value={selectedProvince}
                     required
                   >
-                    <option value={""}>Select Province</option>
+                    <option value={""}>Chọn Tỉnh/Thành phố</option>
                     {provinces.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -320,14 +320,14 @@ const CreatePost = () => {
                   </select>
                   <div className="text-danger">{errors.province}</div>
                 </div>
-                <div className="d-flex flex-column col-3">
-                  <h4>District</h4>
+                <div className="d-flex flex-column col-4">
+                  <h5>Quận/Huyện</h5>
                   <select
                     className="form-select"
                     onChange={handleChangeDistrict}
                     value={selectedDistrict}
                   >
-                    <option value={""}>Select District</option>
+                    <option value={""}>Chọn Quận/Huyện</option>
                     {districts.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -339,13 +339,13 @@ const CreatePost = () => {
                   <div className="text-danger">{errors.district}</div>
                 </div>
                 <div className="d-flex flex-column col-3">
-                  <h4>Ward</h4>
+                  <h5>Phường/Xã</h5>
                   <select
                     value={selectedWard}
                     className="form-select"
                     onChange={handleChangeWard}
                   >
-                    <option value={""}>Select Ward</option>
+                    <option value={""}>Chọn Phường/Xã</option>
                     {wards.map((item: any, index: number) => {
                       return (
                         <option key={index} value={item.code}>
@@ -356,8 +356,8 @@ const CreatePost = () => {
                   </select>
                   <div className="text-danger">{errors.ward}</div>
                 </div>
-                <div className="d-flex flex-column col-3">
-                  <h4>Street And House Number</h4>
+                <div className="d-flex flex-column col-6">
+                  <h5>Số nhà + Tên đường</h5>
                   <input
                     className="form-control"
                     type="text"
@@ -394,7 +394,7 @@ const CreatePost = () => {
                   <div className="text-danger">{errors.street}</div>
                 </div>
                 <div className="d-flex flex-column col-12">
-                  <h4>Exact Address</h4>
+                  <h5>Địa chỉ chính xác</h5>
                   <input
                     className="form-control"
                     type="text"
@@ -405,9 +405,9 @@ const CreatePost = () => {
               </div>
             </div>
             <div className="section-post-info mb-3">
-              <h3 className="text-primary">Description</h3>
-              <div className="d-flex flex-column col-4">
-                <h4>Category</h4>
+              <h3 className="text-primary">Mô tả</h3>
+              <div className="d-flex flex-column col-4 mt-3">
+                <h5>Loại danh mục</h5>
                 <select
                   className="form-select"
                   value={category}
@@ -419,7 +419,7 @@ const CreatePost = () => {
                     setCategory(evt.target.value);
                   }}
                 >
-                  <option value={""}>Select one category</option>
+                  <option value={""}>Chọn danh mục</option>
                   {categories.map((category: Category) => {
                     return (
                       <option key={category._id} value={category._id}>
@@ -430,8 +430,8 @@ const CreatePost = () => {
                 </select>
                 <div className="text-danger">{errors.category}</div>
               </div>
-              <div className="d-flex flex-column col-4">
-                <h4>Name</h4>
+              <div className="d-flex flex-column col-4 mt-3">
+                <h5>Tiêu đề</h5>
                 <input
                   type="text"
                   className="form-control"
@@ -446,8 +446,8 @@ const CreatePost = () => {
                 />
                 <div className="text-danger">{errors.name}</div>
               </div>
-              <div className="d-flex flex-column col-12">
-                <h4>Content</h4>
+              <div className="d-flex flex-column col-12 mt-4">
+                <h5>Nội dung miêu tả</h5>
                 <Editor
                   editorState={content}
                   onEditorStateChange={(editorState) => setContent(editorState)}
@@ -458,8 +458,8 @@ const CreatePost = () => {
                   }}
                 />
               </div>
-              <div className="d-flex flex-column col-4">
-                <h4>Price</h4>
+              <div className="d-flex flex-column col-4 mt-3">
+                <h5>Giá</h5>
                 <div className="input-group mb-3">
                   <input
                     type="number"
@@ -476,13 +476,13 @@ const CreatePost = () => {
                     }}
                   />
                   <span className="input-group-text" id="price">
-                    VND / Month
+                    VND / Tháng
                   </span>
                 </div>
                 <div className="text-danger">{errors.price}</div>
               </div>
-              <div className="d-flex flex-column col-4">
-                <h4>Acreage</h4>
+              <div className="d-flex flex-column col-4 mt-3">
+                <h5>Diện tích</h5>
                 <div className="input-group mb-3">
                   <input
                     type="number"
@@ -506,7 +506,7 @@ const CreatePost = () => {
               </div>
             </div>
             <div className="section-post-info mb-3">
-              <h3 className="text-primary">Image</h3>
+              <h3 className="text-primary">Hình ảnh</h3>
               <div className="input-section mb-3">
                 <input
                   type="file"
@@ -555,7 +555,7 @@ const CreatePost = () => {
           </div>
         </div>
         <button className="btn-primary btn my-3" onClick={handleCreatePost} disabled={disabled}>
-          Create Post
+          Tại bài đăng
          </button>
       </div>
     </>

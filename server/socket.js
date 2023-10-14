@@ -11,13 +11,11 @@ const io = new Server(3005, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id)
   socket.on("send_comment", (newComment) => {
     io.emit("receive_comment", newComment);
   });
 
   socket.on("send_reply_comment", (data) => {
-    console.log(data)
     io.emit("receive_reply_comment", data);
   });
 

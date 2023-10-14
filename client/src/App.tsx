@@ -25,6 +25,7 @@ import DetailPost from "./pages/DetailPost/DetailPost";
 import FindByCoordinates from "./pages/FindByCoordinates/FindByCoordinates";
 import AdminLandlords from "./components/AdminLandlords/AdminLandlords";
 import AdminStats from "./components/AdminStats/AdminStats";
+import AdminStatsUser from "./components/AdminStatsUser/AdminStatsUser";
 
 export const MyUserContext = createContext(null);
 
@@ -75,7 +76,8 @@ function App() {
                   path="admin/landlorđs-approve"
                   element={<AdminLandlords />}
                 />
-                <Route path="admin/stats" element={<AdminStats />} />
+                <Route path="admin/posts/stats" element={<AdminStats />} />
+                <Route path="admin/users/stats" element={<AdminStatsUser />} />
                 <Route
                   path="/admin/update-user/:id"
                   element={<AdminUpdateUser />}

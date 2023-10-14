@@ -11,10 +11,13 @@
     "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions"
   },
   "dependencies": {
+    "chart.js": "^4.4.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.16.0"
+    "react-router-dom": "^6.16.0",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@goongmaps/goong-map-react": "^1.1.2",
