@@ -241,7 +241,7 @@ const AdminUsers = () => {
                       <td className="text-center">
                         <img src={user.avatar} alt="" width={50} height={50} />
                       </td>
-                      <td className="align-middle">
+                      {/* <td className="align-middle">
                         <Link to={`/admin/update-user/${user._id}`}>
                           <button type="button" className="btn btn-primary">
                             Cập nhật
@@ -252,7 +252,7 @@ const AdminUsers = () => {
                         <button type="button" className="btn btn-primary">
                           Đổi mật khẩu
                         </button>
-                      </td>
+                      </td> */}
                       <td className="align-middle">
                         <button
                           type="button"

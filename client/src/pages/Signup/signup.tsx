@@ -71,7 +71,7 @@ const Signup = () => {
       email: user.email,
     }).then((res) => {
       if (res.status === 200) {
-        toast.success("Send verify code successfully. Please check your email");
+        toast.success("Gửi mã xác nhận thành công. Vui lòng kiểm tra email của bạn");
       }
     });
     setTimeout(() => {
@@ -81,37 +81,38 @@ const Signup = () => {
 
   const validation = (msgError: any) => {
     if (!user.email.trim()) {
-      msgError.email = "Email is required!";
+      msgError.email = "Email không được để trống!";
     } else if (
       !user.email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)
     ) {
-      msgError.email = "Email is invalid!";
+      msgError.email = "Email không tồn tại!";
     }
     if (!user.fullName.trim()) {
-      msgError.fullName = "Full name is required!";
+      msgError.fullName = "Tên đầy đủ không được để trống!";
     }
     if (!user.phone.trim()) {
-      msgError.phone = "Phone is required!";
+      msgError.phone = "Số điện thoại không được để trống!";
     } else if (!user.phone.match(/^(0[0-9]{9}|[0-9]{10})$/)) {
-      msgError.phone = "Phone is invalid!";
+      msgError.phone = "Số điện thoại không tồn tại!";
     }
     if (!user.password.trim()) {
-      msgError.password = "Password is required!";
+      msgError.password = "Mật khẩu không được để trống!";
     } else if (
       !user.password.match(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
       )
     ) {
       msgError.password =
-        "Please use at least 8 characters, including uppercase, lowercase, numbers, and special characters for increased security)";
+      "Mật khẩu phải có ít nhất 8 ký tự và phải có ký tự thường, ký tự in hoa và ký tự đặc biệt";
     }
+    
     if (!user.rePassword.trim()) {
-      msgError.rePassword = "Confirm password is required!";
+      msgError.rePassword = "Nhập lại mật khẩu không được để trống!";
     } else if (user.password !== user.rePassword) {
-      msgError.rePassword = "Password and confirm password is not match!";
+      msgError.rePassword = "Mật khẩu không trùng khớp!";
     }
     if (!user.rePassword.trim()) {
-      msgError.confirmationCode = "Confirmation code is required!";
+      msgError.confirmationCode = "Mã xác nhận không được để trống!";
     }
   };
 
@@ -135,7 +136,7 @@ const Signup = () => {
     }
     userSignUp(formData).then((res) => {
       if (res.status === 201) {
-        toast.success("Signup successfully!");
+        toast.success("Đăng ký thành công!");
         setUser({
           fullName: "",
           email: "",
@@ -174,7 +175,7 @@ const Signup = () => {
           ></div>
           <div className="col-6 d-flex flex-column justify-content-center px-5">
             <Form noValidate onSubmit={handleSubmit}>
-              <h1 className="text-center text-primary mb-3">Sign up</h1>
+              <h1 className="text-center text-primary mb-3">Đăng ký</h1>
               <FloatingLabel
                 controlId="floatingInput"
                 label="Email"
@@ -193,7 +194,7 @@ const Signup = () => {
               </FloatingLabel>
               <FloatingLabel
                 controlId="floatingFullName"
-                label="Full Name"
+                label="Tên đầy đủ"
                 className="mb-3"
               >
                 <Form.Control
@@ -209,7 +210,7 @@ const Signup = () => {
               </FloatingLabel>
               <FloatingLabel
                 controlId="floatingPhone"
-                label="Phone"
+                label="Số điện thoại"
                 className="mb-3"
               >
                 <Form.Control
@@ -225,7 +226,7 @@ const Signup = () => {
               </FloatingLabel>
               <FloatingLabel
                 controlId="floatingPassword"
-                label="Password"
+                label="Mật khẩu"
                 className="mb-3"
               >
                 <Form.Control
@@ -242,7 +243,7 @@ const Signup = () => {
               <InputGroup>
                 <FloatingLabel
                   controlId="floatingRePassword"
-                  label="Confirm Password"
+                  label="Nhập lại mật khẩu"
                   className="mb-3"
                 >
                   <Form.Control
@@ -260,7 +261,7 @@ const Signup = () => {
               <div className="d-flex justify-content-between align-items-center">
                 <FloatingLabel
                   controlId="floatingConfirmationCode"
-                  label="Confirm Code"
+                  label="Mã xác nhận"
                   className="mb-3 w-50"
                 >
                   <Form.Control
@@ -282,7 +283,7 @@ const Signup = () => {
                   onClick={sendCode}
                   disabled={isSend}
                 >
-                  {!isSend ? "Send code" : `Please wait ${timer} seconds`}
+                  {!isSend ? "Gửi mã" : `Vui lòng đợi ${timer} giây`}
                 </Button>
               </div>
 
@@ -294,17 +295,17 @@ const Signup = () => {
                   disabled={disabled}
                   className="d-flex justify-content-center align-items-center gap-2"
                 >
-                  Sign Up
+                  Đăng ký
                   {disabled && <Spinner />}
                 </Button>
               </div>
             </Form>
             <div className="mb-3 d-flex justify-content-center align-items-center gap-2">
-              <p className="m-0">Already sign up?</p>
-              <Link to={"/signin"}>Sign in</Link>
+              <p className="m-0">Đã đăng ký?</p>
+              <Link to={"/signin"}>Đăng nhập</Link>
             </div>
             <div className="d-flex justify-content-center align-items-center gap-2">
-              <p className="m-0">Or sign up with:</p>
+              <p className="m-0">Đăng ký với:</p>
               <div className="d-flex justify-content-center align-items-center">
                 <div className="d-flex gap-2">
                   <button

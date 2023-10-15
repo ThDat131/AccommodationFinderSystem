@@ -130,7 +130,7 @@ const AuthsController = {
                 const user = await UserModel.findOne({
                   email: data.email,
                 });
-                console.log(data)
+                console.log(data);
                 if (!user) {
                   const createUserByFB = await UserModel.create({
                     fullName: data.name,
