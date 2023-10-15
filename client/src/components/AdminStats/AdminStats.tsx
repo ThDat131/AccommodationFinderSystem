@@ -138,7 +138,7 @@ const AdminStats = () => {
           </div>
           <ChartStats
             statsName="Thống kê số lượng người đăng ký"
-            statsLable="Số lượng"
+            statsLable="Số lượng bài đăng"
             stats={data}
           />
         </div>

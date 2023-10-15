@@ -555,7 +555,7 @@ const CreatePost = () => {
           </div>
         </div>
         <button className="btn-primary btn my-3" onClick={handleCreatePost} disabled={disabled}>
-          Tại bài đăng
+          Tạo bài đăng
          </button>
       </div>
     </>

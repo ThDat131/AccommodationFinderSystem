@@ -17,7 +17,7 @@ const Header = () => {
     dispatch({
       type: "logout",
     });
-    nav("/signin");
+    nav("/");
     toast.success("Đã đăng xuất!");
   };
 

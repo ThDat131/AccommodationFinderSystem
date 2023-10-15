@@ -73,7 +73,7 @@ function App() {
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="admin/categories" element={<AdminCategories />} />
                 <Route
-                  path="admin/landlorđs-approve"
+                  path="admin/landlords-approve"
                   element={<AdminLandlords />}
                 />
                 <Route path="admin/posts/stats" element={<AdminStats />} />

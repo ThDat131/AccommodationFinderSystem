@@ -47,7 +47,7 @@ const Personal = () => {
       return;
     }
     if (userPersonal._id === currentUser._id) {
-      toast.error("Không thể tự follow chính mình!");
+      toast.error("Không thể tự theo dõi chính mình!");
       return;
     }
     follow({ follower: userPersonal._id, following: currentUser._id }).then(
