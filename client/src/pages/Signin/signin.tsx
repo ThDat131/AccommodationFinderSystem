@@ -13,7 +13,6 @@ import cookie from "react-cookies";
 import { MyUserContext } from "../../App";
 import {
   FacebookAuthProvider,
-  GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../../configs/firebase";
@@ -78,12 +77,12 @@ const Signin = () => {
     });
   };
 
-  const SignInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).then((res) => {
-      console.log(res);
-    });
-  };
+  // const SignInWithGoogle = () => {
+  //   const provider = new GoogleAuthProvider();
+  //   signInWithPopup(auth, provider).then((res) => {
+  //     console.log(res);
+  //   });
+  // };
 
   return (
     <>
@@ -150,24 +149,24 @@ const Signin = () => {
               </div>
             </Form>
             <div className="mb-3 d-flex justify-content-center align-items-center gap-2">
-              <p className="m-0">chưa đăng ký?</p>
+              <p className="m-0">Chưa đăng ký?</p>
               <Link to={"/signup"}>Đăng ký</Link>
             </div>
-            <div className="mb-3 d-flex justify-content-center align-items-center">
+            <div className="d-flex justify-content-center align-items-center">
               <p className="m-0">Đăng nhập với:</p>
             </div>
             <div className="mb-3 d-flex justify-content-center align-items-center">
               <div className="d-flex gap-2">
-                <button
+                {/* <button
                   type="button"
                   className="btn rounded-circle hover-btn"
                   onClick={SignInWithGoogle}
                 >
                   <i className="fa-brands fa-google"></i>
-                </button>
+                </button> */}
                 <button
                   type="button"
-                  className="btn rounded-circle hover-btn"
+                  className="btn rounded-circle hover-btn text-primary"
                   onClick={SignInWithFacebook}
                 >
                   <i className="fa-brands fa-facebook"></i>

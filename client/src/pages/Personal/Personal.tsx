@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById } from "../../services/Apis";
+import { authApis, endpoints, getUserById } from "../../services/Apis";
 import { Spinner } from "react-bootstrap";
 import { follow, getListFollowing, unFollow } from "../../services/AuthApis";
 import { MyUserContext } from "../../App";
 import { toast } from "react-toastify";
+import { Post } from "../../interface/Post";
+import PostBox from "../../components/PostBox/PostBox";
 
 const Personal = () => {
   interface User {
@@ -23,6 +25,8 @@ const Personal = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [followings, setFollowings] = useState([]);
   const [isFollow, setisFollow] = useState<boolean>(null);
+  const [posts, setPosts] = useState<Array<Post>>([]);
+
   useEffect(() => {
     getUserById(id).then((res) => {
       setUserPersonal(res.data);
@@ -41,23 +45,34 @@ const Personal = () => {
       } else setisFollow(false);
     });
   }, [followings.length]);
+
+  useEffect(() => {
+    authApis()
+      .get(endpoints.posts_by_user(id))
+      .then((res) => {
+        if (res.status === 200) {
+          setPosts(res.data);
+        }
+      });
+  }, []);
   const handleFollow = () => {
     if (!currentUser) {
       toast.error("Vui lòng đăng nhập để tiếp tục");
       return;
     }
     if (userPersonal._id === currentUser._id) {
-      toast.error("Không thể tự follow chính mình!");
+      toast.error("Không thể tự theo dõi chính mình!");
       return;
     }
     follow({ follower: userPersonal._id, following: currentUser._id }).then(
       (res) => {
         if (res.status === 200) {
-          setisFollow(true)
+          setisFollow(true);
         }
       }
     );
   };
+
   const handleUnFollow = () => {
     unFollow({ follower: userPersonal._id, following: currentUser._id }).then(
       (res) => {
@@ -122,6 +137,20 @@ const Personal = () => {
 
             <button className="btn btn-primary">Nhắn tin</button>
           </div>
+        </div>
+        <div className="mt-3">
+          <h3 className="text-primary">Danh sách các bài đăng</h3>
+          {posts.length > 0 ? (
+            <div className="d-flex flex-column">
+              {posts.map((post, index: number) => {
+                return <PostBox data={post} key={index} />;
+              })}
+            </div>
+          ) : (
+            <div className="d-flex align-items-center justify-content-center align-self">
+              <p className="m-0">Không có bài đăng</p>
+            </div>
+          )}
         </div>
       </div>
     </>

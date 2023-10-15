@@ -131,7 +131,7 @@ const PostsController = {
       if (!posts) {
         return res.status(404).send("Post not found");
       }
-      return res.status(200).json({posts, totalPosts});
+      return res.status(200).json({ posts, totalPosts });
     } catch (error) {
       return next(error);
     }
@@ -158,8 +158,7 @@ const PostsController = {
     try {
       const posts = await PostModel.find({
         userId: req.params.id,
-        categoryId: req.query?.categoryId,
-      });
+      }).populate("userId");
       if (posts.length === 0) {
         return res.status(404).send("Posts not found");
       }

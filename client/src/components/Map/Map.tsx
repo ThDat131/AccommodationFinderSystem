@@ -46,9 +46,9 @@ const Map = ({ viewportData, layer, markers }) => {
       goongApiAccessToken={MapAPIKey}
     >
       {markers && markers.length > 0
-        ? markers.map((marker: any) => {
+        ? markers.map((marker: any, index: number) => {
             return (
-              <Marker latitude={marker.latitude} longitude={marker.longitude}>
+              <Marker key={index} latitude={marker.latitude} longitude={marker.longitude}>
                 <div
                   onClick={() => setPopups([...popups, marker])}
                   style={{ cursor: "pointer" }}
@@ -63,9 +63,10 @@ const Map = ({ viewportData, layer, markers }) => {
           })
         : ""}
       {popups && popups.length > 0
-        ? popups.map((popup: any) => {
+        ? popups.map((popup: any, index: number) => {
             return (
               <Popup
+                key={index}
                 latitude={popup.latitude}
                 longitude={popup.longitude}
                 onClose={() =>
@@ -77,9 +78,14 @@ const Map = ({ viewportData, layer, markers }) => {
                 }
               >
                 <div className="d-flex flex-column">
-                  <p>{popup.name}</p>
-                  <div className="img" style={{ width: "200px" }}>
-                    <img className="w-100" src={popup.images[0]} alt="" />
+                  <h5>{popup.name}</h5>
+                  <div className="d-flex gap-2">
+                    <div className="img" style={{ width: "100px" }}>
+                      <img className="w-100" src={popup.images[0]} alt="" />
+                    </div>
+                    <div className="img" style={{ width: "100px" }}>
+                      <img className="w-100" src={popup.images[1]} alt="" />
+                    </div>
                   </div>
                 </div>
               </Popup>

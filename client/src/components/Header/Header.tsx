@@ -35,7 +35,13 @@ const Header = () => {
 
   return (
     <>
-      <Navbar className="mb-3" expand="lg" data-bs-theme="dark" bg="primary">
+      <Navbar
+        className="mb-3"
+        expand="lg"
+        expanded={true}
+        data-bs-theme="dark"
+        bg="primary"
+      >
         <Container>
           <Navbar.Brand as={Link} to="/">
             <img

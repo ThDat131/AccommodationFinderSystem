@@ -200,6 +200,7 @@ export const getCommentByPost = async (postId: string) => {
 export const endpoints = {
   "send_notification": `/api/notifications/create/`,
   "get_notifications":(userId: string) =>  `/api//notifications/${userId}`,
+  "posts_by_user": (userId: string) => `/api/posts/manage/${userId}`
 }
 
 export const authApis = () => {

@@ -12,7 +12,7 @@ const SideNav = () => {
         style={{ top: 0, left: 0 }}
       >
         <h2 className="text-primary border-bottom pb-3 text-center">
-          Admin Page
+          Trang quản trị
         </h2>
 
         <ListGroup as="ul" variant="light">
@@ -40,27 +40,28 @@ const SideNav = () => {
             <ListGroup.Item
               action
               as="li"
-              active={selectedNav === 2}
-              onClick={() => setSelectedNav(2)}
+              active={selectedNav === 3}
+              onClick={() => setSelectedNav(3)}
             >
               Quản lý danh mục
             </ListGroup.Item>
           </Link>
-
-          {/* <ListGroup.Item
-            action
-            as="li"
-            active={selectedNav === 2}
-            onClick={() => setSelectedNav(2)}
-          >
-            Approve Post
-          </ListGroup.Item> */}
+          <Link to="admin/landlords-approve">
+            <ListGroup.Item
+              action
+              as="li"
+              active={selectedNav === 4}
+              onClick={() => setSelectedNav(4)}
+            >
+              Duyệt yêu cầu
+            </ListGroup.Item>
+          </Link>
           <Link to="/admin/posts/stats">
             <ListGroup.Item
               action
               as="li"
-              active={selectedNav === 3}
-              onClick={() => setSelectedNav(3)}
+              active={selectedNav === 5}
+              onClick={() => setSelectedNav(5)}
             >
               Thống kê số lượng bài đăng
             </ListGroup.Item>
@@ -69,8 +70,8 @@ const SideNav = () => {
             <ListGroup.Item
               action
               as="li"
-              active={selectedNav === 4}
-              onClick={() => setSelectedNav(4)}
+              active={selectedNav === 6}
+              onClick={() => setSelectedNav(6)}
             >
               Thống kê số lượng người dùng
             </ListGroup.Item>
