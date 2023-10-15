@@ -196,3 +196,22 @@ export const getCommentByPost = async (postId: string) => {
     return err;
   }
 };
+
+export const endpoints = {
+  "send_notification": `/api/notifications/create/`,
+  "get_notifications":(userId: string) =>  `/api//notifications/${userId}`,
+}
+
+export const authApis = () => {
+  return axios.create({
+     baseURL: BASE_URL,
+     headers: {
+      "Authorization": cookie.load("token")
+     }
+  })
+}
+
+export default axios.create({
+  baseURL: BASE_URL
+})
+

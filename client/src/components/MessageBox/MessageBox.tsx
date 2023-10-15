@@ -1,19 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { User } from "../../interface/User";
 import MessageSend from "../MessageSend/MessageSend";
 import {
-  setDoc,
   doc,
-  getDocs,
-  serverTimestamp,
   onSnapshot,
-  query,
-  collection,
-  where,
   updateDoc,
   arrayUnion,
   Timestamp,
-  orderBy,
 } from "firebase/firestore";
 import { db } from "../../configs/firebase";
 import { ChatUserContext, MyUserContext } from "../../App";
@@ -23,9 +15,7 @@ const MessageBox = ({ user }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState<string>("");
   const [currentUser] = useContext(MyUserContext);
-  const [currentChannel, setCurrentChannel] = useState("");
-  const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  const [chatUserState, dispatchChatUserState] = useContext(ChatUserContext);
+  const [chatUserState, _dispatchChatUserState] = useContext(ChatUserContext);
   const handleSendMessage = async () => {
     if (message === "") return;
 

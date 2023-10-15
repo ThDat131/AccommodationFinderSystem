@@ -6,17 +6,21 @@ import { MyUserContext } from "../../App";
 import { toast } from "react-toastify";
 import { getCategories } from "../../services/AuthApis";
 import { Category } from "../../interface/Category";
+import { socket } from "../../configs/socket";
+import NotificationList from "../NotificationList/NotificationList";
 
 const Header = () => {
   const nav = useNavigate();
   const [openOption, setOpenOption] = useState(false);
   const [user, dispatch] = useContext(MyUserContext);
   const [categories, setCategories] = useState<Array<Category>>([]);
+  const [openNotification, setOpenNotification] = useState<boolean>(false);
 
   const logout = () => {
     dispatch({
       type: "logout",
     });
+    socket.emit("logout");
     nav("/signin");
     toast.success("Đã đăng xuất!");
   };
@@ -77,20 +81,31 @@ const Header = () => {
               </Nav>
             ) : (
               <Nav className="ms-auto">
-                <div
-                  className="d-flex align-items-center justify-content-center gap-2 position-relative"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setOpenOption(!openOption)}
-                >
-                  <img
-                    src={user.avatar}
-                    alt=""
-                    width={50}
-                    height={50}
-                    className="rounded-circle"
-                  />
-                  <span className="text-light">{user.fullName}</span>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  <div
+                    className="d-flex align-items-center justify-content-center gap-2 position-relative"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setOpenOption(!openOption)}
+                  >
+                    <img
+                      src={user.avatar}
+                      alt=""
+                      width={50}
+                      height={50}
+                      className="rounded-circle"
+                    />
+                    <span className="text-light">{user.fullName}</span>
+                  </div>
+                  <div className="bell position-relative">
+                    <i
+                      className="fa-regular fa-bell"
+                      style={{ fontSize: "25px" }}
+                      onClick={() => setOpenNotification(!openNotification)}
+                    ></i>
+                    {openNotification && <NotificationList />}
+                  </div>
                 </div>
+
                 <ListGroup
                   className={
                     openOption ? `list-group position-absolute` : "d-none"

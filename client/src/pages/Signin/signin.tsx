@@ -14,11 +14,11 @@ import { MyUserContext } from "../../App";
 import {
   FacebookAuthProvider,
   GoogleAuthProvider,
-  getAuth,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../../configs/firebase";
 import { signInWithFacebook } from "../../services/AuthApis";
+import { socket } from "../../configs/socket";
 
 const Signin = () => {
   const nav = useNavigate();
@@ -69,6 +69,7 @@ const Signin = () => {
                 type: "login",
                 payload: res.data,
               });
+              socket.emit('login', res.data._id)
               nav("/");
             }
           });

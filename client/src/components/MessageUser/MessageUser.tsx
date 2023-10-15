@@ -1,27 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import { ChatUserContext, MyUserContext } from "../../App";
-import {
-  and,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../../configs/firebase";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from "react";
+
 import { User } from "../../interface/User";
 import { Spinner } from "react-bootstrap";
 
 const MessageUser = ({ user, handleClick }) => {
-  const [currentUser] = useContext(MyUserContext);
-  let channel: any;
-  const [channelId, setChannelId] = useState<string>("");
   const [messageUser, setMessageUser] = useState<User>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [_chatUserState, dispatchChatUserState] = useContext(ChatUserContext);
 
   useEffect(() => {
     setMessageUser(user);

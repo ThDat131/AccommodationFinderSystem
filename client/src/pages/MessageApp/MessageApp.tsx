@@ -5,29 +5,24 @@ import { User } from "../../interface/User";
 import { Spinner } from "react-bootstrap";
 import MessageBox from "../../components/MessageBox/MessageBox";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
-  query,
   serverTimestamp,
   setDoc,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "../../configs/firebase";
 import { ChatUserContext, MyUserContext } from "../../App";
-import { v4 as uuidv4 } from "uuid";
 
 const MessageApp = () => {
   const [users, setUsers] = useState<Array<User>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, _setIsLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [currentUser] = useContext(MyUserContext);
   const [isOpenMessageUser, setIsOpenMessageUser] = useState<boolean>(false);
   const [chatUserState, dispatchChatUserState] = useContext(ChatUserContext);
-  const [userChats, setUserChats] = useState([]);
+  const [userChats, _setUserChats] = useState([]);
 
   useEffect(() => {
     const unsub = onSnapshot(
