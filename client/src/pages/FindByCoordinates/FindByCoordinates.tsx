@@ -54,11 +54,9 @@ const FindByCoordinates = () => {
           latitude: res.data.result.geometry.location.lat,
         }).then((res: any) => {
           if (res.status === 200) {
-            setMarkers(res.data);
-            console.log(res.data);
+            setMarkers(res.data.posts);
           }
         });
-        console.log(res.data);
       }
     });
   };

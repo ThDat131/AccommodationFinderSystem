@@ -2,7 +2,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Map from "../../components/Map/Map";
 import { MyUserContext } from "../../App";
-import { getCommentByPost, getDetailPost } from "../../services/Apis";
+import Apis, {
+  authApis,
+  endpoints,
+  getCommentByPost,
+  getDetailPost,
+} from "../../services/Apis";
 import { Spinner } from "react-bootstrap";
 import { VNDCurrencyFormat } from "../../utils/Utils";
 import DOMPurify from "dompurify";
@@ -79,7 +84,7 @@ const DetailPost = () => {
     });
     socket.on("receive_comment", (data) => {
       addComment(data);
-      console.log(data)
+      console.log(data);
     });
     socket.on("receive_edit_comment", (data) => {
       editComment(data);
@@ -136,10 +141,18 @@ const DetailPost = () => {
       content: comment,
       postId: id,
       userId: user._id,
-    }).then((res: any) => {
+    }).then(async (res: any) => {
       if (res.status === 201) {
         socket.emit("send_comment", res.data);
         setComment("");
+
+        await authApis().post(endpoints.send_notification, {
+          content: `${user.fullName} đã bình luận về bài viết của bạn.`,
+          sender: user._id,
+          receiver: detailPost.userId._id,
+        }).then((res) => {
+          socket.emit("send_notification", res.data);
+        });
       }
     });
   };

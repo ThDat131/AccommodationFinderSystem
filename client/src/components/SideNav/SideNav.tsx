@@ -12,7 +12,7 @@ const SideNav = () => {
         style={{ top: 0, left: 0 }}
       >
         <h2 className="text-primary border-bottom pb-3 text-center">
-          Admin Page
+          Trang quản trị
         </h2>
 
         <ListGroup as="ul" variant="light">

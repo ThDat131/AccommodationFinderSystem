@@ -5,8 +5,8 @@ const NotificationsController = {
   create: async (req, res, next) => {
     try {
       const { content, sender, receiver } = req.body;
-      await NotificationModel.create({ content, sender, receiver });
-      return res.status(201).send("Successfully");
+      const notify = await NotificationModel.create({ content, sender, receiver });
+      return res.status(201).json(notify)
     } catch (error) {
       return next(error);
     }
