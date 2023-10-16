@@ -125,7 +125,7 @@ const MessageApp = () => {
                   setSearch("");
                 }}
               />
-              <button className="btn btn-primary">Search</button>
+              <button className="btn btn-primary">Tìm kiếm</button>
             </div>
             <div
               style={

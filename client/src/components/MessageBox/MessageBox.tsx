@@ -78,7 +78,7 @@ const MessageBox = ({ user }) => {
           }}
         />
         <button className="btn btn-primary" onClick={handleSendMessage}>
-          Send
+          Gửi
         </button>
       </div>
     </>
