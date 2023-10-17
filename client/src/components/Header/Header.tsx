@@ -54,22 +54,22 @@ const Header = () => {
           </Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link as={Link} to="/">
+              <Nav.Link as={Link} to="/" className="fw-bold text-white">
                 Trang chủ
               </Nav.Link>
-              <Nav.Link as={Link} to="/find-by-coordinates">
+              <Nav.Link as={Link} to="/find-by-coordinates" className="text-white">
                 Tìm nhà trọ theo toạ độ
               </Nav.Link>
               {categories.map((c, index: number) => {
                 const h = `/category/${c._id}`;
                 return (
-                  <NavLink as={Link} to={h} key={index}>
+                  <NavLink as={Link} to={h} key={index} className="text-white">
                     {c.name}
                   </NavLink>
                 );
               })}
               {user && user.landlordId && user.landlordId.active === true ? (
-                <Nav.Link as={Link} to="/create-post">
+                <Nav.Link as={Link} to="/create-post" className="text-white">
                   Đăng tin
                 </Nav.Link>
               ) : (
@@ -78,10 +78,10 @@ const Header = () => {
             </Nav>
             {user === null ? (
               <Nav className="ms-auto">
-                <Nav.Link as={Link} to="/signin">
+                <Nav.Link as={Link} to="/signin" className="text-white">
                   Sign In
                 </Nav.Link>
-                <Nav.Link as={Link} to="/signup">
+                <Nav.Link as={Link} to="/signup" className="text-white">
                   Sign Up
                 </Nav.Link>
               </Nav>
@@ -118,8 +118,7 @@ const Header = () => {
                   }
                   style={{
                     width: "200px",
-                    right: "185px",
-                    top: "65px",
+                    top: "75px",
                     zIndex: "2",
                   }}
                 >
